@@ -104,6 +104,7 @@ type ObstacleType = {
 	customData?: { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
 };
 type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
+type ArcType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 
 export type RawMapJSON = {
 	version: string;
@@ -112,7 +113,7 @@ export type RawMapJSON = {
 	colorNotes: NoteType[];
 	bombNotes: BombType[];
 	obstacles: ObstacleType[];
-	sliders: { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps }[];
+	sliders: ArcType[];
 	burstSliders: BurstSliderType[];
 	waypoints: [];
 	basicBeatmapEvents: {
@@ -186,11 +187,73 @@ export class BeatMap {
 	public fakeChains = this.map.customData?.fakeBurstSliders;
 
 	save() {
+		this.notes.forEach(n => {
+			jsonPrune(n);
+		});
+		this.bombs.forEach(n => {
+			jsonPrune(n);
+		});
+		this.walls.forEach(n => {
+			jsonPrune(n);
+		});
+		this.arcs.forEach(n => {
+			jsonPrune(n);
+		});
+		this.chains.forEach(n => {
+			jsonPrune(n);
+		});
+		this.events.forEach(n => jsonPrune(n));
+
+		this.customData ? jsonPrune(this.customData) : delete this.map.customData;
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.map));
 	}
 }
 
+// Functions stolen from ReMapper >:)
+
+/**
+ * Checks if an object is empty.
+ * @param o Object to check.
+ */
+export function isEmptyObject(o: Record<string, any>) {
+	if (typeof o !== "object") return false;
+	return Object.keys(o).length === 0;
+}
+
+/**
+ * Delete empty objects/arrays from an object recursively.
+ * @param obj Object to prune.
+ */
+export function jsonPrune(obj: Record<string, any>) {
+	Object.keys(obj).forEach(prop => {
+		if (obj[prop] == null) {
+			delete obj[prop];
+			return;
+		}
+		const type = typeof obj[prop];
+		if (type === "object") {
+			if (Array.isArray(obj[prop])) {
+				if (obj[prop].length === 0) {
+					delete obj[prop];
+				}
+			} else {
+				jsonPrune(obj[prop]);
+				if (isEmptyObject(obj[prop])) {
+					delete obj[prop];
+				}
+			}
+		} else if (type === "string" && obj[prop].length === 0) {
+			delete obj[prop];
+		}
+	});
+}
+
 export class Environment {
+	/**
+	 * Create a new environment object.
+	 * @param id The environment id.
+	 * @param lookupMethod The lookup method for your environment.
+	 */
 	constructor(public id: string, public lookupMethod: LookupMethod = "Contains") {}
 	public active?: boolean;
 	duplicate?: number;
@@ -200,13 +263,22 @@ export class Environment {
 	rotation?: Vec3;
 	localRotation?: Vec3;
 	track?: string | string[];
+	/**
+	 * Return your environment object as an object.
+	 */
 	return() {
+		jsonPrune(this);
 		return this;
 	}
 }
 
 export class Geometry {
 	public geometry: GeometryObjectJSON = { type: "Cube", material: { shader: "Standard" } };
+	/**
+	 * Create a new geometry object.
+	 * @param type The geometry primitive to use.
+	 * @param material The material for your geometry.
+	 */
 	constructor(type?: GeometryObjectTypes, material?: GeometryMaterialJSON | string) {
 		if (type) {
 			this.geometry.type = type;
@@ -221,22 +293,90 @@ export class Geometry {
 	rotation?: Vec3;
 	localRotation?: Vec3;
 	track?: string | string[];
+	/**
+	 * Return your geometry object as an object.
+	 */
 	return() {
+		jsonPrune(this);
 		return this;
 	}
 }
 
 export class Note {
+	/**
+	 * Create a new note.
+	 * @param time The time of the note.
+	 * @param pos The [x, y] of the note.
+	 * @param type Note is left: 0, or right: 1.
+	 * @param direction The cut direction of the note.
+	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
+	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public angleOffset = 0) {}
-	public customData?: NoteCustomProps;
+	public customData: NoteCustomProps = {};
+	offset = this.customData.noteJumpStartBeatOffest;
+	NJS = this.customData.noteJumpMovementSpeed;
+	animation = this.customData.animation;
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(val: number) {
+		this.pos[0] = val;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(val: number) {
+		this.pos[1] = val;
+	}
+
+	/**
+	 * Return the note as an object.
+	 */
 	return(): NoteType {
+		jsonPrune(this);
 		return {
 			b: this.time,
-			x: this.pos[0],
-			y: this.pos[1],
+			x: this.x,
+			y: this.y,
 			c: this.type,
 			d: this.direction,
 			a: this.angleOffset,
+			customData: this.customData
+		};
+	}
+}
+
+//type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
+
+export class Bomb {
+	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
+	public customData: NoteCustomProps = {};
+	offset = this.customData.noteJumpStartBeatOffest;
+	NJS = this.customData.noteJumpMovementSpeed;
+	animation = this.customData.animation;
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(val: number) {
+		this.pos[0] = val;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(val: number) {
+		this.pos[1] = val;
+	}
+
+	return(): BombType {
+		jsonPrune(this);
+		return {
+			b: this.time,
+			x: this.x,
+			y: this.y,
 			customData: this.customData
 		};
 	}
