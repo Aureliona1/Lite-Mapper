@@ -71,6 +71,36 @@ export type ComponentAnimProps = {
 	TubeBloomPrePassLight?: { colorAlphaMultiplier?: number; bloomFogIntensityMultiplier?: number };
 };
 
+export enum LightEventTypes {
+	"BackLasers" = 0,
+	"RingLights" = 1,
+	"LeftLasers" = 2,
+	"RightLasers" = 3,
+	"CenterLights" = 4,
+	"BoostColors" = 5,
+	"RingSpin" = 8,
+	"RingZoom" = 9,
+	"LeftLaserSpeed" = 12,
+	"RightLaserSpeed" = 13
+}
+
+export enum LightEventValues {
+	"Off" = 0,
+	"OnBlue" = 1,
+	"FlashBlue" = 2,
+	"FadeBlue" = 3,
+	"Transition" = 4,
+	"TransitionBlue" = 4,
+	"OnRed" = 5,
+	"FlashRed" = 6,
+	"FadeRed" = 7,
+	"TransitionRed" = 8,
+	"OnWhite" = 9,
+	"FlashWhite" = 10,
+	"FadeWhite" = 11,
+	"TransitionWhite" = 12
+}
+
 type NoteCustomProps = {
 	coordinates?: Vec2;
 	worldRotation?: Vec3;
@@ -95,17 +125,11 @@ type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?:
 
 type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
-type ObstacleType = {
-	b: number;
-	x: number;
-	y: number;
-	d: number;
-	w: number;
-	h: number;
-	customData?: WallCustomProps;
-};
+type ObstacleType = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
 type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
 type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
+type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
 
 export type RawMapJSON = {
 	version: string;
@@ -116,14 +140,8 @@ export type RawMapJSON = {
 	obstacles: ObstacleType[];
 	sliders: SliderType[];
 	burstSliders: BurstSliderType[];
-	waypoints: [];
-	basicBeatmapEvents: {
-		b: number;
-		et: number;
-		i: number;
-		f: number;
-		customData?: { lightID?: number | number[]; color: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
-	}[];
+	waypoints: any[];
+	basicBeatmapEvents: LightEventType[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
 	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
 	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
@@ -328,21 +346,21 @@ export class Note {
 	get interactable() {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state: boolean) {
+	set interactable(state) {
 		this.customData.uninteractable = !state;
 	}
 
 	get x() {
 		return this.pos[0];
 	}
-	set x(val: number) {
+	set x(val) {
 		this.pos[0] = val;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val: number) {
+	set y(val) {
 		this.pos[1] = val;
 	}
 
@@ -385,14 +403,14 @@ export class Bomb {
 	get x() {
 		return this.pos[0];
 	}
-	set x(val: number) {
+	set x(val) {
 		this.pos[0] = val;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val: number) {
+	set y(val) {
 		this.pos[1] = val;
 	}
 	/**
@@ -431,14 +449,14 @@ export class Wall {
 	get x() {
 		return this.pos[0];
 	}
-	set x(val: number) {
+	set x(val) {
 		this.pos[0] = val;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val: number) {
+	set y(val) {
 		this.pos[1] = val;
 	}
 
@@ -451,7 +469,7 @@ export class Wall {
 	/**
 	 * Return the wall as an object.
 	 */
-	return() {
+	return(): ObstacleType {
 		jsonPrune(this);
 		return {
 			b: this.time,
@@ -463,4 +481,159 @@ export class Wall {
 			customData: this.customData
 		};
 	}
+}
+
+export class Arc {
+	/**
+	 * Create a new arc.
+	 * @param time The time of the arc.
+	 * @param type The color of the arc (left / right).
+	 * @param pos The starting position of the arc.
+	 * @param headDirection The starting direction of the arc.
+	 * @param tailBeat The final beat of the arc.
+	 * @param tailPos The final position of the arc.
+	 * @param tailDirection The direction of the end of the arc.
+	 */
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public headDirection = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection = 0) {}
+	public headMultiplier = 1;
+	tailMultiplier = 1;
+	anchorMode = 1;
+	customData: SliderCustomProps = {};
+	rotation = this.customData.worldRotation;
+	localRotation = this.customData.localRotation;
+	NJS = this.customData.noteJumpMovementSpeed;
+	offset = this.customData.noteJumpStartBeatOffset;
+	color = this.customData.color;
+	animation = this.customData.animation;
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(val) {
+		this.pos[0] = val;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(val) {
+		this.pos[1] = val;
+	}
+
+	get tx() {
+		return this.tailPos[0];
+	}
+	set tx(val) {
+		this.tailPos[0] = val;
+	}
+
+	get ty() {
+		return this.tailPos[1];
+	}
+	set ty(val) {
+		this.tailPos[1] = val;
+	}
+
+	get interactable() {
+		return !this.customData.uninteractable;
+	}
+	set interactable(state) {
+		this.customData.uninteractable = !state;
+	}
+	/**
+	 * Return the arc as an object.
+	 */
+	return(): SliderType {
+		jsonPrune(this);
+		return {
+			b: this.time,
+			c: this.type,
+			x: this.x,
+			y: this.y,
+			d: this.headDirection,
+			mu: this.headMultiplier,
+			tb: this.tailBeat,
+			tx: this.tx,
+			ty: this.ty,
+			tc: this.tailDirection,
+			tmu: this.tailMultiplier,
+			m: this.anchorMode,
+			customData: this.customData
+		};
+	}
+}
+
+export class Chain {
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
+	public squishFactor = 1;
+	customData: SliderCustomProps = {};
+	rotation = this.customData.worldRotation;
+	localRotation = this.customData.localRotation;
+	NJS = this.customData.noteJumpMovementSpeed;
+	offset = this.customData.noteJumpStartBeatOffset;
+	color = this.customData.color;
+	animation = this.customData.animation;
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(val) {
+		this.pos[0] = val;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(val) {
+		this.pos[1] = val;
+	}
+
+	get tx() {
+		return this.tailPos[0];
+	}
+	set tx(val) {
+		this.tailPos[0] = val;
+	}
+
+	get ty() {
+		return this.tailPos[1];
+	}
+	set ty(val) {
+		this.tailPos[1] = val;
+	}
+
+	get interactable() {
+		return !this.customData.uninteractable;
+	}
+	set interactable(state) {
+		this.customData.uninteractable = !state;
+	}
+
+	return(): BurstSliderType {
+		jsonPrune(this);
+		return {
+			b: this.time,
+			x: this.x,
+			y: this.y,
+			c: this.type,
+			d: this.direction,
+			tb: this.tailBeat,
+			tx: this.tx,
+			ty: this.ty,
+			sc: this.segments,
+			s: this.squishFactor,
+			customData: this.customData
+		};
+	}
+}
+
+// type LightEventCustomData = { lightID?: number | number[]; color: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+// type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+
+export class LightEvent {
+	constructor(public time = 0) {}
+	public type: LightEventTypes = 0;
+	value: LightEventValues = 1;
+	floatValue = 1;
+	customData: LightEventCustomData = {};
 }
