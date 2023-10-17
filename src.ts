@@ -15,7 +15,7 @@ type GeometryObjectTypes = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "Plane" 
 export type MaterialShader = "Standard" | "OpaqueLight" | "TransparentLight" | "BaseWater" | "BillieWater" | "BTSPillar" | "InterscopeConcrete" | "InterscopeCar" | "Obstacle" | "WaterfallMirror";
 export type GeometryMaterialJSON = { shader: MaterialShader; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
 export type GeometryObjectJSON = { type: GeometryObjectTypes; material: GeometryMaterialJSON | string };
-type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrck" | "AnimateComponent";
+type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
 export type ObjectAnimProps = {
 	offsetPosition?: Vec3 | KFVec3[];
 	offsetWorldRotation?: Vec3 | KFVec3[];
@@ -130,6 +130,7 @@ type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; 
 type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
 type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+type CustomEventType = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
 
 export type RawMapJSON = {
 	version: string;
@@ -149,7 +150,7 @@ export type RawMapJSON = {
 	basicEventTypesWithKeywords: Record<any, any>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData?: {
-		customEvents?: { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps }[];
+		customEvents?: CustomEventType[];
 		environment?: (Environment | Geometry)[];
 		materials?: Record<any, GeometryMaterialJSON>;
 		fakeColorNotes?: NoteType[];
@@ -221,7 +222,9 @@ export class BeatMap {
 		this.chains.forEach(n => {
 			jsonPrune(n);
 		});
-		this.events.forEach(n => jsonPrune(n));
+		this.events.forEach(n => {
+			jsonPrune(n);
+		});
 
 		this.customData ? jsonPrune(this.customData) : delete this.map.customData;
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.map));
@@ -627,13 +630,117 @@ export class Chain {
 	}
 }
 
-// type LightEventCustomData = { lightID?: number | number[]; color: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
-// type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
-
 export class LightEvent {
 	constructor(public time = 0) {}
 	public type: LightEventTypes = 0;
 	value: LightEventValues = 1;
 	floatValue = 1;
 	customData: LightEventCustomData = {};
+	lightID = this.customData.lightID;
+	color = this.customData.color;
+	lerpType = this.customData.lerpType;
+	return(): LightEventType {
+		jsonPrune(this);
+		return {
+			b: this.time,
+			et: this.type,
+			i: this.value,
+			f: this.floatValue,
+			customData: this.customData
+		};
+	}
+}
+
+export class CustomEvent {
+	constructor(public time = 0) {}
+	AnimateTrack(track: string | string[], duration?: number): { time: number; data: TrackAnimProps; return: () => CustomEventType } {
+		const animation: TrackAnimProps = {
+			track: track
+		};
+		if (duration) {
+			animation.duration = duration;
+		}
+		return {
+			time: this.time,
+			data: animation,
+			return() {
+				return {
+					b: this.time,
+					t: "AnimateTrack",
+					d: this.data
+				};
+			}
+		};
+	}
+	AssignPathAnimation(track: string | string[]): { time: number; data: PathAnimProps; return: () => CustomEventType } {
+		const data: PathAnimProps = {
+			track: track
+		};
+		return {
+			time: this.time,
+			data: data,
+			return() {
+				return {
+					b: this.time,
+					t: "AssignPathAnimation",
+					d: data
+				};
+			}
+		};
+	}
+	AssignTrackParent(childTracks: string[], parentTrack: string, worldPositionStays?: boolean): { time: number; data: TrackParentProps; return: () => CustomEventType } {
+		const data: TrackParentProps = {
+			childrenTracks: childTracks,
+			parentTrack: parentTrack
+		};
+		if (typeof worldPositionStays !== "undefined") {
+			data.worldPositionStays = worldPositionStays;
+		}
+		return {
+			time: this.time,
+			data: data,
+			return() {
+				return {
+					b: this.time,
+					t: "AssignTrackParent",
+					d: data
+				};
+			}
+		};
+	}
+	AssignPlayerToTrack(track: string, target?: PlayerObjectControllers): { time: number; data: PlayerToTrackProps; return: () => CustomEventType } {
+		const data: PlayerToTrackProps = {
+			track: track
+		};
+		if (target) {
+			data.target = target;
+		}
+		return {
+			time: this.time,
+			data: data,
+			return() {
+				return {
+					b: this.time,
+					t: "AssignPlayerToTrack",
+					d: data
+				};
+			}
+		};
+	}
+	AnimateComponent(track: string): { time: number; data: ComponentAnimProps; return: () => CustomEventType } {
+		const data: ComponentAnimProps = {
+			track: track
+		};
+		return {
+			time: this.time,
+			data: data,
+			return() {
+				return {
+					b: this.time,
+					t: "AnimateComponent",
+					d: data
+				};
+			}
+		};
+	}
 }
