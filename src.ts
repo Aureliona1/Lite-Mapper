@@ -105,7 +105,7 @@ type ObstacleType = {
 	customData?: WallCustomProps;
 };
 type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
-type ArcType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
+type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 
 export type RawMapJSON = {
 	version: string;
@@ -114,7 +114,7 @@ export type RawMapJSON = {
 	colorNotes: NoteType[];
 	bombNotes: BombType[];
 	obstacles: ObstacleType[];
-	sliders: ArcType[];
+	sliders: SliderType[];
 	burstSliders: BurstSliderType[];
 	waypoints: [];
 	basicBeatmapEvents: {
@@ -374,6 +374,13 @@ export class Bomb {
 	offset = this.customData.noteJumpStartBeatOffest;
 	NJS = this.customData.noteJumpMovementSpeed;
 	animation = this.customData.animation;
+	rotation = this.customData.worldRotation;
+	localRotation = this.customData.localRotation;
+	disableNoteGravity = this.customData.disableNoteGravity;
+	disableNoteLook = this.customData.disableNoteLook;
+	color = this.customData.color;
+	spawnEffect = this.customData.spawnEffect;
+	track = this.customData.track;
 
 	get x() {
 		return this.pos[0];
@@ -401,18 +408,6 @@ export class Bomb {
 		};
 	}
 }
-
-/* type ObstacleType = {
-	b: number;
-	x: number;
-	y: number;
-	d: number;
-	w: number;
-	h: number;
-	customData?: { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
-};
-
-*/
 
 export class Wall {
 	/**
