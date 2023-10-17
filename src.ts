@@ -106,7 +106,7 @@ type NoteCustomProps = {
 	worldRotation?: Vec3;
 	localRotation?: Vec3;
 	noteJumpMovementSpeed?: number;
-	noteJumpStartBeatOffest?: number;
+	noteJumpStartBeatOffset?: number;
 	uninteractable?: boolean;
 	flip?: Vec2;
 	disableNoteGravity?: boolean;
@@ -120,8 +120,20 @@ type NoteCustomProps = {
 	track?: string | string[];
 	animation?: ObjectAnimProps;
 };
-type SliderCustomProps = { coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; disableNoteGravity?: boolean; tailCoordinates?: Vec2; color?: Vec3 | Vec4; animation?: ObjectAnimProps };
-type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
+type SliderCustomProps = {
+	coordinates?: Vec2;
+	worldRotation?: Vec3;
+	localRotation?: Vec3;
+	noteJumpMovementSpeed?: number;
+	noteJumpStartBeatOffset?: number;
+	uninteractable?: boolean;
+	disableNoteGravity?: boolean;
+	tailCoordinates?: Vec2;
+	color?: Vec3 | Vec4;
+	animation?: ObjectAnimProps;
+	track?: string | string[];
+};
+type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 
 type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
@@ -184,27 +196,177 @@ export class BeatMap {
 		this.map = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 	}
 
-	public readonly version = this.map.version;
-	public bpmEvents = this.map.bpmEvents;
-	public rotationEvents = this.map.rotationEvents;
-	public notes = this.map.colorNotes;
-	public bombs = this.map.bombNotes;
-	public walls = this.map.obstacles;
-	public arcs = this.map.sliders;
-	public chains = this.map.burstSliders;
-	public events = this.map.basicBeatmapEvents;
-	public colorBoostBeatmapEvents = this.map.colorBoostBeatmapEvents;
-	public lightColorEventBoxGroups = this.map.lightColorEventBoxGroups;
-	public lightRotationEventBoxGroups = this.map.lightRotationEventBoxGroups;
-	public lightTranslationEventBoxGroups = this.map.lightTranslationEventBoxGroups;
-	public customData = this.map.customData;
-	public customEvents = this.map.customData?.customEvents;
-	public environments = this.map.customData?.environment;
-	public materials = this.map.customData?.materials;
-	public fakeNotes = this.map.customData?.fakeColorNotes;
-	public fakeBombs = this.map.customData?.fakeBombNotes;
-	public fakeObstacles = this.map.customData?.fakeObstacles;
-	public fakeChains = this.map.customData?.fakeBurstSliders;
+	get version() {
+		return this.map.version;
+	}
+
+	set bpmEvents(x) {
+		this.map.bpmEvents = x;
+	}
+	get bpmEvents() {
+		return this.map.bpmEvents;
+	}
+
+	set rotationEvents(x) {
+		this.map.rotationEvents = x;
+	}
+	get rotationEvents() {
+		return this.map.rotationEvents;
+	}
+
+	set notes(x) {
+		this.map.colorNotes = x;
+	}
+	get notes() {
+		return this.map.colorNotes;
+	}
+
+	set bombs(x) {
+		this.map.bombNotes = x;
+	}
+	get bombs() {
+		return this.map.bombNotes;
+	}
+
+	set walls(x) {
+		this.map.obstacles = x;
+	}
+	get walls() {
+		return this.map.obstacles;
+	}
+
+	set arcs(x) {
+		this.map.sliders = x;
+	}
+	get arcs() {
+		return this.map.sliders;
+	}
+
+	set chains(x) {
+		this.map.burstSliders = x;
+	}
+	get chains() {
+		return this.map.burstSliders;
+	}
+
+	set events(x) {
+		this.map.basicBeatmapEvents = x;
+	}
+	get events() {
+		return this.map.basicBeatmapEvents;
+	}
+
+	set colorBoostBeatmapEvents(x) {
+		this.map.colorBoostBeatmapEvents = x;
+	}
+	get colorBoostBeatmapEvents() {
+		return this.map.colorBoostBeatmapEvents;
+	}
+
+	set lightColorEventBoxGroups(x) {
+		this.map.lightColorEventBoxGroups = x;
+	}
+	get lightColorEventBoxGroups() {
+		return this.map.lightColorEventBoxGroups;
+	}
+
+	set lightRotationEventBoxGroups(x) {
+		this.map.lightRotationEventBoxGroups = x;
+	}
+	get lightRotationEventBoxGroups() {
+		return this.map.lightRotationEventBoxGroups;
+	}
+
+	set lightTranslationEventBoxGroups(x) {
+		this.map.lightTranslationEventBoxGroups = x;
+	}
+	get lightTranslationEventBoxGroups() {
+		return this.map.lightTranslationEventBoxGroups;
+	}
+
+	set customData(x) {
+		this.map.customData = x;
+	}
+	get customData() {
+		return this.map.customData;
+	}
+
+	set customEvents(x) {
+		if (this.customData) {
+			this.customData.customEvents = x;
+		} else {
+			this.customData = { customEvents: x };
+		}
+	}
+	get customEvents() {
+		return this.customData?.customEvents;
+	}
+
+	set environments(x) {
+		if (this.customData) {
+			this.customData.environment = x;
+		} else {
+			this.customData = { environment: x };
+		}
+	}
+	get environments() {
+		return this.customData?.environment;
+	}
+
+	set materials(x) {
+		if (this.customData) {
+			this.customData.materials = x;
+		} else {
+			this.customData = { materials: x };
+		}
+	}
+	get materials() {
+		return this.customData?.materials;
+	}
+
+	set fakeNotes(x) {
+		if (this.customData) {
+			this.customData.fakeColorNotes = x;
+		} else {
+			this.customData = { fakeColorNotes: x };
+		}
+	}
+	get fakeNotes() {
+		return this.customData?.fakeColorNotes;
+	}
+
+	set fakeBombs(x) {
+		if (this.customData) {
+			this.customData.fakeBombNotes = x;
+		} else {
+			this.customData = { fakeBombNotes: x };
+		}
+	}
+	get fakeBombs() {
+		return this.customData?.fakeBombNotes;
+	}
+
+	set fakeObstacles(x) {
+		if (this.customData) {
+			this.customData.fakeObstacles = x;
+		} else {
+			this.customData = { fakeObstacles: x };
+		}
+	}
+	get fakeObstacles() {
+		return this.customData?.fakeObstacles;
+	}
+
+	set fakeChains(x) {
+		if (this.customData) {
+			this.customData.fakeBurstSliders = x;
+		} else {
+			this.customData = { fakeBurstSliders: x };
+		}
+	}
+	get fakeChains() {
+		return this.customData?.fakeBurstSliders;
+	}
 
 	save() {
 		this.notes.forEach(n => {
@@ -335,16 +497,76 @@ export class Note {
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public angleOffset = 0) {}
 	public customData: NoteCustomProps = {};
-	offset = this.customData.noteJumpStartBeatOffest;
-	NJS = this.customData.noteJumpMovementSpeed;
-	animation = this.customData.animation;
-	rotation = this.customData.worldRotation;
-	localRotation = this.customData.localRotation;
-	disableNoteGravity = this.customData.disableNoteGravity;
-	disableNoteLook = this.customData.disableNoteLook;
-	color = this.customData.color;
-	spawnEffect = this.customData.spawnEffect;
-	track = this.customData.track;
+
+	get offset() {
+		return this.customData.noteJumpStartBeatOffset;
+	}
+	set offset(x) {
+		this.customData.noteJumpStartBeatOffset = x;
+	}
+
+	set NJS(x) {
+		this.customData.noteJumpMovementSpeed = x;
+	}
+	get NJS() {
+		return this.customData.noteJumpMovementSpeed;
+	}
+
+	set animation(x) {
+		this.customData.animation = x;
+	}
+	get animation() {
+		return this.customData.animation;
+	}
+
+	set rotation(x) {
+		this.customData.worldRotation = x;
+	}
+	get rotation() {
+		return this.customData.worldRotation;
+	}
+
+	set localRotation(x) {
+		this.customData.localRotation = x;
+	}
+	get localRotation() {
+		return this.customData.localRotation;
+	}
+
+	set disableNoteGravity(x) {
+		this.customData.disableNoteGravity = x;
+	}
+	get disableNoteGravity() {
+		return this.customData.disableNoteGravity;
+	}
+
+	set disableNoteLook(x) {
+		this.customData.disableNoteLook = x;
+	}
+	get disableNoteLook() {
+		return this.customData.disableNoteLook;
+	}
+
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set spawnEffect(x) {
+		this.customData.spawnEffect = x;
+	}
+	get spawnEffect() {
+		return this.customData.spawnEffect;
+	}
+
+	set track(x) {
+		this.customData.track = x;
+	}
+	get track() {
+		return this.customData.track;
+	}
 
 	get interactable() {
 		return !this.customData.uninteractable;
@@ -356,15 +578,15 @@ export class Note {
 	get x() {
 		return this.pos[0];
 	}
-	set x(val) {
-		this.pos[0] = val;
+	set x(x) {
+		this.pos[0] = x;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val) {
-		this.pos[1] = val;
+	set y(x) {
+		this.pos[1] = x;
 	}
 
 	/**
@@ -392,29 +614,95 @@ export class Bomb {
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
 	public customData: NoteCustomProps = {};
-	offset = this.customData.noteJumpStartBeatOffest;
-	NJS = this.customData.noteJumpMovementSpeed;
-	animation = this.customData.animation;
-	rotation = this.customData.worldRotation;
-	localRotation = this.customData.localRotation;
-	disableNoteGravity = this.customData.disableNoteGravity;
-	disableNoteLook = this.customData.disableNoteLook;
-	color = this.customData.color;
-	spawnEffect = this.customData.spawnEffect;
-	track = this.customData.track;
+	get offset() {
+		return this.customData.noteJumpStartBeatOffset;
+	}
+	set offset(x) {
+		this.customData.noteJumpStartBeatOffset = x;
+	}
+
+	set NJS(x) {
+		this.customData.noteJumpMovementSpeed = x;
+	}
+	get NJS() {
+		return this.customData.noteJumpMovementSpeed;
+	}
+
+	set animation(x) {
+		this.customData.animation = x;
+	}
+	get animation() {
+		return this.customData.animation;
+	}
+
+	set rotation(x) {
+		this.customData.worldRotation = x;
+	}
+	get rotation() {
+		return this.customData.worldRotation;
+	}
+
+	set localRotation(x) {
+		this.customData.localRotation = x;
+	}
+	get localRotation() {
+		return this.customData.localRotation;
+	}
+
+	set disableNoteGravity(x) {
+		this.customData.disableNoteGravity = x;
+	}
+	get disableNoteGravity() {
+		return this.customData.disableNoteGravity;
+	}
+
+	set disableNoteLook(x) {
+		this.customData.disableNoteLook = x;
+	}
+	get disableNoteLook() {
+		return this.customData.disableNoteLook;
+	}
+
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set spawnEffect(x) {
+		this.customData.spawnEffect = x;
+	}
+	get spawnEffect() {
+		return this.customData.spawnEffect;
+	}
+
+	set track(x) {
+		this.customData.track = x;
+	}
+	get track() {
+		return this.customData.track;
+	}
+
+	get interactable() {
+		return !this.customData.uninteractable;
+	}
+	set interactable(state) {
+		this.customData.uninteractable = !state;
+	}
 
 	get x() {
 		return this.pos[0];
 	}
-	set x(val) {
-		this.pos[0] = val;
+	set x(x) {
+		this.pos[0] = x;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val) {
-		this.pos[1] = val;
+	set y(x) {
+		this.pos[1] = x;
 	}
 	/**
 	 * Return the bomb as an object.
@@ -441,33 +729,81 @@ export class Wall {
 	 */
 	constructor(public time = 0, public pos = [0, 0], public duration = 1, public width = 1, public height = 1) {}
 	public customData: WallCustomProps = {};
-	scale = this.customData.size;
-	animation = this.customData.animation;
-	rotation = this.customData.worldRotation;
-	localRotation = this.customData.localRotation;
-	NJS = this.customData.noteJumpMovementSpeed;
-	offset = this.customData.noteJumpStartBeatOffset;
-	color = this.customData.color;
 
-	get x() {
-		return this.pos[0];
+	set scale(x) {
+		this.customData.size = x;
 	}
-	set x(val) {
-		this.pos[0] = val;
+	get scale() {
+		return this.customData.size;
 	}
 
-	get y() {
-		return this.pos[1];
+	get offset() {
+		return this.customData.noteJumpStartBeatOffset;
 	}
-	set y(val) {
-		this.pos[1] = val;
+	set offset(x) {
+		this.customData.noteJumpStartBeatOffset = x;
+	}
+
+	set NJS(x) {
+		this.customData.noteJumpMovementSpeed = x;
+	}
+	get NJS() {
+		return this.customData.noteJumpMovementSpeed;
+	}
+
+	set animation(x) {
+		this.customData.animation = x;
+	}
+	get animation() {
+		return this.customData.animation;
+	}
+
+	set rotation(x) {
+		this.customData.worldRotation = x;
+	}
+	get rotation() {
+		return this.customData.worldRotation;
+	}
+
+	set localRotation(x) {
+		this.customData.localRotation = x;
+	}
+	get localRotation() {
+		return this.customData.localRotation;
+	}
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set track(x) {
+		this.customData.track = x;
+	}
+	get track() {
+		return this.customData.track;
 	}
 
 	get interactable() {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state: boolean) {
+	set interactable(state) {
 		this.customData.uninteractable = !state;
+	}
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(x) {
+		this.pos[0] = x;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(x) {
+		this.pos[1] = x;
 	}
 	/**
 	 * Return the wall as an object.
@@ -502,39 +838,87 @@ export class Arc {
 	tailMultiplier = 1;
 	anchorMode = 1;
 	customData: SliderCustomProps = {};
-	rotation = this.customData.worldRotation;
-	localRotation = this.customData.localRotation;
-	NJS = this.customData.noteJumpMovementSpeed;
-	offset = this.customData.noteJumpStartBeatOffset;
-	color = this.customData.color;
-	animation = this.customData.animation;
+	get offset() {
+		return this.customData.noteJumpStartBeatOffset;
+	}
+	set offset(x) {
+		this.customData.noteJumpStartBeatOffset = x;
+	}
+
+	set NJS(x) {
+		this.customData.noteJumpMovementSpeed = x;
+	}
+	get NJS() {
+		return this.customData.noteJumpMovementSpeed;
+	}
+
+	set animation(x) {
+		this.customData.animation = x;
+	}
+	get animation() {
+		return this.customData.animation;
+	}
+
+	set rotation(x) {
+		this.customData.worldRotation = x;
+	}
+	get rotation() {
+		return this.customData.worldRotation;
+	}
+
+	set localRotation(x) {
+		this.customData.localRotation = x;
+	}
+	get localRotation() {
+		return this.customData.localRotation;
+	}
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set disableNoteGravity(x) {
+		this.customData.disableNoteGravity = x;
+	}
+	get disableNoteGravity() {
+		return this.customData.disableNoteGravity;
+	}
+
+	set track(x) {
+		this.customData.track = x;
+	}
+	get track() {
+		return this.customData.track;
+	}
 
 	get x() {
 		return this.pos[0];
 	}
-	set x(val) {
-		this.pos[0] = val;
+	set x(x) {
+		this.pos[0] = x;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val) {
-		this.pos[1] = val;
+	set y(x) {
+		this.pos[1] = x;
 	}
 
 	get tx() {
 		return this.tailPos[0];
 	}
-	set tx(val) {
-		this.tailPos[0] = val;
+	set tx(x) {
+		this.tailPos[0] = x;
 	}
 
 	get ty() {
 		return this.tailPos[1];
 	}
-	set ty(val) {
-		this.tailPos[1] = val;
+	set ty(x) {
+		this.tailPos[1] = x;
 	}
 
 	get interactable() {
@@ -570,39 +954,87 @@ export class Chain {
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
 	public squishFactor = 1;
 	customData: SliderCustomProps = {};
-	rotation = this.customData.worldRotation;
-	localRotation = this.customData.localRotation;
-	NJS = this.customData.noteJumpMovementSpeed;
-	offset = this.customData.noteJumpStartBeatOffset;
-	color = this.customData.color;
-	animation = this.customData.animation;
+	get offset() {
+		return this.customData.noteJumpStartBeatOffset;
+	}
+	set offset(x) {
+		this.customData.noteJumpStartBeatOffset = x;
+	}
+
+	set NJS(x) {
+		this.customData.noteJumpMovementSpeed = x;
+	}
+	get NJS() {
+		return this.customData.noteJumpMovementSpeed;
+	}
+
+	set animation(x) {
+		this.customData.animation = x;
+	}
+	get animation() {
+		return this.customData.animation;
+	}
+
+	set rotation(x) {
+		this.customData.worldRotation = x;
+	}
+	get rotation() {
+		return this.customData.worldRotation;
+	}
+
+	set localRotation(x) {
+		this.customData.localRotation = x;
+	}
+	get localRotation() {
+		return this.customData.localRotation;
+	}
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set disableNoteGravity(x) {
+		this.customData.disableNoteGravity = x;
+	}
+	get disableNoteGravity() {
+		return this.customData.disableNoteGravity;
+	}
+
+	set track(x) {
+		this.customData.track = x;
+	}
+	get track() {
+		return this.customData.track;
+	}
 
 	get x() {
 		return this.pos[0];
 	}
-	set x(val) {
-		this.pos[0] = val;
+	set x(x) {
+		this.pos[0] = x;
 	}
 
 	get y() {
 		return this.pos[1];
 	}
-	set y(val) {
-		this.pos[1] = val;
+	set y(x) {
+		this.pos[1] = x;
 	}
 
 	get tx() {
 		return this.tailPos[0];
 	}
-	set tx(val) {
-		this.tailPos[0] = val;
+	set tx(x) {
+		this.tailPos[0] = x;
 	}
 
 	get ty() {
 		return this.tailPos[1];
 	}
-	set ty(val) {
-		this.tailPos[1] = val;
+	set ty(x) {
+		this.tailPos[1] = x;
 	}
 
 	get interactable() {
@@ -611,7 +1043,6 @@ export class Chain {
 	set interactable(state) {
 		this.customData.uninteractable = !state;
 	}
-
 	return(): BurstSliderType {
 		jsonPrune(this);
 		return {
