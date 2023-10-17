@@ -91,6 +91,7 @@ type NoteCustomProps = {
 	animation?: ObjectAnimProps;
 };
 type SliderCustomProps = { coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; disableNoteGravity?: boolean; tailCoordinates?: Vec2; color?: Vec3 | Vec4; animation?: ObjectAnimProps };
+type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
 
 type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
@@ -101,7 +102,7 @@ type ObstacleType = {
 	d: number;
 	w: number;
 	h: number;
-	customData?: { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
+	customData?: WallCustomProps;
 };
 type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
 type ArcType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
@@ -316,6 +317,20 @@ export class Note {
 	offset = this.customData.noteJumpStartBeatOffest;
 	NJS = this.customData.noteJumpMovementSpeed;
 	animation = this.customData.animation;
+	rotation = this.customData.worldRotation;
+	localRotation = this.customData.localRotation;
+	disableNoteGravity = this.customData.disableNoteGravity;
+	disableNoteLook = this.customData.disableNoteLook;
+	color = this.customData.color;
+	spawnEffect = this.customData.spawnEffect;
+	track = this.customData.track;
+
+	get interactable() {
+		return !this.customData.uninteractable;
+	}
+	set interactable(state: boolean) {
+		this.customData.uninteractable = !state;
+	}
 
 	get x() {
 		return this.pos[0];
@@ -348,9 +363,12 @@ export class Note {
 	}
 }
 
-//type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
-
 export class Bomb {
+	/**
+	 * Create a new bomb.
+	 * @param time The time of the bomb.
+	 * @param pos The [x, y] of the bomb.
+	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
 	public customData: NoteCustomProps = {};
 	offset = this.customData.noteJumpStartBeatOffest;
@@ -370,13 +388,83 @@ export class Bomb {
 	set y(val: number) {
 		this.pos[1] = val;
 	}
-
+	/**
+	 * Return the bomb as an object.
+	 */
 	return(): BombType {
 		jsonPrune(this);
 		return {
 			b: this.time,
 			x: this.x,
 			y: this.y,
+			customData: this.customData
+		};
+	}
+}
+
+/* type ObstacleType = {
+	b: number;
+	x: number;
+	y: number;
+	d: number;
+	w: number;
+	h: number;
+	customData?: { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4 };
+};
+
+*/
+
+export class Wall {
+	/**
+	 * Create a new wall.
+	 * @param time The time of the wall.
+	 * @param pos The [x, y] of the wall.
+	 * @param duration The duration of the wall.
+	 * @param width The width of the wall.
+	 * @param height The height of the wall.
+	 */
+	constructor(public time = 0, public pos = [0, 0], public duration = 1, public width = 1, public height = 1) {}
+	public customData: WallCustomProps = {};
+	scale = this.customData.size;
+	animation = this.customData.animation;
+	rotation = this.customData.worldRotation;
+	localRotation = this.customData.localRotation;
+	NJS = this.customData.noteJumpMovementSpeed;
+	offset = this.customData.noteJumpStartBeatOffset;
+	color = this.customData.color;
+
+	get x() {
+		return this.pos[0];
+	}
+	set x(val: number) {
+		this.pos[0] = val;
+	}
+
+	get y() {
+		return this.pos[1];
+	}
+	set y(val: number) {
+		this.pos[1] = val;
+	}
+
+	get interactable() {
+		return !this.customData.uninteractable;
+	}
+	set interactable(state: boolean) {
+		this.customData.uninteractable = !state;
+	}
+	/**
+	 * Return the wall as an object.
+	 */
+	return() {
+		jsonPrune(this);
+		return {
+			b: this.time,
+			x: this.x,
+			y: this.y,
+			d: this.duration,
+			w: this.width,
+			h: this.height,
 			customData: this.customData
 		};
 	}
