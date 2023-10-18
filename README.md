@@ -1,4 +1,4 @@
-[!image](images/banner1.png)
+![image](images/banner1.png)
 
 # Lite-Mapper
 
