@@ -1,4 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
+export const LiteMapperVersion = "0.0.1";
+
 type DiffTypes<T extends string> = `Easy${T}` | `Normal${T}` | `Hard${T}` | `Expert${T}` | `ExpertPlus${T}`;
 export type DiffNames = DiffTypes<"Standard"> | DiffTypes<"Lightshow"> | DiffTypes<"Lawless">;
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
@@ -143,6 +145,95 @@ type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: n
 type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
 type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
 type CustomEventType = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
+
+type KeywordsBaseWater = (
+	| "FOG"
+	| "HEIGHT_FOG"
+	| "INVERT_RIMLIGHT"
+	| "MASK_RED_IS_ALPHA"
+	| "NOISE_DITHERING"
+	| "NORMAL_MAP"
+	| "REFLECTION_PROBE"
+	| "REFLECTION_PROBE_BOX_PROJECTION"
+	| "_DECALBLEND_ALPHABLEND"
+	| "_DISSOLVEAXIS_LOCALX"
+	| "_EMISSIONCOLORTYPE_FLAT"
+	| "_EMISSIONTEXTURE_NONE"
+	| "_RIMLIGHT_NONE"
+	| "_ROTATE_UV_NONE"
+	| "_VERTEXMODE_NONE"
+	| "_WHITEBOOSTTYPE_NONE"
+	| "_ZWRITE_ON"
+)[];
+
+type KeywordsBillieWater = (
+	| "FOG"
+	| "HEIGHT_FOG"
+	| "INVERT_RIMLIGHT"
+	| "MASK_RED_IS_ALPHA"
+	| "NOISE_DITHERING"
+	| "NORMAL_MAP"
+	| "REFLECTION_PROBE"
+	| "REFLECTION_PROBE_BOX_PROJECTION"
+	| "_DECALBLEND_ALPHABLEND"
+	| "_DISSOLVEAXIS_LOCALX"
+	| "_EMISSIONCOLORTYPE_FLAT"
+	| "_EMISSIONTEXTURE_NONE"
+	| "_RIMLIGHT_NONE"
+	| "_ROTATE_UV_NONE"
+	| "_VERTEXMODE_NONE"
+	| "_WHITEBOOSTTYPE_NONE"
+	| "_ZWRITE_ON"
+)[];
+
+type KeywordsBTSPillar = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE")[];
+
+type KeywordsInterscopeCar = (
+	| "ENABLE_DIFFUSE"
+	| "ENABLE_DIRT"
+	| "ENABLE_DIRT_DETAIL"
+	| "ENABLE_FOG"
+	| "ENABLE_GROUND_FADE"
+	| "ENABLE_SPECULAR"
+	| "ENABLE_VERTEX_COLOR"
+	| "FOG"
+	| "INVERT_RIM_DIM"
+	| "REFLECTION_PROBE"
+	| "REFLECTION_PROBE_BOX_PROJECTION"
+	| "REFLECTION_PROBE_BOX_PROJECTION_OFFSET"
+	| "SPECULAR_ANTIFLICKER"
+	| "_EMISSION"
+	| "_EMISSIONCOLORTYPE_WHITEBOOST"
+	| "_EMISSIONTEXTURE_NONE"
+	| "_ENABLE_FOG_TINT"
+	| "_RIMLIGHT_NONE"
+	| "_VERTEXMODE_METALSMOOTHNESS"
+	| "_WHITEBOOSTTYPE_NONE"
+)[];
+
+type KeywordsInterscopeConcrete = (
+	| "DIRT"
+	| "ENABLE_DIFFUSE"
+	| "ENABLE_DIRT"
+	| "ENABLE_DIRT_DETAIL"
+	| "ENABLE_FOG"
+	| "ENABLE_GROUND_FADE"
+	| "ENABLE_SPECULAR"
+	| "ENABLE_VERTEX_COLOR"
+	| "FOG"
+	| "LIGHTMAP"
+	| "NOISE_DITHERING"
+	| "REFLECTION_PROBE"
+	| "REFLECTION_PROBE_BOX_PROJECTION"
+	| "REFLECTION_PROBE_BOX_PROJECTION_OFFSET"
+	| "_EMISSION"
+	| "_ENABLE_FOG_TINT"
+	| "_RIMLIGHT_NONE"
+)[];
+
+type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE")[];
+
+type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
 
 export type RawMapJSON = {
 	version: string;
@@ -1173,5 +1264,129 @@ export class CustomEvent {
 				};
 			}
 		};
+	}
+}
+
+export class Material {
+	public color?: Vec3 | Vec4;
+	public track?: string;
+	public shaderKeywords?: string[];
+	public shader: MaterialShader = "Standard";
+	BTSPillar(shaderKeywords?: KeywordsBTSPillar, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "BTSPillar";
+		return this as GeometryMaterialJSON;
+	}
+	OpaqueLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "OpaqueLight";
+		return this as GeometryMaterialJSON;
+	}
+	TransparentLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "TransparentLight";
+		return this as GeometryMaterialJSON;
+	}
+	BaseWater(shaderKeywords?: KeywordsBaseWater, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "BaseWater";
+		return this as GeometryMaterialJSON;
+	}
+	BillieWater(shaderKeywords?: KeywordsBillieWater, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "BillieWater";
+		return this as GeometryMaterialJSON;
+	}
+	Standard(shaderKeywords?: KeywordsStandard, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "Standard";
+		return this as GeometryMaterialJSON;
+	}
+	InterscopeConcrete(shaderKeywords?: KeywordsInterscopeConcrete, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "InterscopeConcrete";
+		return this as GeometryMaterialJSON;
+	}
+	InterscopeCar(shaderKeywords?: KeywordsInterscopeCar, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "InterscopeCar";
+		return this as GeometryMaterialJSON;
+	}
+	WaterfallMirror(shaderKeywords?: KeywordsWaterfallMirror, color?: Vec3 | Vec4, track?: string) {
+		if (color) {
+			this.color = color;
+		}
+		if (track) {
+			this.track = track;
+		}
+		if (shaderKeywords) {
+			this.shaderKeywords = shaderKeywords;
+		}
+		this.shader = "WaterfallMirror";
+		return this as GeometryMaterialJSON;
 	}
 }
