@@ -1,7 +1,6 @@
-![image](images/banner1.png)
-
 # Lite-Mapper
 
+![image](images/banner1.png)
 Lite-Mapper is a lightweight, single script library to aid in the creation of V3 Beat Saber maps. Lite-Mapper provides basic support for the creation of various objects for Beat Saber maps. This includes modded elements for [Chroma and Noodle Extensions](https://github.com/Aeroluna/Heck).
 
 Lite-Mapper provides only the bare-minimum elements to create a map, and functions well on its own. However, it is highly recommended that you use [Lite-Mapper-Extensions](https://github.com/Aureliona1/Lite-Mapper-Extensions) alongside Lite-Mapper to get the best possible experience.
@@ -17,3 +16,7 @@ To run Lite-Mapper, simply open the `run.bat` file and let it do its thing. `run
 
 **Important**
 For mac and ChromeBook users, `run.bat` probably won't work. In this case, open a new terminal (for VSCode, go `Terminal > New Terminal`), then type `deno run --allow-all script.ts`.
+
+## Documentation
+
+To read about what kind of things to put in your script.ts, head over to the [docs](docs.md) page.
