@@ -11,7 +11,7 @@ export type LookupMethod = "Contains" | "Regex" | "Exact" | "StartsWith" | "Ends
 export type KFVec3 = [number, number, number, number, Easing?, "splineCatmullRom"?];
 export type KFSingle = [number, number, Easing?];
 export type KFVec4 = [number, number, number, number, number, Easing?, "splineCatmullRom"?];
-type GeometryObjectTypes = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "Plane" | "Quad" | "Triangle";
+export type GeometryObjectTypes = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "Plane" | "Quad" | "Triangle";
 export type MaterialShader = "Standard" | "OpaqueLight" | "TransparentLight" | "BaseWater" | "BillieWater" | "BTSPillar" | "InterscopeConcrete" | "InterscopeCar" | "Obstacle" | "WaterfallMirror";
 export type GeometryMaterialJSON = { shader: MaterialShader; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
 export type GeometryObjectJSON = { type: GeometryObjectTypes; material: GeometryMaterialJSON | string };
@@ -139,14 +139,14 @@ type SliderCustomProps = {
 };
 type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 
-type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
-type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
-type ObstacleType = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
-type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
-type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
-type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
-type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
-type CustomEventType = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
+export type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
+export type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
+export type ObstacleType = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+export type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
+export type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
+export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+export type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+export type CustomEventType = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
 
 type KeywordsBaseWater = (
 	| "FOG"

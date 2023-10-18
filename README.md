@@ -3,8 +3,6 @@
 ![image](images/banner1.png)
 Lite-Mapper is a lightweight, single script library to aid in the creation of V3 Beat Saber maps. Lite-Mapper provides basic support for the creation of various objects for Beat Saber maps. This includes modded elements for [Chroma and Noodle Extensions](https://github.com/Aeroluna/Heck).
 
-Lite-Mapper provides only the bare-minimum elements to create a map, and functions well on its own. However, it is highly recommended that you use [Lite-Mapper-Extensions](https://github.com/Aureliona1/Lite-Mapper-Extensions) alongside Lite-Mapper to get the best possible experience.
-
 ## How to use it
 
 Lite-Mapper runs on [Deno](https://deno.com/), so you will need to download it to run Lite-Mapper. You will also need the Deno extension for VSCode to properly utilise the features of Deno.
