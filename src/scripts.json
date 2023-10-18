@@ -1,0 +1,17 @@
+{
+    "allow": [
+        "all"
+    ],
+    "scripts": {
+        "lm": {
+            "cmd": "deno run --no-check script.ts",
+            "desc": "Run Lite-Mapper"
+        }
+    },
+    "watcher": {
+        "exts": [
+            "ts"
+        ],
+        "legacy": false
+    }
+}
