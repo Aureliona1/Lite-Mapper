@@ -1,6 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-export const LiteMapperVersion = "0.0.1";
-
 type DiffTypes<T extends string> = `Easy${T}` | `Normal${T}` | `Hard${T}` | `Expert${T}` | `ExpertPlus${T}`;
 export type DiffNames = DiffTypes<"Standard"> | DiffTypes<"Lightshow"> | DiffTypes<"Lawless">;
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
@@ -73,7 +71,7 @@ export type ComponentAnimProps = {
 	TubeBloomPrePassLight?: { colorAlphaMultiplier?: number; bloomFogIntensityMultiplier?: number };
 };
 
-export enum LightEventTypes {
+enum LightEventTypesEnum {
 	"BackLasers" = 0,
 	"RingLights" = 1,
 	"LeftLasers" = 2,
@@ -86,7 +84,9 @@ export enum LightEventTypes {
 	"RightLaserSpeed" = 13
 }
 
-export enum LightEventValues {
+export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed";
+
+enum LightEventValuesEnum {
 	"Off" = 0,
 	"OnBlue" = 1,
 	"FlashBlue" = 2,
@@ -102,6 +102,8 @@ export enum LightEventValues {
 	"FadeWhite" = 11,
 	"TransitionWhite" = 12
 }
+
+export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "TransitionBlue" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
 
 type NoteCustomProps = {
 	coordinates?: Vec2;
@@ -1042,6 +1044,16 @@ export class Arc {
 }
 
 export class Chain {
+	/**
+	 * Create a new chain (burstSlider) object.
+	 * @param time The time of the chain.
+	 * @param pos The [x, y] of the chain.
+	 * @param type The type of the chain (left/right).
+	 * @param direction The cut direction of the head of the chain.
+	 * @param tailBeat The beat at the end of the chain.
+	 * @param tailPos The [x, y] of the end of the chain.
+	 * @param segments The number of segments in the chain.
+	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
 	public squishFactor = 1;
 	customData: SliderCustomProps = {};
@@ -1134,6 +1146,9 @@ export class Chain {
 	set interactable(state) {
 		this.customData.uninteractable = !state;
 	}
+	/**
+	 * Return the chain as an object.
+	 */
 	return(): BurstSliderType {
 		jsonPrune(this);
 		return {
@@ -1153,20 +1168,46 @@ export class Chain {
 }
 
 export class LightEvent {
+	/**
+	 * Create a new lighting event.
+	 * @param time The time of the event.
+	 */
 	constructor(public time = 0) {}
-	public type: LightEventTypes = 0;
-	value: LightEventValues = 1;
+	public type: LightEventTypes = "BackLasers";
+	value: LightEventValues = "OnRed";
 	floatValue = 1;
 	customData: LightEventCustomData = {};
-	lightID = this.customData.lightID;
-	color = this.customData.color;
-	lerpType = this.customData.lerpType;
+
+	set lightID(x) {
+		this.customData.lightID = x;
+	}
+	get lightID() {
+		return this.customData.lightID;
+	}
+
+	set color(x) {
+		this.customData.color = x;
+	}
+	get color() {
+		return this.customData.color;
+	}
+
+	set lerpType(x) {
+		this.customData.lerpType = x;
+	}
+	get lerpType() {
+		return this.customData.lerpType;
+	}
+
+	/**
+	 * Return the light event as an object.
+	 */
 	return(): LightEventType {
 		jsonPrune(this);
 		return {
 			b: this.time,
-			et: this.type,
-			i: this.value,
+			et: LightEventTypesEnum[this.type],
+			i: LightEventValuesEnum[this.value],
 			f: this.floatValue,
 			customData: this.customData
 		};
