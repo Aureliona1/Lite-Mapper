@@ -265,6 +265,8 @@ export type RawMapJSON = {
 	};
 };
 
+export let thisDiff: BeatMap;
+
 export class BeatMap {
 	private map: RawMapJSON = {
 		version: "3.2.0",
@@ -287,6 +289,7 @@ export class BeatMap {
 	};
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard") {
 		this.map = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+		thisDiff = this;
 	}
 
 	get version() {
@@ -547,6 +550,12 @@ export class Environment {
 		jsonPrune(this);
 		return this;
 	}
+	/**
+	 * Push the environment to the current diff.
+	 */
+	push() {
+		thisDiff.environments?.push(this.return());
+	}
 }
 
 export class Geometry {
@@ -576,6 +585,12 @@ export class Geometry {
 	return() {
 		jsonPrune(this);
 		return this;
+	}
+	/**
+	 * Push the geometry to the current diff.
+	 */
+	push() {
+		thisDiff.environments?.push(this.return());
 	}
 }
 
@@ -697,6 +712,12 @@ export class Note {
 			customData: this.customData
 		};
 	}
+	/**
+	 * Push the note to the current diff.
+	 */
+	push() {
+		thisDiff.notes.push(this.return());
+	}
 }
 
 export class Bomb {
@@ -809,6 +830,12 @@ export class Bomb {
 			customData: this.customData
 		};
 	}
+	/**
+	 * Push the bomb to the current diff.
+	 */
+	push() {
+		thisDiff.bombs.push(this.return());
+	}
 }
 
 export class Wall {
@@ -912,6 +939,12 @@ export class Wall {
 			h: this.height,
 			customData: this.customData
 		};
+	}
+	/**
+	 * Push the wall to the current diff.
+	 */
+	push() {
+		thisDiff.walls.push(this.return());
 	}
 }
 
@@ -1041,6 +1074,12 @@ export class Arc {
 			customData: this.customData
 		};
 	}
+	/**
+	 * Push the arc to the current diff.
+	 */
+	push() {
+		thisDiff.arcs.push(this.return());
+	}
 }
 
 export class Chain {
@@ -1165,6 +1204,12 @@ export class Chain {
 			customData: this.customData
 		};
 	}
+	/**
+	 * Push the chain to the current diff.
+	 */
+	push() {
+		thisDiff.chains.push(this.return());
+	}
 }
 
 export class LightEvent {
@@ -1212,11 +1257,17 @@ export class LightEvent {
 			customData: this.customData
 		};
 	}
+	/**
+	 * Push the event to the current diff.
+	 */
+	push() {
+		thisDiff.events.push(this.return());
+	}
 }
 
 export class CustomEvent {
 	constructor(public time = 0) {}
-	AnimateTrack(track: string | string[], duration?: number): { time: number; data: TrackAnimProps; return: () => CustomEventType } {
+	AnimateTrack(track: string | string[], duration?: number): { time: number; data: TrackAnimProps; return: () => CustomEventType; push: () => void } {
 		const animation: TrackAnimProps = {
 			track: track
 		};
@@ -1232,10 +1283,13 @@ export class CustomEvent {
 					t: "AnimateTrack",
 					d: this.data
 				};
+			},
+			push() {
+				thisDiff.customEvents?.push(this.return());
 			}
 		};
 	}
-	AssignPathAnimation(track: string | string[]): { time: number; data: PathAnimProps; return: () => CustomEventType } {
+	AssignPathAnimation(track: string | string[]): { time: number; data: PathAnimProps; return: () => CustomEventType; push: () => void } {
 		const data: PathAnimProps = {
 			track: track
 		};
@@ -1248,10 +1302,13 @@ export class CustomEvent {
 					t: "AssignPathAnimation",
 					d: data
 				};
+			},
+			push() {
+				thisDiff.customEvents?.push(this.return());
 			}
 		};
 	}
-	AssignTrackParent(childTracks: string[], parentTrack: string, worldPositionStays?: boolean): { time: number; data: TrackParentProps; return: () => CustomEventType } {
+	AssignTrackParent(childTracks: string[], parentTrack: string, worldPositionStays?: boolean): { time: number; data: TrackParentProps; return: () => CustomEventType; push: () => void } {
 		const data: TrackParentProps = {
 			childrenTracks: childTracks,
 			parentTrack: parentTrack
@@ -1268,10 +1325,13 @@ export class CustomEvent {
 					t: "AssignTrackParent",
 					d: data
 				};
+			},
+			push() {
+				thisDiff.customEvents?.push(this.return());
 			}
 		};
 	}
-	AssignPlayerToTrack(track: string, target?: PlayerObjectControllers): { time: number; data: PlayerToTrackProps; return: () => CustomEventType } {
+	AssignPlayerToTrack(track: string, target?: PlayerObjectControllers): { time: number; data: PlayerToTrackProps; return: () => CustomEventType; push: () => void } {
 		const data: PlayerToTrackProps = {
 			track: track
 		};
@@ -1287,10 +1347,13 @@ export class CustomEvent {
 					t: "AssignPlayerToTrack",
 					d: data
 				};
+			},
+			push() {
+				thisDiff.customEvents?.push(this.return());
 			}
 		};
 	}
-	AnimateComponent(track: string): { time: number; data: ComponentAnimProps; return: () => CustomEventType } {
+	AnimateComponent(track: string): { time: number; data: ComponentAnimProps; return: () => CustomEventType; push: () => void } {
 		const data: ComponentAnimProps = {
 			track: track
 		};
@@ -1303,6 +1366,9 @@ export class CustomEvent {
 					t: "AnimateComponent",
 					d: data
 				};
+			},
+			push() {
+				thisDiff.customEvents?.push(this.return());
 			}
 		};
 	}
