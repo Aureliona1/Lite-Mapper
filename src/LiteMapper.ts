@@ -256,7 +256,7 @@ export type RawMapJSON = {
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData?: {
 		customEvents?: CustomEventType[];
-		environment?: (Environment | Geometry)[];
+		environment?: Environment[];
 		materials?: Record<any, GeometryMaterialJSON>;
 		fakeColorNotes?: NoteType[];
 		fakeBombNotes?: BombType[];
@@ -265,10 +265,38 @@ export type RawMapJSON = {
 	};
 };
 
-export let thisDiff: BeatMap;
+type classMap = {
+	version: string;
+	bpmEvents: { b: number; m: number }[];
+	rotationEvents: { b: number; e: number; r: number }[];
+	colorNotes: Note[];
+	bombNotes: Bomb[];
+	obstacles: Wall[];
+	sliders: Arc[];
+	burstSliders: Chain[];
+	waypoints: any[];
+	basicBeatmapEvents: LightEvent[];
+	colorBoostBeatmapEvents: { b: number; o: boolean }[];
+	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
+	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
+	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
+	basicEventTypesWithKeywords: Record<any, any>;
+	useNormalEventsAsCompatibleEvents: boolean;
+	customData: {
+		customEvents: CustomEventType[];
+		environment: Environment[];
+		materials: Record<any, GeometryMaterialJSON>;
+		fakeColorNotes: Note[];
+		fakeBombNotes: Bomb[];
+		fakeObstacles: Wall[];
+		fakeBurstSliders: Chain[];
+	};
+};
+
+export let currentDiff: BeatMap;
 
 export class BeatMap {
-	private map: RawMapJSON = {
+	private rawMap: RawMapJSON = {
 		version: "3.2.0",
 		bpmEvents: [],
 		rotationEvents: [],
@@ -287,13 +315,94 @@ export class BeatMap {
 		useNormalEventsAsCompatibleEvents: false,
 		customData: {}
 	};
+	map: classMap = {
+		version: "3.2.0",
+		bpmEvents: [],
+		rotationEvents: [],
+		colorNotes: [],
+		bombNotes: [],
+		obstacles: [],
+		sliders: [],
+		burstSliders: [],
+		waypoints: [],
+		basicBeatmapEvents: [],
+		colorBoostBeatmapEvents: [],
+		lightColorEventBoxGroups: [],
+		lightRotationEventBoxGroups: [],
+		lightTranslationEventBoxGroups: [],
+		basicEventTypesWithKeywords: {},
+		useNormalEventsAsCompatibleEvents: false,
+		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [] }
+	};
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard") {
-		this.map = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
-		thisDiff = this;
+		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+		this.rawMap.basicBeatmapEvents.forEach(e => {
+			new LightEvent().JSONToClass(e).push();
+		});
+		this.rawMap.bombNotes.forEach(n => {
+			new Bomb().JSONToClass(n).push();
+		});
+		this.rawMap.burstSliders.forEach(n => {
+			new Chain().JSONToClass(n).push();
+		});
+		this.rawMap.colorNotes.forEach(n => {
+			new Note().JSONToClass(n).push();
+		});
+		this.rawMap.obstacles.forEach(n => {
+			new Wall().JSONToClass(n).push();
+		});
+		this.rawMap.sliders.forEach(n => {
+			new Arc().JSONToClass(n).push();
+		});
+		if (this.rawMap.customData) {
+			if (this.rawMap.customData.customEvents) {
+				this.map.customData.customEvents = this.rawMap.customData.customEvents;
+			}
+			if (this.rawMap.customData.environment) {
+				this.map.customData.environment = this.rawMap.customData.environment;
+			}
+			if (this.rawMap.customData.fakeBombNotes) {
+				this.rawMap.customData.fakeBombNotes.forEach(n => {
+					new Bomb().JSONToClass(n).push(true);
+				});
+			}
+			if (this.rawMap.customData.fakeBurstSliders) {
+				this.rawMap.customData.fakeBurstSliders.forEach(n => {
+					new Chain().JSONToClass(n).push(true);
+				});
+			}
+			if (this.rawMap.customData.fakeColorNotes) {
+				this.rawMap.customData.fakeColorNotes.forEach(n => {
+					new Note().JSONToClass(n).push(true);
+				});
+			}
+			if (this.rawMap.customData.fakeObstacles) {
+				this.rawMap.customData.fakeObstacles.forEach(n => {
+					new Wall().JSONToClass(n).push(true);
+				});
+			}
+		}
+		this.map.bpmEvents = this.rawMap.bpmEvents;
+		this.map.basicEventTypesWithKeywords = this.rawMap.basicEventTypesWithKeywords;
+		this.map.colorBoostBeatmapEvents = this.rawMap.colorBoostBeatmapEvents;
+		this.map.lightColorEventBoxGroups = this.rawMap.lightColorEventBoxGroups;
+		this.map.lightRotationEventBoxGroups = this.rawMap.lightRotationEventBoxGroups;
+		this.map.lightTranslationEventBoxGroups = this.rawMap.lightTranslationEventBoxGroups;
+		this.map.rotationEvents = this.rawMap.rotationEvents;
+		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
+		this.map.waypoints = this.rawMap.waypoints;
+		currentDiff = this;
 	}
 
 	get version() {
 		return this.map.version;
+	}
+
+	set basicEventTypesWithKeywords(x) {
+		this.map.basicEventTypesWithKeywords = x;
+	}
+	get basicEventTypesWithKeywords() {
+		return this.map.basicEventTypesWithKeywords;
 	}
 
 	set bpmEvents(x) {
@@ -388,108 +497,181 @@ export class BeatMap {
 	}
 
 	set customEvents(x) {
-		if (this.customData) {
-			this.customData.customEvents = x;
-		} else {
-			this.customData = { customEvents: x };
-		}
+		this.customData.customEvents = x;
 	}
 	get customEvents() {
 		return this.customData?.customEvents;
 	}
 
 	set environments(x) {
-		if (this.customData) {
-			this.customData.environment = x;
-		} else {
-			this.customData = { environment: x };
-		}
+		this.customData.environment = x;
 	}
 	get environments() {
 		return this.customData?.environment;
 	}
 
 	set materials(x) {
-		if (this.customData) {
-			this.customData.materials = x;
-		} else {
-			this.customData = { materials: x };
-		}
+		this.customData.materials = x;
 	}
 	get materials() {
 		return this.customData?.materials;
 	}
 
 	set fakeNotes(x) {
-		if (this.customData) {
-			this.customData.fakeColorNotes = x;
-		} else {
-			this.customData = { fakeColorNotes: x };
-		}
+		this.customData.fakeColorNotes = x;
 	}
 	get fakeNotes() {
 		return this.customData?.fakeColorNotes;
 	}
 
 	set fakeBombs(x) {
-		if (this.customData) {
-			this.customData.fakeBombNotes = x;
-		} else {
-			this.customData = { fakeBombNotes: x };
-		}
+		this.customData.fakeBombNotes = x;
 	}
 	get fakeBombs() {
 		return this.customData?.fakeBombNotes;
 	}
 
 	set fakeObstacles(x) {
-		if (this.customData) {
-			this.customData.fakeObstacles = x;
-		} else {
-			this.customData = { fakeObstacles: x };
-		}
+		this.customData.fakeObstacles = x;
 	}
 	get fakeObstacles() {
 		return this.customData?.fakeObstacles;
 	}
 
 	set fakeChains(x) {
-		if (this.customData) {
-			this.customData.fakeBurstSliders = x;
-		} else {
-			this.customData = { fakeBurstSliders: x };
-		}
+		this.customData.fakeBurstSliders = x;
 	}
 	get fakeChains() {
 		return this.customData?.fakeBurstSliders;
 	}
 
+	set useNormalEventsAsCompatibleEvents(x) {
+		this.map.useNormalEventsAsCompatibleEvents = x;
+	}
+	get useNormalEventsAsCompatibleEvents() {
+		return this.map.useNormalEventsAsCompatibleEvents;
+	}
+
 	save() {
-		this.notes.forEach(n => {
+		const tempNotes: (NoteType | Note)[] = copy(this.notes),
+			tempBombs: (BombType | Bomb)[] = copy(this.bombs),
+			tempWalls: (ObstacleType | Wall)[] = copy(this.walls),
+			tempArcs: (SliderType | Arc)[] = copy(this.arcs),
+			tempChains: (BurstSliderType | Chain)[] = copy(this.chains),
+			tempEvents: (LightEvent | LightEventType)[] = copy(this.events),
+			tempFakeNotes: (NoteType | Note)[] = copy(this.fakeNotes),
+			tempFakeBombs: (BombType | Bomb)[] = copy(this.fakeBombs),
+			tempFakeWalls: (ObstacleType | Wall)[] = copy(this.fakeObstacles),
+			tempFakeChains: (BurstSliderType | Chain)[] = copy(this.fakeChains);
+		tempNotes.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Note) {
+				n = n.return();
+			}
 		});
-		this.bombs.forEach(n => {
+		tempBombs.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Bomb) {
+				n = n.return();
+			}
 		});
-		this.walls.forEach(n => {
+		tempWalls.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Wall) {
+				n = n.return();
+			}
 		});
-		this.arcs.forEach(n => {
+		tempArcs.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Arc) {
+				n = n.return();
+			}
 		});
-		this.chains.forEach(n => {
+		tempChains.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Chain) {
+				n = n.return();
+			}
 		});
-		this.events.forEach(n => {
+		tempFakeNotes.forEach(n => {
 			jsonPrune(n);
+			if (n instanceof Note) {
+				n = n.return();
+			}
+		});
+		tempFakeBombs.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Bomb) {
+				n = n.return();
+			}
+		});
+		tempFakeWalls.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Wall) {
+				n = n.return();
+			}
+		});
+		tempFakeChains.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Chain) {
+				n = n.return();
+			}
+		});
+		tempEvents.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof LightEvent) {
+				n = n.return();
+			}
 		});
 
-		this.customData ? jsonPrune(this.customData) : delete this.map.customData;
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.map));
+		this.rawMap.basicBeatmapEvents = tempEvents as LightEventType[];
+		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
+		this.rawMap.bombNotes = tempBombs as BombType[];
+		this.rawMap.bpmEvents = this.bpmEvents;
+		this.rawMap.burstSliders = tempChains as BurstSliderType[];
+		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
+		this.rawMap.colorNotes = tempNotes as NoteType[];
+		if (!this.rawMap.customData) {
+			this.rawMap.customData = {};
+		}
+		this.rawMap.customData.customEvents = this.customEvents;
+		this.rawMap.customData.environment = this.environments;
+		this.rawMap.customData.fakeBombNotes = tempFakeBombs as BombType[];
+		this.rawMap.customData.fakeBurstSliders = tempFakeChains as BurstSliderType[];
+		this.rawMap.customData.fakeColorNotes = tempFakeNotes as NoteType[];
+		this.rawMap.customData.fakeObstacles = tempFakeWalls as ObstacleType[];
+		this.rawMap.customData.materials = this.materials;
+		jsonPrune(this.rawMap.customData);
+		this.rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;
+		this.rawMap.lightRotationEventBoxGroups = this.lightRotationEventBoxGroups;
+		this.rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
+		this.rawMap.obstacles = tempWalls as ObstacleType[];
+		this.rawMap.rotationEvents = this.rotationEvents;
+		this.rawMap.sliders = tempArcs as SliderType[];
+		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
+
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap));
 	}
 }
 
 // Functions stolen from ReMapper >:)
+
+export function copy<T>(obj: T): T {
+	if (obj === null || typeof obj !== "object") {
+		return obj;
+	}
+
+	const newObj = Array.isArray(obj) ? [] : {};
+	const keys = Object.getOwnPropertyNames(obj);
+
+	keys.forEach(x => {
+		const value = copy((obj as any)[x]);
+		(newObj as any)[x] = value;
+	});
+
+	Object.setPrototypeOf(newObj, obj as any);
+	return newObj as T;
+}
 
 /**
  * Checks if an object is empty.
@@ -534,8 +716,31 @@ export class Environment {
 	 * @param id The environment id.
 	 * @param lookupMethod The lookup method for your environment.
 	 */
-	constructor(public id: string, public lookupMethod: LookupMethod = "Contains") {}
-	public active?: boolean;
+	constructor() {}
+	environment(id: string, lookup: LookupMethod) {
+		this.id = id;
+		this.lookupMethod = lookup;
+		if (this.geometry) {
+			delete this.geometry;
+		}
+		return this;
+	}
+	geo(type: GeometryObjectTypes, mat: GeometryMaterialJSON | string) {
+		this.geometry = {
+			type: type,
+			material: mat
+		};
+		if (this.id) {
+			delete this.id;
+		}
+		if (this.lookupMethod) {
+			delete this.lookupMethod;
+		}
+		return this;
+	}
+	public id?: string;
+	lookupMethod?: LookupMethod;
+	active?: boolean;
 	duplicate?: number;
 	scale?: Vec3;
 	position?: Vec3;
@@ -543,6 +748,7 @@ export class Environment {
 	rotation?: Vec3;
 	localRotation?: Vec3;
 	track?: string | string[];
+	geometry?: GeometryObjectJSON;
 	/**
 	 * Return your environment object as an object.
 	 */
@@ -554,43 +760,7 @@ export class Environment {
 	 * Push the environment to the current diff.
 	 */
 	push() {
-		thisDiff.environments?.push(this.return());
-	}
-}
-
-export class Geometry {
-	public geometry: GeometryObjectJSON = { type: "Cube", material: { shader: "Standard" } };
-	/**
-	 * Create a new geometry object.
-	 * @param type The geometry primitive to use.
-	 * @param material The material for your geometry.
-	 */
-	constructor(type?: GeometryObjectTypes, material?: GeometryMaterialJSON | string) {
-		if (type) {
-			this.geometry.type = type;
-		}
-		if (material) {
-			this.geometry.material = material;
-		}
-	}
-	public scale?: Vec3;
-	position?: Vec3;
-	localPosition?: Vec3;
-	rotation?: Vec3;
-	localRotation?: Vec3;
-	track?: string | string[];
-	/**
-	 * Return your geometry object as an object.
-	 */
-	return() {
-		jsonPrune(this);
-		return this;
-	}
-	/**
-	 * Push the geometry to the current diff.
-	 */
-	push() {
-		thisDiff.environments?.push(this.return());
+		currentDiff.environments?.push(this.return());
 	}
 }
 
@@ -698,7 +868,7 @@ export class Note {
 	}
 
 	/**
-	 * Return the note as an object.
+	 * Return the raw json of the note.
 	 */
 	return(): NoteType {
 		jsonPrune(this);
@@ -712,11 +882,29 @@ export class Note {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: NoteType) {
+		this.time = x.b;
+		this.x = x.x;
+		this.y = x.y;
+		this.type = x.c;
+		this.direction = x.d;
+		this.angleOffset = x.a;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		jsonPrune(this);
+		return this;
+	}
 	/**
 	 * Push the note to the current diff.
 	 */
-	push() {
-		thisDiff.notes.push(this.return());
+	push(fake?: boolean) {
+		jsonPrune(this);
+		if (fake) {
+			currentDiff.fakeNotes?.push(this);
+		} else {
+			currentDiff.notes.push(this);
+		}
 	}
 }
 
@@ -819,7 +1007,7 @@ export class Bomb {
 		this.pos[1] = x;
 	}
 	/**
-	 * Return the bomb as an object.
+	 * Return the raw Json of the bomb.
 	 */
 	return(): BombType {
 		jsonPrune(this);
@@ -830,11 +1018,25 @@ export class Bomb {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: BombType) {
+		this.time = x.b;
+		this.x = x.x;
+		this.y = x.y;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		return this;
+	}
 	/**
 	 * Push the bomb to the current diff.
 	 */
-	push() {
-		thisDiff.bombs.push(this.return());
+	push(fake?: boolean) {
+		jsonPrune(this);
+		if (fake) {
+			currentDiff.fakeBombs?.push(this);
+		} else {
+			currentDiff.bombs.push(this);
+		}
 	}
 }
 
@@ -926,7 +1128,7 @@ export class Wall {
 		this.pos[1] = x;
 	}
 	/**
-	 * Return the wall as an object.
+	 * Return the raw Json of the wall.
 	 */
 	return(): ObstacleType {
 		jsonPrune(this);
@@ -940,11 +1142,28 @@ export class Wall {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: ObstacleType) {
+		this.time = x.b;
+		this.x = x.x;
+		this.y = x.y;
+		this.duration = x.d;
+		this.width = x.w;
+		this.height = x.h;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		return this;
+	}
 	/**
 	 * Push the wall to the current diff.
 	 */
-	push() {
-		thisDiff.walls.push(this.return());
+	push(fake?: boolean) {
+		jsonPrune(this);
+		if (fake) {
+			currentDiff.fakeObstacles?.push(this);
+		} else {
+			currentDiff.walls.push(this);
+		}
 	}
 }
 
@@ -1054,7 +1273,7 @@ export class Arc {
 		this.customData.uninteractable = !state;
 	}
 	/**
-	 * Return the arc as an object.
+	 * Return the raw Json of the arc.
 	 */
 	return(): SliderType {
 		jsonPrune(this);
@@ -1074,11 +1293,30 @@ export class Arc {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: SliderType) {
+		this.time = x.b;
+		this.type = x.c;
+		this.x = x.x;
+		this.y = x.y;
+		this.headDirection = x.d;
+		this.headMultiplier = x.mu;
+		this.tailBeat = x.tb;
+		this.tx = x.tx;
+		this.ty = x.ty;
+		this.tailDirection = x.tc;
+		this.tailMultiplier = x.tmu;
+		this.anchorMode = x.m;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		return this;
+	}
 	/**
 	 * Push the arc to the current diff.
 	 */
 	push() {
-		thisDiff.arcs.push(this.return());
+		jsonPrune(this);
+		currentDiff.arcs.push(this);
 	}
 }
 
@@ -1186,7 +1424,7 @@ export class Chain {
 		this.customData.uninteractable = !state;
 	}
 	/**
-	 * Return the chain as an object.
+	 * Return the raw Json of the chain.
 	 */
 	return(): BurstSliderType {
 		jsonPrune(this);
@@ -1204,11 +1442,32 @@ export class Chain {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: BurstSliderType) {
+		this.time = x.b;
+		this.x = x.x;
+		this.y = x.y;
+		this.type = x.c;
+		this.direction = x.d;
+		this.tailBeat = x.tb;
+		this.tx = x.tx;
+		this.ty = x.ty;
+		this.segments = x.sc;
+		this.squishFactor = x.s;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		return this;
+	}
 	/**
 	 * Push the chain to the current diff.
 	 */
-	push() {
-		thisDiff.chains.push(this.return());
+	push(fake?: boolean) {
+		jsonPrune(this);
+		if (fake) {
+			currentDiff.fakeChains?.push(this);
+		} else {
+			currentDiff.chains.push(this);
+		}
 	}
 }
 
@@ -1245,7 +1504,7 @@ export class LightEvent {
 	}
 
 	/**
-	 * Return the light event as an object.
+	 * Return the raw Json of the event.
 	 */
 	return(): LightEventType {
 		jsonPrune(this);
@@ -1257,11 +1516,21 @@ export class LightEvent {
 			customData: this.customData
 		};
 	}
+	JSONToClass(x: LightEventType) {
+		this.time = x.b;
+		this.type = LightEventTypesEnum[x.et] as LightEventTypes;
+		this.value = LightEventValuesEnum[x.i] as LightEventValues;
+		if (x.customData) {
+			this.customData = x.customData;
+		}
+		return this;
+	}
 	/**
 	 * Push the event to the current diff.
 	 */
 	push() {
-		thisDiff.events.push(this.return());
+		jsonPrune(this);
+		currentDiff.events.push(this);
 	}
 }
 
@@ -1285,7 +1554,7 @@ export class CustomEvent {
 				};
 			},
 			push() {
-				thisDiff.customEvents?.push(this.return());
+				currentDiff.customEvents?.push(this.return());
 			}
 		};
 	}
@@ -1304,7 +1573,7 @@ export class CustomEvent {
 				};
 			},
 			push() {
-				thisDiff.customEvents?.push(this.return());
+				currentDiff.customEvents?.push(this.return());
 			}
 		};
 	}
@@ -1327,7 +1596,7 @@ export class CustomEvent {
 				};
 			},
 			push() {
-				thisDiff.customEvents?.push(this.return());
+				currentDiff.customEvents?.push(this.return());
 			}
 		};
 	}
@@ -1349,7 +1618,7 @@ export class CustomEvent {
 				};
 			},
 			push() {
-				thisDiff.customEvents?.push(this.return());
+				currentDiff.customEvents?.push(this.return());
 			}
 		};
 	}
@@ -1368,7 +1637,7 @@ export class CustomEvent {
 				};
 			},
 			push() {
-				thisDiff.customEvents?.push(this.return());
+				currentDiff.customEvents?.push(this.return());
 			}
 		};
 	}
