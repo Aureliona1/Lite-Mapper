@@ -15,7 +15,7 @@ export type GeometryObjectTypes = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "
 export type MaterialShader = "Standard" | "OpaqueLight" | "TransparentLight" | "BaseWater" | "BillieWater" | "BTSPillar" | "InterscopeConcrete" | "InterscopeCar" | "Obstacle" | "WaterfallMirror";
 export type GeometryMaterialJSON = { shader: MaterialShader; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
 export type GeometryObjectJSON = { type: GeometryObjectTypes; material: GeometryMaterialJSON | string };
-type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
+export type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
 export type ObjectAnimProps = {
 	offsetPosition?: Vec3 | KFVec3[];
 	offsetWorldRotation?: Vec3 | KFVec3[];
