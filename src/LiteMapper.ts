@@ -1,6 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
-type DiffTypes<T extends string> = `Easy${T}` | `Normal${T}` | `Hard${T}` | `Expert${T}` | `ExpertPlus${T}`;
-export type DiffNames = DiffTypes<"Standard"> | DiffTypes<"Lightshow"> | DiffTypes<"Lawless">;
+export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`;
+type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
+type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
@@ -237,6 +238,116 @@ type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_H
 
 type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
 
+export type EnvironmentNames =
+	| "BTSEnvironment"
+	| "BigMirrorEnvironment"
+	| "BillieEnvironment"
+	| "CrabRaveEnvironment"
+	| "DefaultEnvironment"
+	| "DragonsEnvironment"
+	| "FitBeatEnvironment"
+	| "GagaEnvironment"
+	| "GreenDayEnvironment"
+	| "GreenDayGrenadeEnvironment"
+	| "InterscopeEnvironment"
+	| "KDAEnvironment"
+	| "KaleidoscopeEnvironment"
+	| "LinkinParkEnvironment"
+	| "MonstercatEnvironment"
+	| "NiceEnvironment"
+	| "OriginsEnvironment"
+	| "PanicEnvironment"
+	| "RocketEnvironment"
+	| "SkrillexEnvironment"
+	| "HalloweenEnvironment"
+	| "TimbalandEnvironment"
+	| "TriangleEnvironment"
+	| "WeaveEnvironment"
+	| "PyroEnvironment"
+	| "TheSecondEnvironment"
+	| "EDMEnvironment";
+
+type infoJSON = {
+	_version: "2.1.0";
+	_songName: string;
+	_songSubName: string;
+	_songAuthorName: string;
+	_levelAuthorName: string;
+	_beatsPerMinute: number;
+	_shuffle: number;
+	_shufflePeriod: number;
+	_previewStartTime: number;
+	_previewDuration: number;
+	_songFilename: string;
+	_coverImageFilename: string;
+	_environmentName: EnvironmentNames;
+	_allDirectionsEnvironmentName: string;
+	_songTimeOffset: number;
+	_environmentNames: [];
+	_colorSchemes: {
+		useOverride: boolean;
+		colorScheme: {
+			colorSchemeId: string;
+			saberAColor: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			saberBColor: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			obstaclesColor: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			environmentColor0: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			environmentColor1: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			environmentColor0Boost: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+			environmentColor1Boost: {
+				r: number;
+				g: number;
+				b: number;
+				a: number;
+			};
+		};
+	}[];
+	_customData?: Record<any, any>;
+	_difficultyBeatmapSets: {
+		_beatmapCharacteristicName: "Standard" | "Lightshow" | "Lawless";
+		_difficultyBeatmaps: {
+			_difficulty: BeatMapDifficultyNames;
+			_difficultyRank: number;
+			_beatmapFilename: string;
+			_noteJumpMovementSpeed: number;
+			_noteJumpStartBeatOffset: number;
+			_beatmapColorSchemeIdx: number;
+			_environmentNameIdx: number;
+			_customData?: Record<any, any>;
+		}[];
+	}[];
+};
+
 export type RawMapJSON = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
@@ -334,6 +445,7 @@ export class BeatMap {
 		useNormalEventsAsCompatibleEvents: false,
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [] }
 	};
+
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard") {
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		this.rawMap.basicBeatmapEvents.forEach(e => {
@@ -392,6 +504,45 @@ export class BeatMap {
 		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
 		this.map.waypoints = this.rawMap.waypoints;
 		currentDiff = this;
+	}
+
+	public info = new Info();
+
+	suggest(mod: "Chroma" | "Cinema") {
+		this.info.raw._difficultyBeatmapSets.forEach(x => {
+			x._difficultyBeatmaps.forEach(y => {
+				if (y._beatmapFilename == this.outputDiff + ".dat") {
+					if (y._customData) {
+						y._customData._suggestions.push(mod);
+					} else {
+						y._customData = {
+							_suggestions: []
+						};
+						y._customData._suggestions.push(mod);
+					}
+				}
+			});
+		});
+	}
+
+	require(mod: "Chroma" | "Noodle Extensions") {
+		this.info.raw._difficultyBeatmapSets.forEach(x => {
+			x._difficultyBeatmaps.forEach(y => {
+				if (y._beatmapFilename == this.outputDiff + ".dat") {
+					if (y._customData) {
+						if (!y._customData._requirements) {
+							y._customData["_requirements"] = [];
+						}
+						y._customData._requirements.push(mod);
+					} else {
+						y._customData = {
+							_requirements: []
+						};
+						y._customData._requirements.push(mod);
+					}
+				}
+			});
+		});
 	}
 
 	get version() {
@@ -651,6 +802,27 @@ export class BeatMap {
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap));
+		this.info.save();
+	}
+}
+
+class Info {
+	public raw: infoJSON;
+	constructor() {
+		this.raw = JSON.parse(Deno.readTextFileSync("info.dat"));
+	}
+	save() {
+		if (this.raw._customData) {
+			jsonPrune(this.raw._customData);
+		}
+		this.raw._difficultyBeatmapSets.forEach(bs => {
+			bs._difficultyBeatmaps.forEach(d => {
+				if (d._customData) {
+					jsonPrune(d._customData);
+				}
+			});
+		});
+		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw));
 	}
 }
 
