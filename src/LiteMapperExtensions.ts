@@ -1,4 +1,6 @@
+// deno-lint-ignore-file no-explicit-any
 import { Arc, Bomb, Chain, Environment, LightEvent, Note, Vec3, Wall, currentDiff } from "./LiteMapper.ts";
+import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 
 /**
@@ -247,5 +249,43 @@ export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
 		return [angle[0] - defaultAngle[0], angle[1] - defaultAngle[1], angle[2] - defaultAngle[2]] as Vec3;
 	} else {
 		return angle as Vec3;
+	}
+}
+
+/**
+ * Copy map directory contents to another directory.
+ * @param toDir The target directory to copy to.
+ * @param extraFiles Any extra files to copy over.
+ */
+export async function copyToDir(toDir: string, extraFiles?: string[]) {
+	await ensureDir(toDir);
+	currentDiff.info.raw._difficultyBeatmapSets.forEach(x => {
+		x._difficultyBeatmaps.forEach(y => {
+			Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
+		});
+	});
+	Deno.copyFileSync("info.dat", toDir + "/info.dat");
+	Deno.copyFileSync(currentDiff.info.raw._songFilename, toDir + "/" + currentDiff.info.raw._songFilename);
+	Deno.copyFileSync(currentDiff.info.raw._coverImageFilename, toDir + "/" + currentDiff.info.raw._coverImageFilename);
+	if (extraFiles) {
+		extraFiles.forEach(x => {
+			Deno.copyFileSync(x, toDir + "/" + x);
+		});
+	}
+	LMLog(`Copied map to ${toDir}...`);
+}
+
+/**
+ * Console log with appended LM message.
+ * @param message Message to log.
+ * @param error Optional error level.
+ */
+export function LMLog(message: any, error?: "Warning" | "Error") {
+	if (error == "Warning") {
+		console.log(`\x1b[33m[Warning in LiteMapper] ${message}\x1b[37m`);
+	} else if (error == "Error") {
+		console.log(`\x1b[33m[Error in LiteMapper] ${message}\x1b[37m`);
+	} else {
+		console.log(`\x1b[31m[LiteMapper] ${message}\x1b[37m`);
 	}
 }
