@@ -422,7 +422,8 @@ type classMap = {
 	};
 };
 
-export let currentDiff: BeatMap;
+export let currentDiff: BeatMap,
+	start = 0;
 
 export class BeatMap {
 	private rawMap: RawMapJSON = {
@@ -465,6 +466,7 @@ export class BeatMap {
 	};
 
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard") {
+		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		this.rawMap.basicBeatmapEvents.forEach(e => {
 			new LightEvent().JSONToClass(e).push();
@@ -720,8 +722,11 @@ export class BeatMap {
 	get useNormalEventsAsCompatibleEvents() {
 		return this.map.useNormalEventsAsCompatibleEvents;
 	}
-
-	save() {
+	/**
+	 * Save your map changes and write the output file.
+	 * @param format Optional to format the json of the output (massively increases the file size).
+	 */
+	save(format?: boolean) {
 		if (!this.rawMap.customData) {
 			this.rawMap.customData = {};
 		}
@@ -831,7 +836,7 @@ export class BeatMap {
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 		jsonPrune(this.rawMap.customData);
 
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap));
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, undefined, format ? 4 : undefined));
 		this.info.save();
 	}
 }
@@ -852,7 +857,7 @@ class Info {
 				}
 			});
 		});
-		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw));
+		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw, undefined, 4));
 	}
 }
 

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Arc, Bomb, Chain, Environment, LightEvent, Note, Vec3, Wall, currentDiff } from "./LiteMapper.ts";
+import { Arc, Bomb, Chain, Environment, LightEvent, Note, Vec3, Wall, currentDiff, start } from "./LiteMapper.ts";
 import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 
@@ -286,16 +286,37 @@ export async function copyToDir(toDir: string, extraFiles?: string[]) {
 }
 
 /**
+ * Calculates the time in ms from map init.
+ */
+export function runTime() {
+	return Date.now() - start;
+}
+
+/**
+ * Converts a time in ms to years, weeks, days, etc...
+ * @param ms Time in ms.
+ */
+export function msToTime(ms: number) {
+	const seconds = Math.floor(ms / 1000),
+		minutes = Math.floor(seconds / 60),
+		hours = Math.floor(minutes / 60),
+		days = Math.floor(hours / 24),
+		weeks = Math.floor(days / 7),
+		years = Math.floor(weeks / 52);
+	return `Years: ${years}, Weeks: ${weeks % 52}, Days: ${days % 7}, Hours: ${hours % 24}, Minutes: ${minutes % 60}, Seconds: ${seconds % 60}, Ms: ${ms % 1000}`;
+}
+
+/**
  * Console log with appended LM message.
  * @param message Message to log.
  * @param error Optional error level.
  */
 export function LMLog(message: any, error?: "Warning" | "Error") {
 	if (error == "Warning") {
-		console.log(`\x1b[33m[Warning in LiteMapper] ${message}\x1b[37m`);
+		console.log(`\x1b[33m[Warning in LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
 	} else if (error == "Error") {
-		console.log(`\x1b[33m[Error in LiteMapper] ${message}\x1b[37m`);
+		console.log(`\x1b[33m[Error in LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
 	} else {
-		console.log(`\x1b[37m[LiteMapper] ${message}\x1b[37m`);
+		console.log(`\x1b[37m[LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
 	}
 }
