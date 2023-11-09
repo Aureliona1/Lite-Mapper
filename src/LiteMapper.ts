@@ -411,7 +411,7 @@ type classMap = {
 	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
 	basicEventTypesWithKeywords: Record<any, any>;
 	useNormalEventsAsCompatibleEvents: boolean;
-	customData: {
+	customData?: {
 		customEvents?: CustomEventType[];
 		environment?: Environment[];
 		materials?: Record<any, GeometryMaterialJSON>;
@@ -486,10 +486,10 @@ export class BeatMap {
 		});
 		if (this.rawMap.customData) {
 			if (this.rawMap.customData.customEvents) {
-				this.map.customData.customEvents = this.rawMap.customData.customEvents;
+				this.customEvents = this.rawMap.customData.customEvents;
 			}
 			if (this.rawMap.customData.environment) {
-				this.map.customData.environment = this.rawMap.customData.environment;
+				this.environments = this.rawMap.customData.environment;
 			}
 			if (this.rawMap.customData.fakeBombNotes) {
 				this.rawMap.customData.fakeBombNotes.forEach(n => {
@@ -521,9 +521,6 @@ export class BeatMap {
 		this.map.rotationEvents = this.rawMap.rotationEvents;
 		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
 		this.map.waypoints = this.rawMap.waypoints;
-		if (!this.customData) {
-			this.customData = {};
-		}
 		currentDiff = this;
 	}
 
@@ -665,7 +662,7 @@ export class BeatMap {
 		this.map.customData = x;
 	}
 	get customData() {
-		return this.map.customData;
+		return this.map.customData ? this.map.customData : {};
 	}
 
 	set customEvents(x) {
