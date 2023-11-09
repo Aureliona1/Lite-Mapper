@@ -296,6 +296,6 @@ export function LMLog(message: any, error?: "Warning" | "Error") {
 	} else if (error == "Error") {
 		console.log(`\x1b[33m[Error in LiteMapper] ${message}\x1b[37m`);
 	} else {
-		console.log(`\x1b[31m[LiteMapper] ${message}\x1b[37m`);
+		console.log(`\x1b[97m[LiteMapper] ${message}\x1b[37m`);
 	}
 }
