@@ -87,4 +87,32 @@ repeat(10, i => {
 	note.time = i;
 	note.push();
 });
+// Every note will have the same time value.
+```
+
+### Environment / Geometry
+
+Lite-Mapper has a class for creating environment and geometry objects.
+
+Similar to other objects, you need to initialize the environment first.
+
+```js
+const env = new Environment().env();
+```
+
+Then you can make changes to the object, `Environment()` has methods for specifically creating an environment object or a geometry object.
+
+```js
+env.geo("Cube", { shader: "Standard" });
+env.position = [0, 10, 0];
+```
+
+`.geo()` will make the environment into a geometry object, `.env()` will make it an environment object.
+
+**Warning:** Never mix `.env()` and `.geo()` as it will not work.
+
+Like other objects, you will have to push the environment to add it to your map.
+
+```js
+env.push();
 ```
