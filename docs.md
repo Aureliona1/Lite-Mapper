@@ -116,3 +116,56 @@ Like other objects, you will have to push the environment to add it to your map.
 ```js
 env.push();
 ```
+
+#### Geometry Materials
+
+Geometry objects need to have a material, but adding the raw JSON of the material to each object is incredibly performance intensive for Beat Saber.
+Ideally, you should create a single material for every obejct that has the same material.
+
+To do this, you can either manually add the JSON to your map.
+Like so:
+
+```js
+map.materials["Mat"] = { shader: "BTSPillar" };
+```
+
+Then you can reference the material name in the geometry objects.
+
+```js
+new Environment().geo("Cube", "Mat").push();
+```
+
+You can also use the `Material()` class to create a material, this class also has auto-fill for some shader keywords.
+
+```js
+map.materials["Mat"] = new Material().BTSPillar();
+```
+
+### Custom Events
+
+Path animations, Track animations, and Component animations all fall under `CustomEvent`.
+
+To create a custom event, you will most likely have to manually add the import to the top of your script.
+`CustomEvent` is a part of other modules, so you will have to do the import yourself or the script will try to use the other modules.
+
+Custom events are made the same way as other objects.
+
+```js
+const anim = new CustomEvent().AnimateTrack("track", 6);
+```
+
+Then you can edit the event.
+
+```js
+anim.data.position = [
+	[0, 10, 10, 0],
+	[0, 0, 10, 1]
+	// etc...
+];
+```
+
+Then push the animation to your map.
+
+```js
+anim.push();
+```
