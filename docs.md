@@ -6,7 +6,7 @@ This document covers most of the main aspects of Lite-Mapper, but is not a compl
 Lite-Mapper is made to follow a very similar syntax to [ReMapper](https://github.com/Swifter1243/ReMapper) with some minor differences.
 It aims to be a more "barebones" alternative to ReMapper that works very closely to the raw JSON form of maps.
 
-If you are looking for a more feature rich library to Lite-Mapper, then look into learning [ReMapper](https://github.com/Swifter1243/ReMapper).
+If you are looking for a more feature rich alternative to Lite-Mapper, then look into learning [ReMapper](https://github.com/Swifter1243/ReMapper).
 
 Otherwise, welcome to Lite-Mapper!
 
@@ -30,8 +30,6 @@ Many of Lite-Mapper's features are made for the Heck mods for Beat Saber (Noodle
 For a better understanding of how properies and objects work, read the [Heck](https://github.com/Aeroluna/Heck/wiki) documentation.
 
 ## Using Lite-Mapper
-
-Creating objects with Lite-Mapper works in much the same way as ReMapper, however some objects can be created in single lines.
 
 ### Map Initialization
 
