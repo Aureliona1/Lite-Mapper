@@ -272,9 +272,11 @@ export async function copyToDir(toDir: string, extraFiles?: string[]) {
 			Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
 		});
 	});
+	const songName = currentDiff.info.raw._songFilename,
+		coverName = currentDiff.info.raw._coverImageFilename;
 	Deno.copyFileSync("info.dat", toDir + "/info.dat");
-	Deno.copyFileSync(currentDiff.info.raw._songFilename, toDir + "/" + currentDiff.info.raw._songFilename);
-	Deno.copyFileSync(currentDiff.info.raw._coverImageFilename, toDir + "/" + currentDiff.info.raw._coverImageFilename);
+	Deno.copyFileSync(songName, toDir + "/" + songName);
+	Deno.copyFileSync(coverName, toDir + "/" + coverName);
 	if (extraFiles) {
 		extraFiles.forEach(x => {
 			Deno.copyFileSync(x, toDir + "/" + x);
