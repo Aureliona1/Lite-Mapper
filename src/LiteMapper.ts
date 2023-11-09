@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
+import { optimizeMaterials } from "./LiteMapperExtensions.ts";
 export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`;
 type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
 type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
@@ -704,7 +705,7 @@ export class BeatMap {
 		this.customData.materials = x;
 	}
 	get materials() {
-		return this.customData?.materials;
+		return this.customData?.materials ? this.customData.materials : {};
 	}
 
 	set fakeNotes(x) {
@@ -745,7 +746,10 @@ export class BeatMap {
 	 * Save your map changes and write the output file.
 	 * @param format Optional to format the json of the output (massively increases the file size).
 	 */
-	save(format?: boolean) {
+	save(optimizeMats = true, format?: boolean) {
+		if (optimizeMats) {
+			optimizeMaterials();
+		}
 		if (!this.rawMap.customData) {
 			this.rawMap.customData = {};
 		}
@@ -935,6 +939,8 @@ export function jsonPrune(obj: Record<string, any>) {
 		}
 	});
 }
+
+// Object classes
 
 export class Environment {
 	/**
