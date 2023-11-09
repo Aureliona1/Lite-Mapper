@@ -17,44 +17,63 @@ export type MaterialShader = "Standard" | "OpaqueLight" | "TransparentLight" | "
 export type GeometryMaterialJSON = { shader: MaterialShader; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
 export type GeometryObjectJSON = { type: GeometryObjectTypes; material: GeometryMaterialJSON | string };
 export type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
+export type modifierOps = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
+export type baseModifiers =
+	| "baseHeadLocalPosition"
+	| "baseLeftHandLocalPosition"
+	| "baseRightHandLocalPosition"
+	| "baseNote0Color"
+	| "baseNote1color"
+	| "baseSaberAColor"
+	| "baseSaberBColor"
+	| "baseEnvironmentColor0"
+	| "baseEnvironmentColor1"
+	| "baseEnvironmentColorW"
+	| "baseEnvironmentColor0Boost"
+	| "baseEnvironmentColor1Boost"
+	| "baseEnvironmentColorWBoost"
+	| "baseObstaclesColor";
+export type modifierKFVec3 = [baseModifiers] | [baseModifiers, [number, number, number, modifierOps]];
+export type modifierKFVec4 = [baseModifiers] | [baseModifiers, [number, number, number, number, modifierOps]];
+export type modifierKFSingle = [baseModifiers] | [baseModifiers, [number, modifierOps]];
 export type ObjectAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[];
-	offsetWorldRotation?: Vec3 | KFVec3[];
-	localRotation?: Vec3 | KFVec3[];
-	scale?: Vec3 | KFVec3[];
-	dissolve?: [number] | KFSingle[];
-	dissolveArrow?: [number] | KFVec3[];
-	interactable?: [number] | KFSingle[];
-	definitePosition?: Vec3 | KFVec3[];
-	color?: Vec4 | KFVec4[];
+	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	scale?: Vec3 | KFVec3[] | modifierKFVec3;
+	dissolve?: [number] | KFSingle[] | modifierKFSingle;
+	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
+	interactable?: [number] | KFSingle[] | modifierKFSingle;
+	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	color?: Vec4 | KFVec4[] | modifierKFVec4;
 };
 export type PathAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[];
-	offsetWorldRotation?: Vec3 | KFVec3[];
-	localRotation?: Vec3 | KFVec3[];
-	scale?: Vec3 | KFVec3[];
-	dissolve?: [number] | KFSingle[];
-	dissolveArrow?: [number] | KFVec3[];
-	interactable?: [number] | KFSingle[];
-	definitePosition?: Vec3 | KFVec3[];
-	color?: Vec4 | KFVec4[];
+	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	scale?: Vec3 | KFVec3[] | modifierKFVec3;
+	dissolve?: [number] | KFSingle[] | modifierKFSingle;
+	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
+	interactable?: [number] | KFSingle[] | modifierKFSingle;
+	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	color?: Vec4 | KFVec4[] | modifierKFVec4;
 	track: string | string[];
 	duration?: number;
 	easing?: Easing;
 };
 export type TrackAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[];
-	offsetWorldRotation?: Vec3 | KFVec3[];
-	localRotation?: Vec3 | KFVec3[];
-	scale?: Vec3 | KFVec3[];
-	dissolve?: [number] | KFSingle[];
-	dissolveArrow?: [number] | KFVec3[];
-	interactable?: [number] | KFSingle[];
+	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	scale?: Vec3 | KFVec3[] | modifierKFVec3;
+	dissolve?: [number] | KFSingle[] | modifierKFSingle;
+	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
+	interactable?: [number] | KFSingle[] | modifierKFSingle;
 	time?: KFSingle[];
-	color?: Vec4 | KFVec4[];
-	position?: Vec3 | KFVec3[];
-	rotation?: Vec3 | KFVec3;
-	localPosition?: Vec3 | KFVec3[];
+	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	position?: Vec3 | KFVec3[] | modifierKFVec3;
+	rotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localPosition?: Vec3 | KFVec3[] | modifierKFVec3;
 	track: string | string[];
 	duration?: number;
 	easing?: Easing;
@@ -352,7 +371,7 @@ type infoJSON = {
 	}[];
 	_customData?: Record<any, any>;
 	_difficultyBeatmapSets: {
-		_beatmapCharacteristicName: "Standard" | "Lightshow" | "Lawless";
+		_beatmapCharacteristicName: BeatMapCharacteristicNames;
 		_difficultyBeatmaps: {
 			_difficulty: BeatMapDifficultyNames;
 			_difficultyRank: number;
