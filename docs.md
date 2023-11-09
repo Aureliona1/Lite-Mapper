@@ -27,7 +27,7 @@ To run Lite-Mapper, simply open the `run.bat` file and let it do its thing. `run
 For mac and ChromeBook users, `run.bat` probably won't work. In this case, open a new terminal (for VSCode, go `Terminal > New Terminal`), then type `deno run --allow-all script.ts`.
 
 Many of Lite-Mapper's features are made for the Heck mods for Beat Saber (Noodle Extensions and Chroma).
-For a better understanding of how properies and objects work, read the [Heck](https://github.com/Aeroluna/Heck/wiki) documentation.
+For a better understanding of how properties and objects work, read the [Heck](https://github.com/Aeroluna/Heck/wiki) documentation.
 
 ## Using Lite-Mapper
 
@@ -118,7 +118,7 @@ env.push();
 #### Geometry Materials
 
 Geometry objects need to have a material, but adding the raw JSON of the material to each object is incredibly performance intensive for Beat Saber.
-Ideally, you should create a single material for every obejct that has the same material.
+Ideally, you should create a single material for every object that has the same material.
 
 To do this, you can either manually add the JSON to your map.
 Like so:
