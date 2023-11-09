@@ -16,4 +16,75 @@ If you see an issue with Lite-Mapper, or would like to add a feature to the libr
 
 ## Installing
 
-To install Lite-Mapper...
+Lite-Mapper runs on [Deno](https://deno.com/), so you will need to download it to run Lite-Mapper. You will also need the Deno extension for VSCode to properly utilise the features of Deno.
+
+To use Lite-Mapper, download the .zip folder in the [latest release](https://github.com/Aureliona1/Lite-Mapper/releases/latest), then extract the zip into your map folder. From there, simply open the folder in VSCode (or your favourite code editor) and add some stuff to `script.ts`.
+Then, open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac, and type `Deno: Initialize Workspace Configuration` and press yes for anything that it asks.
+
+To run Lite-Mapper, simply open the `run.bat` file and let it do its thing. `run.bat` relies on [denon](https://github.com/denosaurs/denon#denoland), so you will need to install this to use `run.bat`.
+
+**Important**
+For mac and ChromeBook users, `run.bat` probably won't work. In this case, open a new terminal (for VSCode, go `Terminal > New Terminal`), then type `deno run --allow-all script.ts`.
+
+Many of Lite-Mapper's features are made for the Heck mods for Beat Saber (Noodle Extensions and Chroma).
+For a better understanding of how properies and objects work, read the [Heck](https://github.com/Aeroluna/Heck/wiki) documentation.
+
+## Using Lite-Mapper
+
+Creating objects with Lite-Mapper works in much the same way as ReMapper, however some objects can be created in single lines.
+
+### Map Initialization
+
+Before adding anything to your script, you will need to initialize your map.
+This essentially tells the code what map file to make changes to.
+
+In the default template `script.ts`, there is a basic initialization line.
+
+```js
+const map = new BeatMap("ExpertStandard", "ExpertPlusStandard");
+```
+
+The first difficulty is the `input` difficulty, this is where you add all your notes and walls and stuff.
+The second one is the `output` difficulty. This should be empty as it will be overwritten by Lite-Mapper.
+
+### Notes / Bombs / Walls
+
+Notes, bombs, and walls all have similar syntaxes.
+First you need to initialize the object.
+
+```js
+const note = new Note();
+```
+
+From there, you can add and modify properties on the note.
+
+```js
+note.color = [1, 0, 0, 1];
+```
+
+Then once you have made all the changes you would like, you can push the note to the active difficulty.
+
+```js
+note.push();
+```
+
+Due to the way that Lite-Mapper handles objects, you will need to re-initialize the object every time you want to make changes.
+So, this will work:
+
+```js
+repeat(10, i => {
+	const note = new Note();
+	note.time = i;
+	note.push();
+});
+```
+
+But this will not:
+
+```js
+const note = new Note();
+repeat(10, i => {
+	note.time = i;
+	note.push();
+});
+```
