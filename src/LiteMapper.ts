@@ -821,7 +821,6 @@ export class BeatMap {
 			}
 		});
 
-		jsonPrune(this.rawMap.customData);
 		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
 		this.rawMap.bpmEvents = this.bpmEvents;
 		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
@@ -833,6 +832,7 @@ export class BeatMap {
 		this.rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
 		this.rawMap.rotationEvents = this.rotationEvents;
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
+		jsonPrune(this.rawMap.customData);
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap));
 		this.info.save();
