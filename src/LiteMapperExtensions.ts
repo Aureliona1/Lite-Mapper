@@ -103,7 +103,7 @@ export function filterChains(fake: boolean, condition: (x: Chain) => boolean, ac
  */
 export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, action: (x: Wall) => void) {
 	if (fake) {
-		currentDiff.fakeObstacles.forEach(n => {
+		currentDiff.fakeWalls.forEach(n => {
 			if (condition(n)) {
 				action(n);
 			}

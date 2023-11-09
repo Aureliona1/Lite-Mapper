@@ -412,13 +412,13 @@ type classMap = {
 	basicEventTypesWithKeywords: Record<any, any>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData: {
-		customEvents: CustomEventType[];
-		environment: Environment[];
-		materials: Record<any, GeometryMaterialJSON>;
-		fakeColorNotes: Note[];
-		fakeBombNotes: Bomb[];
-		fakeObstacles: Wall[];
-		fakeBurstSliders: Chain[];
+		customEvents?: CustomEventType[];
+		environment?: Environment[];
+		materials?: Record<any, GeometryMaterialJSON>;
+		fakeColorNotes?: Note[];
+		fakeBombNotes?: Bomb[];
+		fakeObstacles?: Wall[];
+		fakeBurstSliders?: Chain[];
 	};
 };
 
@@ -521,6 +521,9 @@ export class BeatMap {
 		this.map.rotationEvents = this.rawMap.rotationEvents;
 		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
 		this.map.waypoints = this.rawMap.waypoints;
+		if (!this.customData) {
+			this.customData = {};
+		}
 		currentDiff = this;
 	}
 
@@ -676,7 +679,7 @@ export class BeatMap {
 		this.customData.environment = x;
 	}
 	get environments() {
-		return this.customData?.environment;
+		return this.customData?.environment ? this.customData.environment : [];
 	}
 
 	set materials(x) {
@@ -690,28 +693,28 @@ export class BeatMap {
 		this.customData.fakeColorNotes = x;
 	}
 	get fakeNotes() {
-		return this.customData?.fakeColorNotes;
+		return this.customData?.fakeColorNotes ? this.customData.fakeColorNotes : [];
 	}
 
 	set fakeBombs(x) {
 		this.customData.fakeBombNotes = x;
 	}
 	get fakeBombs() {
-		return this.customData?.fakeBombNotes;
+		return this.customData?.fakeBombNotes ? this.customData.fakeBombNotes : [];
 	}
 
-	set fakeObstacles(x) {
+	set fakeWalls(x) {
 		this.customData.fakeObstacles = x;
 	}
-	get fakeObstacles() {
-		return this.customData?.fakeObstacles;
+	get fakeWalls() {
+		return this.customData?.fakeObstacles ? this.customData.fakeObstacles : [];
 	}
 
 	set fakeChains(x) {
 		this.customData.fakeBurstSliders = x;
 	}
 	get fakeChains() {
-		return this.customData?.fakeBurstSliders;
+		return this.customData?.fakeBurstSliders ? this.customData.fakeBurstSliders : [];
 	}
 
 	set useNormalEventsAsCompatibleEvents(x) {
@@ -722,101 +725,113 @@ export class BeatMap {
 	}
 
 	save() {
-		const tempNotes: (NoteType | Note)[] = copy(this.notes),
-			tempBombs: (BombType | Bomb)[] = copy(this.bombs),
-			tempWalls: (ObstacleType | Wall)[] = copy(this.walls),
-			tempArcs: (SliderType | Arc)[] = copy(this.arcs),
-			tempChains: (BurstSliderType | Chain)[] = copy(this.chains),
-			tempEvents: (LightEvent | LightEventType)[] = copy(this.events),
-			tempFakeNotes: (NoteType | Note)[] = copy(this.fakeNotes),
-			tempFakeBombs: (BombType | Bomb)[] = copy(this.fakeBombs),
-			tempFakeWalls: (ObstacleType | Wall)[] = copy(this.fakeObstacles),
-			tempFakeChains: (BurstSliderType | Chain)[] = copy(this.fakeChains);
-		tempNotes.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Note) {
-				n = n.return();
-			}
-		});
-		tempBombs.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Bomb) {
-				n = n.return();
-			}
-		});
-		tempWalls.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Wall) {
-				n = n.return();
-			}
-		});
-		tempArcs.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Arc) {
-				n = n.return();
-			}
-		});
-		tempChains.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Chain) {
-				n = n.return();
-			}
-		});
-		tempFakeNotes.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Note) {
-				n = n.return();
-			}
-		});
-		tempFakeBombs.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Bomb) {
-				n = n.return();
-			}
-		});
-		tempFakeWalls.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Wall) {
-				n = n.return();
-			}
-		});
-		tempFakeChains.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof Chain) {
-				n = n.return();
-			}
-		});
-		tempEvents.forEach(n => {
-			jsonPrune(n);
-			if (n instanceof LightEvent) {
-				n = n.return();
-			}
-		});
-
-		this.rawMap.basicBeatmapEvents = tempEvents as LightEventType[];
-		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
-		this.rawMap.bombNotes = tempBombs as BombType[];
-		this.rawMap.bpmEvents = this.bpmEvents;
-		this.rawMap.burstSliders = tempChains as BurstSliderType[];
-		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
-		this.rawMap.colorNotes = tempNotes as NoteType[];
 		if (!this.rawMap.customData) {
 			this.rawMap.customData = {};
 		}
+		if (!this.rawMap.customData.fakeBombNotes) {
+			this.rawMap.customData.fakeBombNotes = [];
+		}
+		if (!this.rawMap.customData.fakeBurstSliders) {
+			this.rawMap.customData.fakeBurstSliders = [];
+		}
+		if (!this.rawMap.customData.fakeColorNotes) {
+			this.rawMap.customData.fakeColorNotes = [];
+		}
+		if (!this.rawMap.customData.fakeObstacles) {
+			this.rawMap.customData.fakeObstacles = [];
+		}
+		this.notes.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Note) {
+				this.rawMap.colorNotes.push(n.return());
+			} else {
+				this.rawMap.colorNotes.push(n);
+			}
+		});
+		this.bombs.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Bomb) {
+				this.rawMap.bombNotes.push(n.return());
+			} else {
+				this.rawMap.bombNotes.push(n);
+			}
+		});
+		this.walls.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Wall) {
+				this.rawMap.obstacles.push(n.return());
+			} else {
+				this.rawMap.obstacles.push(n);
+			}
+		});
+		this.arcs.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Arc) {
+				this.rawMap.sliders.push(n.return());
+			} else {
+				this.rawMap.sliders.push(n);
+			}
+		});
+		this.chains.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Chain) {
+				this.rawMap.burstSliders.push(n.return());
+			} else {
+				this.rawMap.burstSliders.push(n);
+			}
+		});
+		this.fakeNotes.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Note) {
+				this.rawMap.customData?.fakeColorNotes?.push(n.return());
+			} else {
+				this.rawMap.customData?.fakeColorNotes?.push(n);
+			}
+		});
+		this.fakeBombs.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Bomb) {
+				this.rawMap.customData?.fakeBombNotes?.push(n.return());
+			} else {
+				this.rawMap.customData?.fakeBombNotes?.push(n);
+			}
+		});
+		this.fakeWalls.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Wall) {
+				this.rawMap.customData?.fakeObstacles?.push(n.return());
+			} else {
+				this.rawMap.customData?.fakeObstacles?.push(n);
+			}
+		});
+		this.fakeChains.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof Chain) {
+				this.rawMap.customData?.fakeBurstSliders?.push(n.return());
+			} else {
+				this.rawMap.customData?.fakeBurstSliders?.push(n);
+			}
+		});
+		this.events.forEach(n => {
+			jsonPrune(n);
+			if (n instanceof LightEvent) {
+				this.rawMap.basicBeatmapEvents.push(n.return());
+			} else {
+				this.rawMap.basicBeatmapEvents.push(n);
+			}
+		});
+
+		jsonPrune(this.rawMap.customData);
+		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
+		this.rawMap.bpmEvents = this.bpmEvents;
+		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
 		this.rawMap.customData.customEvents = this.customEvents;
 		this.rawMap.customData.environment = this.environments;
-		this.rawMap.customData.fakeBombNotes = tempFakeBombs as BombType[];
-		this.rawMap.customData.fakeBurstSliders = tempFakeChains as BurstSliderType[];
-		this.rawMap.customData.fakeColorNotes = tempFakeNotes as NoteType[];
-		this.rawMap.customData.fakeObstacles = tempFakeWalls as ObstacleType[];
 		this.rawMap.customData.materials = this.materials;
-		jsonPrune(this.rawMap.customData);
 		this.rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;
 		this.rawMap.lightRotationEventBoxGroups = this.lightRotationEventBoxGroups;
 		this.rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
-		this.rawMap.obstacles = tempWalls as ObstacleType[];
 		this.rawMap.rotationEvents = this.rotationEvents;
-		this.rawMap.sliders = tempArcs as SliderType[];
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap));
@@ -1350,7 +1365,7 @@ export class Wall {
 	push(fake?: boolean) {
 		jsonPrune(this);
 		if (fake) {
-			currentDiff.fakeObstacles?.push(this);
+			currentDiff.fakeWalls?.push(this);
 		} else {
 			currentDiff.walls.push(this);
 		}
