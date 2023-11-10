@@ -3,6 +3,7 @@ import { optimizeMaterials } from "./Functions.ts";
 import { LightEvent } from "./lights.ts";
 import { Bomb, Chain, Note, Wall, Arc } from "./objects.ts";
 import { RawMapJSON, classMap, DiffNames, infoJSON } from "./types.ts";
+import { LMUpdateCheck } from "./updateChecker.ts";
 
 export let currentDiff: BeatMap,
 	start = 0;
@@ -47,7 +48,10 @@ export class BeatMap {
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [] }
 	};
 
-	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard") {
+	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", checkForUpdate = true) {
+		if (checkForUpdate) {
+			LMUpdateCheck();
+		}
 		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		this.rawMap.basicBeatmapEvents.forEach(e => {
