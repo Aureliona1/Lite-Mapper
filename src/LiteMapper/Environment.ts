@@ -1,5 +1,21 @@
 import { jsonPrune, currentDiff } from "./LiteMapper.ts";
-import { LookupMethod, GeometryObjectTypes, GeometryMaterialJSON, Vec3, GeometryObjectJSON, Vec4, MaterialShader, KeywordsBTSPillar, KeywordsBaseWater, KeywordsBillieWater, KeywordsStandard, KeywordsInterscopeConcrete, KeywordsInterscopeCar, KeywordsWaterfallMirror } from "./types.ts";
+import {
+	LookupMethod,
+	GeometryObjectTypes,
+	GeometryMaterialJSON,
+	Vec3,
+	GeometryObjectJSON,
+	Vec4,
+	MaterialShader,
+	KeywordsBTSPillar,
+	KeywordsBaseWater,
+	KeywordsBillieWater,
+	KeywordsStandard,
+	KeywordsInterscopeConcrete,
+	KeywordsInterscopeCar,
+	KeywordsWaterfallMirror,
+	ComponentStaticProps
+} from "./types.ts";
 
 export class Environment {
 	/**
@@ -33,6 +49,7 @@ export class Environment {
 	lookupMethod?: LookupMethod;
 	active?: boolean;
 	duplicate?: number;
+	components?: ComponentStaticProps;
 	scale?: Vec3;
 	position?: Vec3;
 	localPosition?: Vec3;

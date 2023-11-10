@@ -1,4 +1,4 @@
-import { jsonPrune } from "./LiteMapper.ts";
+import { CEToJSON, JSONToCE, jsonPrune } from "./LiteMapper.ts";
 import { optimizeMaterials } from "./Functions.ts";
 import { LightEvent } from "./lights.ts";
 import { Bomb, Chain, Note, Wall, Arc } from "./objects.ts";
@@ -70,7 +70,10 @@ export class BeatMap {
 		});
 		if (this.rawMap.customData) {
 			if (this.rawMap.customData.customEvents) {
-				this.customEvents = this.rawMap.customData.customEvents;
+				this.customEvents = [];
+				this.rawMap.customData.customEvents.forEach(n => {
+					this.customEvents?.push(JSONToCE(n));
+				});
 			}
 			if (this.rawMap.customData.environment) {
 				this.environments = this.rawMap.customData.environment;
@@ -327,6 +330,9 @@ export class BeatMap {
 		if (!this.rawMap.customData.fakeObstacles) {
 			this.rawMap.customData.fakeObstacles = [];
 		}
+		if (!this.rawMap.customData.customEvents) {
+			this.rawMap.customData.customEvents = [];
+		}
 		this.notes.forEach(n => {
 			jsonPrune(n);
 			if (n instanceof Note) {
@@ -407,11 +413,14 @@ export class BeatMap {
 				this.rawMap.basicBeatmapEvents.push(n);
 			}
 		});
+		this.customEvents?.forEach(n => {
+			jsonPrune(n);
+			this.rawMap.customData?.customEvents?.push(CEToJSON(n));
+		});
 
 		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
 		this.rawMap.bpmEvents = this.bpmEvents;
 		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
-		this.rawMap.customData.customEvents = this.customEvents;
 		this.rawMap.customData.environment = this.environments;
 		this.rawMap.customData.materials = this.materials;
 		this.rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;

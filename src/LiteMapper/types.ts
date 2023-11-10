@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 
+import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./lights.ts";
 import { Note, Bomb, Wall, Arc, Chain } from "./objects.ts";
@@ -52,6 +53,20 @@ export type ObjectAnimProps = {
 	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
 	color?: Vec4 | KFVec4[] | modifierKFVec4;
 };
+export type PathAnimAllProps = {
+	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	scale?: Vec3 | KFVec3[] | modifierKFVec3;
+	dissolve?: [number] | KFSingle[] | modifierKFSingle;
+	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
+	interactable?: [number] | KFSingle[] | modifierKFSingle;
+	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	track?: string | string[];
+	duration?: number;
+	easing?: Easing;
+};
 export type PathAnimProps = {
 	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
 	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
@@ -62,9 +77,24 @@ export type PathAnimProps = {
 	interactable?: [number] | KFSingle[] | modifierKFSingle;
 	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
 	color?: Vec4 | KFVec4[] | modifierKFVec4;
-	track: string | string[];
+};
+export type TrackAnimAllProps = {
+	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	scale?: Vec3 | KFVec3[] | modifierKFVec3;
+	dissolve?: [number] | KFSingle[] | modifierKFSingle;
+	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
+	interactable?: [number] | KFSingle[] | modifierKFSingle;
+	time?: KFSingle[];
+	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	position?: Vec3 | KFVec3[] | modifierKFVec3;
+	rotation?: Vec3 | KFVec3[] | modifierKFVec3;
+	localPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	track?: string | string[];
 	duration?: number;
 	easing?: Easing;
+	repeat?: number;
 };
 export type TrackAnimProps = {
 	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
@@ -79,20 +109,21 @@ export type TrackAnimProps = {
 	position?: Vec3 | KFVec3[] | modifierKFVec3;
 	rotation?: Vec3 | KFVec3[] | modifierKFVec3;
 	localPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	track: string | string[];
-	duration?: number;
-	easing?: Easing;
-	repeat?: number;
 };
 export type TrackParentProps = { childrenTracks: string[]; parentTrack: string; worldPositionStays?: boolean };
 export type PlayerObjectControllers = "Root" | "Head" | "LeftHand" | "RightHand";
-export type PlayerToTrackProps = { track: string; target?: PlayerObjectControllers };
+export type PlayerToTrackProps = { track?: string; target?: PlayerObjectControllers };
 export type ComponentAnimProps = {
-	track: string;
+	track?: string;
 	duration?: number;
 	easing?: Easing;
+	BloomFogEnvironment?: { attenuation?: [number] | KFSingle[]; offset?: [number] | KFSingle[]; startY?: [number] | KFSingle[]; height?: [number] | KFSingle[] };
+	TubeBloomPrePassLight?: { colorAlphaMultiplier?: [number] | KFSingle[]; bloomFogIntensityMultiplier?: [number] | KFSingle[] };
+};
+
+export type ComponentStaticProps = {
 	ILightWithId?: { lightID?: number; type?: number };
-	BloomFogEnvironment?: { attenuation?: [number] | KFSingle; offset?: [number] | KFSingle; startY?: [number] | KFSingle; height?: [number] | KFSingle };
+	BloomFogEnvironment?: { attenuation?: number; offset?: number; startY?: number; height?: number };
 	TubeBloomPrePassLight?: { colorAlphaMultiplier?: number; bloomFogIntensityMultiplier?: number };
 };
 
@@ -387,7 +418,7 @@ export type classMap = {
 	basicEventTypesWithKeywords: Record<any, any>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData?: {
-		customEvents?: CustomEventType[];
+		customEvents?: Array<AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent>;
 		environment?: Environment[];
 		materials?: Record<any, GeometryMaterialJSON>;
 		fakeColorNotes?: Note[];
