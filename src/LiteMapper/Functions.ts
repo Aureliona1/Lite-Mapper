@@ -1,7 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
-import { Arc, Bomb, Chain, Environment, GeometryMaterialJSON, LightEvent, Note, Vec3, Wall, currentDiff, start } from "./LiteMapper.ts";
 import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
+import { Environment } from "./Environment.ts";
+import { LightEvent } from "./lights.ts";
+import { currentDiff, start } from "./map.ts";
+import { Note, Bomb, Arc, Chain, Wall } from "./objects.ts";
+import { Vec3, GeometryMaterialJSON } from "./types.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

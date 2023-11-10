@@ -1,4 +1,4 @@
-import { BeatMap } from "./LiteMapper.ts";
+import { BeatMap } from "./LiteMapper/LiteMapper.ts";
 
 const map = new BeatMap("ExpertStandard", "ExpertPlusStandard");
 
