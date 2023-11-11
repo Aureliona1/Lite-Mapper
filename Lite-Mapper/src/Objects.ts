@@ -1,5 +1,4 @@
-import { jsonPrune, currentDiff } from "./LiteMapper.ts";
-import { Vec2, NoteCustomProps, NoteType, BombType, WallCustomProps, ObstacleType, SliderCustomProps, SliderType, BurstSliderType } from "./Types.ts";
+import { jsonPrune, currentDiff, BombType, BurstSliderType, NoteCustomProps, NoteType, ObstacleType, SliderCustomProps, SliderType, Vec2, WallCustomProps } from "./LiteMapper.ts";
 
 export class Note {
 	/**

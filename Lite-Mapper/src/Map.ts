@@ -1,8 +1,4 @@
-import { CEToJSON, JSONToCE, jsonPrune } from "./LiteMapper.ts";
-import { optimizeMaterials } from "./Functions.ts";
-import { LightEvent } from "./Lights.ts";
-import { Bomb, Chain, Note, Wall, Arc } from "./Objects.ts";
-import { RawMapJSON, classMap, DiffNames, infoJSON } from "./Types.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LightEvent, Note, RawMapJSON, Wall, classMap, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
