@@ -5,7 +5,7 @@ export * from "./Map.ts";
 export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
 export * from "./Lights.ts";
-export * from "./objects.ts";
+export * from "./Objects.ts";
 
 // Functions stolen from ReMapper >:)
 

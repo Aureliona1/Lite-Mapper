@@ -1,7 +1,7 @@
 import { CEToJSON, JSONToCE, jsonPrune } from "./LiteMapper.ts";
 import { optimizeMaterials } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
-import { Bomb, Chain, Note, Wall, Arc } from "./objects.ts";
+import { Bomb, Chain, Note, Wall, Arc } from "./Objects.ts";
 import { RawMapJSON, classMap, DiffNames, infoJSON } from "./types.ts";
 import { LMUpdateCheck } from "./updateChecker.ts";
 
