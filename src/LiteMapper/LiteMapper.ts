@@ -1,10 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
 export * from "./Functions.ts";
 export * from "./types.ts";
-export * from "./map.ts";
+export * from "./Map.ts";
 export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
-export * from "./lights.ts";
+export * from "./Lights.ts";
 export * from "./objects.ts";
 
 // Functions stolen from ReMapper >:)

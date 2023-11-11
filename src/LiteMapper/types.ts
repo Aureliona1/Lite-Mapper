@@ -2,8 +2,8 @@
 
 import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { LightEvent } from "./lights.ts";
-import { Note, Bomb, Wall, Arc, Chain } from "./objects.ts";
+import { LightEvent } from "./Lights.ts";
+import { Note, Bomb, Wall, Arc, Chain } from "./Objects.ts";
 
 export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`;
 export type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";

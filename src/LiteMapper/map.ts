@@ -1,6 +1,6 @@
 import { CEToJSON, JSONToCE, jsonPrune } from "./LiteMapper.ts";
 import { optimizeMaterials } from "./Functions.ts";
-import { LightEvent } from "./lights.ts";
+import { LightEvent } from "./Lights.ts";
 import { Bomb, Chain, Note, Wall, Arc } from "./objects.ts";
 import { RawMapJSON, classMap, DiffNames, infoJSON } from "./types.ts";
 import { LMUpdateCheck } from "./updateChecker.ts";
@@ -339,83 +339,43 @@ export class BeatMap {
 		}
 		this.notes.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Note) {
-				this.rawMap.colorNotes.push(n.return());
-			} else {
-				this.rawMap.colorNotes.push(n);
-			}
+			this.rawMap.colorNotes.push(n.return());
 		});
 		this.bombs.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Bomb) {
-				this.rawMap.bombNotes.push(n.return());
-			} else {
-				this.rawMap.bombNotes.push(n);
-			}
+			this.rawMap.bombNotes.push(n.return());
 		});
 		this.walls.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Wall) {
-				this.rawMap.obstacles.push(n.return());
-			} else {
-				this.rawMap.obstacles.push(n);
-			}
+			this.rawMap.obstacles.push(n.return());
 		});
 		this.arcs.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Arc) {
-				this.rawMap.sliders.push(n.return());
-			} else {
-				this.rawMap.sliders.push(n);
-			}
+			this.rawMap.sliders.push(n.return());
 		});
 		this.chains.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Chain) {
-				this.rawMap.burstSliders.push(n.return());
-			} else {
-				this.rawMap.burstSliders.push(n);
-			}
+			this.rawMap.burstSliders.push(n.return());
 		});
 		this.fakeNotes.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Note) {
-				this.rawMap.customData?.fakeColorNotes?.push(n.return());
-			} else {
-				this.rawMap.customData?.fakeColorNotes?.push(n);
-			}
+			this.rawMap.customData?.fakeColorNotes?.push(n.return());
 		});
 		this.fakeBombs.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Bomb) {
-				this.rawMap.customData?.fakeBombNotes?.push(n.return());
-			} else {
-				this.rawMap.customData?.fakeBombNotes?.push(n);
-			}
+			this.rawMap.customData?.fakeBombNotes?.push(n.return());
 		});
 		this.fakeWalls.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Wall) {
-				this.rawMap.customData?.fakeObstacles?.push(n.return());
-			} else {
-				this.rawMap.customData?.fakeObstacles?.push(n);
-			}
+			this.rawMap.customData?.fakeObstacles?.push(n.return());
 		});
 		this.fakeChains.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof Chain) {
-				this.rawMap.customData?.fakeBurstSliders?.push(n.return());
-			} else {
-				this.rawMap.customData?.fakeBurstSliders?.push(n);
-			}
+			this.rawMap.customData?.fakeBurstSliders?.push(n.return());
 		});
 		this.events.forEach(n => {
 			jsonPrune(n);
-			if (n instanceof LightEvent) {
-				this.rawMap.basicBeatmapEvents.push(n.return());
-			} else {
-				this.rawMap.basicBeatmapEvents.push(n);
-			}
+			this.rawMap.basicBeatmapEvents.push(n.return());
 		});
 		this.customEvents?.forEach(n => {
 			jsonPrune(n);

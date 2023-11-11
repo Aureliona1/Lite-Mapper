@@ -2,10 +2,14 @@
 import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import { Environment } from "./Environment.ts";
-import { LightEvent } from "./lights.ts";
-import { currentDiff, start } from "./map.ts";
+import { LightEvent } from "./Lights.ts";
+import { currentDiff, start } from "./Map.ts";
 import { Note, Bomb, Arc, Chain, Wall } from "./objects.ts";
-import { Vec3, GeometryMaterialJSON } from "./types.ts";
+import { Vec3, GeometryMaterialJSON, LookupMethod } from "./types.ts";
+import { AnimateComponent } from "./CustomEvents.ts";
+import { AnimateTrack } from "./CustomEvents.ts";
+import { AssignPathAnimation } from "./CustomEvents.ts";
+import { ye3 } from "./Consts.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -130,6 +134,51 @@ export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: 
 	currentDiff.events.forEach(n => {
 		if (condition(n)) {
 			action(n);
+		}
+	});
+}
+
+/**
+ * Filter through the track animations in your map and make changes based on properties.
+ * @param condition The condition that animations must pass to be affected.
+ * @param action The action to apply to passing animations.
+ */
+export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, action: (x: AnimateTrack) => void) {
+	currentDiff.customEvents?.forEach(e => {
+		if (e.type == "AnimateTrack") {
+			if (condition(e as AnimateTrack)) {
+				action(e as AnimateTrack);
+			}
+		}
+	});
+}
+
+/**
+ * Filter through the component animations in your map and make changes based on properties.
+ * @param condition The condition that animations must pass to be affected.
+ * @param action The action to apply to passing animations.
+ */
+export function filterComponentAnimations(condition: (x: AnimateComponent) => boolean, action: (x: AnimateComponent) => void) {
+	currentDiff.customEvents?.forEach(e => {
+		if (e.type == "AnimateComponent") {
+			if (condition(e as AnimateComponent)) {
+				action(e as AnimateComponent);
+			}
+		}
+	});
+}
+
+/**
+ * Filter through the path animations in your map and make changes based on properties.
+ * @param condition The condition that animations must pass to be affected.
+ * @param action The action to apply to passing animations.
+ */
+export function filterPathAnimations(condition: (x: AssignPathAnimation) => boolean, action: (x: AssignPathAnimation) => void) {
+	currentDiff.customEvents?.forEach(e => {
+		if (e.type == "AssignPathAnimation") {
+			if (condition(e as AssignPathAnimation)) {
+				action(e as AssignPathAnimation);
+			}
 		}
 	});
 }
@@ -439,4 +488,16 @@ export function optimizeMaterials() {
 		});
 	});
 	currentDiff.materials = tempMat;
+}
+
+export function remove(lookup: LookupMethod, ids: string[], hardRemove?: boolean) {
+	ids.forEach(i => {
+		const env = new Environment().environment(i, lookup);
+		if (hardRemove) {
+			env.active = false;
+		} else {
+			env.position = ye3;
+		}
+		env.push();
+	});
 }
