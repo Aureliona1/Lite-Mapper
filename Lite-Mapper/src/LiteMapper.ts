@@ -6,6 +6,7 @@ export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
 export * from "./Lights.ts";
 export * from "./Objects.ts";
+export * from "./Consts.ts";
 
 // Functions stolen from ReMapper >:)
 

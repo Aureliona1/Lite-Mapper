@@ -1,9 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
 import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
+import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
-import { ye3 } from "./Consts.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, currentDiff, start } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, currentDiff, start, ye3 } from "./LiteMapper.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -511,4 +511,37 @@ export function remove(lookup: LookupMethod, ids: string[], hardRemove?: boolean
  */
 export function lerp(start: number, end: number, fraction: number, easing: Easing = "easeLinear") {
 	return ease[easing](fraction) * (end - start) + start;
+}
+
+/**
+ * Access and modify the LM_Cache.
+ * @param process Whether to read the cache or write to it.
+ * @param name The name of the entry in the chache to access.
+ * @param data The data to write (if write process is specified), if left undefined the property will be removed from the cache.
+ */
+export function LMCache(process: "Read" | "Write", name: string, data?: any) {
+	const fileName = "MK_Cache.json";
+	ensureFileSync(fileName);
+	if (process == "Read") {
+		try {
+			const cache: Record<string, any> = JSON.parse(Deno.readTextFileSync(fileName));
+			return cache[name];
+		} catch (e) {
+			LMLog(`LM_Cache suffered from error, invalidating cache: ${e}`, "Error");
+			Deno.writeTextFileSync(fileName, JSON.stringify({}));
+		}
+	} else {
+		try {
+			const cache: Record<string, any> = JSON.parse(Deno.readTextFileSync(fileName));
+			if (typeof data == "undefined") {
+				delete cache[name];
+			} else {
+				cache[name] = data;
+			}
+			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
+		} catch (e) {
+			LMLog(`LM_Cache suffered from error, invalidating cache: ${e}`, "Error");
+			Deno.writeTextFileSync(fileName, JSON.stringify({}));
+		}
+	}
 }
