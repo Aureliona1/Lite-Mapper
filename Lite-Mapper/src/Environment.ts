@@ -24,7 +24,7 @@ export class Environment {
 	 * @param lookupMethod The lookup method for your environment.
 	 */
 	constructor() {}
-	environment(id: string, lookup: LookupMethod) {
+	env(id: string, lookup: LookupMethod) {
 		this.id = id;
 		this.lookupMethod = lookup;
 		if (this.geometry) {

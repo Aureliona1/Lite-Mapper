@@ -492,7 +492,7 @@ export function optimizeMaterials() {
 
 export function remove(lookup: LookupMethod, ids: string[], hardRemove?: boolean) {
 	ids.forEach(i => {
-		const env = new Environment().environment(i, lookup);
+		const env = new Environment().env(i, lookup);
 		if (hardRemove) {
 			env.active = false;
 		} else {
