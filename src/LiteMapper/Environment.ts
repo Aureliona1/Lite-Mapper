@@ -15,7 +15,7 @@ import {
 	KeywordsInterscopeCar,
 	KeywordsWaterfallMirror,
 	ComponentStaticProps
-} from "./types.ts";
+} from "./Types.ts";
 
 export class Environment {
 	/**

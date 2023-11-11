@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { jsonPrune, currentDiff } from "./LiteMapper.ts";
-import { LightEventTypes, LightEventValues, LightEventCustomData, LightEventType } from "./types.ts";
+import { LightEventTypes, LightEventValues, LightEventCustomData, LightEventType } from "./Types.ts";
 
 class TwoWayMap {
 	private reverseMap: Record<any, any>;

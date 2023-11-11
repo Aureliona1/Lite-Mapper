@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 export * from "./Functions.ts";
-export * from "./types.ts";
+export * from "./Types.ts";
 export * from "./Map.ts";
 export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
