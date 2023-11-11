@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { jsonPrune, currentDiff, Vec3, Vec4, Easing, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues } from "./LiteMapper.ts";
+import { jsonPrune, currentDiff, Vec3, Vec4, Easing, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, repeat, lerp } from "./LiteMapper.ts";
 
 class TwoWayMap {
 	private reverseMap: Record<any, any>;
@@ -157,7 +157,7 @@ export class lightGradient {
 	 * Set the lightType
 	 * @param type The lightType to run the event on.
 	 */
-	type(type: LightEventTypes = "BackLasers") {
+	type(type: LightEventTypes) {
 		this.lightType = type;
 		return this;
 	}
@@ -211,4 +211,44 @@ export class lightGradient {
 			i++;
 		});
 	}
+}
+
+/**
+ * Creates a strobe sequence. With `density` number of events every beat.
+ * @param time The time to start the strobe.
+ * @param duration The duration of the strobe.
+ * @param density How many times per beat to add a strobe event, or one event every 1/density beats.
+ * @param type The event type to use.
+ * @param color The on color to use, the off color will always be [0,0,0,0]. Can also be a boolean to use vanilla colors.
+ * @param ids Specific ids to target.
+ * @param ease Whether to use an easing on the strobe. Any special easings like, bounce, elastic, etc... will yield very weird results.
+ */
+export function strobeGenerator(time: number, duration: number, density = 1, type: LightEventTypes, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
+	repeat(duration * density, i => {
+		let t = 0;
+		if (ease) {
+			t = lerp(time, time + duration, i / (duration * density), ease);
+		} else {
+			t = time + i / density;
+		}
+		if (i % 2 == 0) {
+			const on = new LightEvent(t).setValue("On").setColor(color);
+			if (ids) {
+				on.lightID = ids;
+			}
+			if (type) {
+				on.type = type;
+			}
+			on.push();
+		} else {
+			const off = new LightEvent(t).setValue("On").setColor([0, 0, 0, 0]);
+			if (ids) {
+				off.lightID = ids;
+			}
+			if (type) {
+				off.type = type;
+			}
+			off.push();
+		}
+	});
 }
