@@ -141,23 +141,30 @@ map.materials["Mat"] = new Material().BTSPillar();
 
 ### Custom Events
 
-Path animations, Track animations, and Component animations all fall under `CustomEvent`.
+There are several types of custom event supported by Heck.
 
-To create a custom event, you will most likely have to manually add the import to the top of your script.
-`CustomEvent` is a part of other modules, so you will have to do the import yourself or the script will try to use the other modules.
+They include:
 
-Custom events are made the same way as other objects.
+-   `AnimateTrack`
+-   `AnimateComponent`
+-   `AssignPathAnimation`
+-   `AssignTrackParent`
+-   `AssignPlayerToTrack`
+
+Each custom event has its own class to keep the different properties separate.
+
+Like all other objects in Lite-Mapper, you need to initialize the object first.
 
 ```js
-const anim = new CustomEvent().AnimateTrack("track", 6);
+const anim = new AnimateTrack("cool track", 0, 16);
 ```
 
 Then you can edit the event.
 
 ```js
-anim.data.position = [
-	[0, 10, 10, 0],
-	[0, 0, 10, 1]
+anim.animate.position = [
+	[0, 10, 0, 0],
+	[0, 0, 0, 1]
 	// etc...
 ];
 ```
@@ -167,3 +174,26 @@ Then push the animation to your map.
 ```js
 anim.push();
 ```
+
+### Note Mods / Modifying existing objects
+
+Lite-Mapper includes several functions to filter through existing objects in your map and make changes.
+
+Each function starts with the word `filter` followed by whatever type of object it targets.
+
+A simple application of this would be to make changes to notes you have already placed in your map.
+
+For example:
+
+```js
+filterNotes(
+	false,
+	x => x.time >= 0 && x.time < 10,
+	x => {
+		x.color = [1, 1, 1, 1];
+	}
+);
+```
+
+The above code will search through all notes (excluding fake notes) for any between beat 0 and beat 10.
+It will then make the filtered notes white.
