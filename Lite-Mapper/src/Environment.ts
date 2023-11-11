@@ -1,21 +1,24 @@
-import { jsonPrune, currentDiff } from "./LiteMapper.ts";
 import {
-	LookupMethod,
-	GeometryObjectTypes,
+	jsonPrune,
+	currentDiff,
+	ComponentStaticProps,
 	GeometryMaterialJSON,
-	Vec3,
 	GeometryObjectJSON,
-	Vec4,
-	MaterialShader,
+	GeometryObjectTypes,
 	KeywordsBTSPillar,
 	KeywordsBaseWater,
 	KeywordsBillieWater,
-	KeywordsStandard,
-	KeywordsInterscopeConcrete,
 	KeywordsInterscopeCar,
+	KeywordsInterscopeConcrete,
+	KeywordsStandard,
 	KeywordsWaterfallMirror,
-	ComponentStaticProps
-} from "./Types.ts";
+	LookupMethod,
+	MaterialShader,
+	Vec3,
+	Vec4,
+	repeat,
+	rotateVector
+} from "./LiteMapper.ts";
 
 export class Environment {
 	/**
@@ -193,5 +196,64 @@ export class Material {
 		}
 		this.shader = "WaterfallMirror";
 		return this as GeometryMaterialJSON;
+	}
+}
+
+export class Polygon {
+	/**
+	 * Creates a 2d shape defaulting along the xy plane.
+	 * @param sides The number of sides.
+	 * @param radius The radius of the shape.
+	 * @param position Where to place the center of the shape.
+	 * @param scale The scale of the individual sides (x value is ignored as it is used to close the edges).
+	 * @param rotation The rotation to add to the shape, not affected by position.
+	 * @param material The name of the material to use for the shape (create your own beforehand)
+	 * @param track Track to apply to the shape.
+	 * @param innercorners Changes the way that corners are joined. Triangles look better (imo) with inner corners.
+	 * @param iterateTrack (Default = true) Changes the track value for each piece of the shape. False: every piece will have the same track. True: each piece will have the track `${track}_${i}` where {0 <= i < sides}
+	 * @param iterateOffset An offset to start iterating the tracks from.
+	 */
+	constructor(
+		public material: GeometryMaterialJSON = { shader: "Standard" },
+		public sides: number = 4,
+		public radius: number = 10,
+		public position: Vec3 = [0, 0, 0],
+		public scale: Vec3 = [1, 1, 1],
+		public rotation: Vec3 = [0, 0, 0],
+		public innercorners: boolean = false,
+		public track: string | undefined = undefined,
+		public iterateTrack: boolean = true,
+		public iterateOffset = 0
+	) {}
+
+	/**
+	 * Push the shape to the active diff.
+	 */
+	push() {
+		this.return().forEach(geo => {
+			geo.push();
+		});
+	}
+	/**
+	 * Returns the array of geometry instead of pushing to the diff.
+	 * @returns Geometry array.
+	 */
+	return() {
+		const returnArray: Environment[] = [];
+		repeat(this.sides, side => {
+			const cube = new Environment().geo("Cube", this.material);
+			if (this.track && this.iterateTrack) {
+				cube.track = `${this.track}_${side + this.iterateOffset}`;
+			} else if (this.track && !this.iterateTrack) {
+				cube.track = this.track;
+			}
+			const angle = (Math.PI * 2 * side) / this.sides;
+			cube.position = rotateVector([-Math.sin(angle) * this.radius, -Math.cos(angle) * this.radius, 0], this.rotation);
+			cube.position = [cube.position[0] + this.position[0], cube.position[1] + this.position[1], cube.position[2] + this.position[2]];
+			cube.scale = [(this.innercorners ? this.radius - this.scale[1] / 2 : this.radius + this.scale[1] / 2) * Math.tan(Math.PI / this.sides) * 2, this.scale[1], this.scale[2]];
+			cube.rotation = [this.rotation[0], this.rotation[1], this.rotation[2] - (180 * angle) / Math.PI];
+			returnArray.push(cube);
+		});
+		return returnArray;
 	}
 }
