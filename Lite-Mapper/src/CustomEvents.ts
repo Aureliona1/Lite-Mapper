@@ -107,9 +107,7 @@ export class AnimateTrack {
 	 * Push the animation to the current difficulty.
 	 */
 	push() {
-		if (!currentDiff.customEvents) {
-			currentDiff.customEvents = [];
-		}
+		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(this);
 	}
 	/**
@@ -189,9 +187,7 @@ export class AssignPathAnimation {
 	 * Push the animation to the current difficulty.
 	 */
 	push() {
-		if (!currentDiff.customEvents) {
-			currentDiff.customEvents = [];
-		}
+		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(this);
 	}
 	/**
@@ -266,9 +262,7 @@ export class AssignTrackParent {
 	 * Push the assignment to the current difficulty.
 	 */
 	push() {
-		if (!currentDiff.customEvents) {
-			currentDiff.customEvents = [];
-		}
+		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(this);
 	}
 	/**
@@ -337,9 +331,7 @@ export class AssignPlayerToTrack {
 	 * Push track assignment to current difficulty.
 	 */
 	push() {
-		if (!currentDiff.customEvents) {
-			currentDiff.customEvents = [];
-		}
+		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(this);
 	}
 	/**
@@ -426,9 +418,7 @@ export class AnimateComponent {
 	 * Push the animation to the current difficulty.
 	 */
 	push() {
-		if (!currentDiff.customEvents) {
-			currentDiff.customEvents = [];
-		}
+		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(this);
 	}
 	/**

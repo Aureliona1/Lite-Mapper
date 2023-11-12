@@ -315,21 +315,12 @@ export class BeatMap {
 		if (optimizeMats) {
 			optimizeMaterials();
 		}
-		if (!this.rawMap.customData) {
-			this.rawMap.customData = {};
-		}
-		if (!this.rawMap.customData.fakeBombNotes) {
-			this.rawMap.customData.fakeBombNotes = [];
-		}
-		if (!this.rawMap.customData.fakeBurstSliders) {
-			this.rawMap.customData.fakeBurstSliders = [];
-		}
-		if (!this.rawMap.customData.fakeColorNotes) {
-			this.rawMap.customData.fakeColorNotes = [];
-		}
-		if (!this.rawMap.customData.fakeObstacles) {
-			this.rawMap.customData.fakeObstacles = [];
-		}
+		this.rawMap.customData ??= {};
+		this.rawMap.customData.fakeBombNotes ??= [];
+		this.rawMap.customData.fakeBurstSliders ??= [];
+		this.rawMap.customData.fakeColorNotes ??= [];
+		this.rawMap.customData.fakeObstacles ??= [];
+		this.rawMap.customData.customEvents ??= [];
 		if (!this.rawMap.customData.customEvents) {
 			this.rawMap.customData.customEvents = [];
 		}

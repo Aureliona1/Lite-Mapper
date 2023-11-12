@@ -278,14 +278,6 @@ export function seedRNG(min: number, max: number, seed: number | string = Date.n
  * @param max The maximum possible number to generate (exclusive).
  * @returns Random number.
  */
-export const pRNG = (min: number, max: number) => Math.random() * (max - min) + min;
-
-/**
- * Generate a random number.
- * @param min The minimum possible number to generate (inclusive).
- * @param max The maximum possible number to generate (exclusive).
- * @returns Random number.
- */
 export const random = (min: number, max: number) => Math.random() * (max - min) + min;
 
 /**
