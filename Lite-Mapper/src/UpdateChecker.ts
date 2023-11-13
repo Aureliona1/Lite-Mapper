@@ -1,4 +1,4 @@
-const ver = "beta-0.1.1";
+const ver = "beta-0.1.2";
 import { LMLog } from "./LiteMapper.ts";
 
 export async function LMUpdateCheck() {
