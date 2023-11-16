@@ -1,4 +1,4 @@
-import { jsonPrune, currentDiff, BombType, BurstSliderType, NoteCustomProps, NoteType, ObstacleType, SliderCustomProps, SliderType, Vec2, WallCustomProps } from "./LiteMapper.ts";
+import { jsonPrune, currentDiff, BombType, BurstSliderType, NoteCustomProps, NoteType, ObstacleType, SliderCustomProps, SliderType, Vec2, WallCustomProps, copy } from "./LiteMapper.ts";
 
 export class Note {
 	/**
@@ -105,17 +105,19 @@ export class Note {
 
 	/**
 	 * Return the raw json of the note.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): NoteType {
-		jsonPrune(this);
+	return(dupe = true): NoteType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			x: this.x,
-			y: this.y,
-			c: this.type,
-			d: this.direction,
-			a: this.angleOffset,
-			customData: this.customData
+			b: temp.time,
+			x: temp.x,
+			y: temp.y,
+			c: temp.type,
+			d: temp.direction,
+			a: temp.angleOffset,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: NoteType) {
@@ -133,13 +135,16 @@ export class Note {
 	}
 	/**
 	 * Push the note to the current diff.
+	 * @param fake Whether to push to the regular or fake array.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push(fake?: boolean) {
-		jsonPrune(this);
+	push(fake?: boolean, dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		if (fake) {
-			currentDiff.fakeNotes?.push(this);
+			currentDiff.fakeNotes?.push(temp);
 		} else {
-			currentDiff.notes.push(this);
+			currentDiff.notes.push(temp);
 		}
 	}
 }
@@ -244,14 +249,16 @@ export class Bomb {
 	}
 	/**
 	 * Return the raw Json of the bomb.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): BombType {
-		jsonPrune(this);
+	return(dupe = true): BombType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			x: this.x,
-			y: this.y,
-			customData: this.customData
+			b: temp.time,
+			x: temp.x,
+			y: temp.y,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: BombType) {
@@ -265,13 +272,16 @@ export class Bomb {
 	}
 	/**
 	 * Push the bomb to the current diff.
+	 * @param fake Whether to push to the regular or fake array.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push(fake?: boolean) {
-		jsonPrune(this);
+	push(fake?: boolean, dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		if (fake) {
-			currentDiff.fakeBombs?.push(this);
+			currentDiff.fakeBombs?.push(temp);
 		} else {
-			currentDiff.bombs.push(this);
+			currentDiff.bombs.push(temp);
 		}
 	}
 }
@@ -365,17 +375,19 @@ export class Wall {
 	}
 	/**
 	 * Return the raw Json of the wall.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): ObstacleType {
-		jsonPrune(this);
+	return(dupe = true): ObstacleType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			x: this.x,
-			y: this.y,
-			d: this.duration,
-			w: this.width,
-			h: this.height,
-			customData: this.customData
+			b: temp.time,
+			x: temp.x,
+			y: temp.y,
+			d: temp.duration,
+			w: temp.width,
+			h: temp.height,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: ObstacleType) {
@@ -392,13 +404,16 @@ export class Wall {
 	}
 	/**
 	 * Push the wall to the current diff.
+	 * @param fake Whether to push to the regular or fake array.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push(fake?: boolean) {
-		jsonPrune(this);
+	push(fake?: boolean, dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		if (fake) {
-			currentDiff.fakeWalls?.push(this);
+			currentDiff.fakeWalls?.push(temp);
 		} else {
-			currentDiff.walls.push(this);
+			currentDiff.walls.push(temp);
 		}
 	}
 }
@@ -510,23 +525,25 @@ export class Arc {
 	}
 	/**
 	 * Return the raw Json of the arc.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): SliderType {
-		jsonPrune(this);
+	return(dupe = true): SliderType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			c: this.type,
-			x: this.x,
-			y: this.y,
-			d: this.headDirection,
-			mu: this.headMultiplier,
-			tb: this.tailBeat,
-			tx: this.tx,
-			ty: this.ty,
-			tc: this.tailDirection,
-			tmu: this.tailMultiplier,
-			m: this.anchorMode,
-			customData: this.customData
+			b: temp.time,
+			c: temp.type,
+			x: temp.x,
+			y: temp.y,
+			d: temp.headDirection,
+			mu: temp.headMultiplier,
+			tb: temp.tailBeat,
+			tx: temp.tx,
+			ty: temp.ty,
+			tc: temp.tailDirection,
+			tmu: temp.tailMultiplier,
+			m: temp.anchorMode,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: SliderType) {
@@ -549,10 +566,12 @@ export class Arc {
 	}
 	/**
 	 * Push the arc to the current diff.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
-		jsonPrune(this);
-		currentDiff.arcs.push(this);
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
+		currentDiff.arcs.push(temp);
 	}
 }
 
@@ -661,21 +680,23 @@ export class Chain {
 	}
 	/**
 	 * Return the raw Json of the chain.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): BurstSliderType {
-		jsonPrune(this);
+	return(dupe = true): BurstSliderType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			x: this.x,
-			y: this.y,
-			c: this.type,
-			d: this.direction,
-			tb: this.tailBeat,
-			tx: this.tx,
-			ty: this.ty,
-			sc: this.segments,
-			s: this.squishFactor,
-			customData: this.customData
+			b: temp.time,
+			x: temp.x,
+			y: temp.y,
+			c: temp.type,
+			d: temp.direction,
+			tb: temp.tailBeat,
+			tx: temp.tx,
+			ty: temp.ty,
+			sc: temp.segments,
+			s: temp.squishFactor,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: BurstSliderType) {
@@ -696,13 +717,16 @@ export class Chain {
 	}
 	/**
 	 * Push the chain to the current diff.
+	 * @param fake Whether to push to the regular or fake array.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push(fake?: boolean) {
-		jsonPrune(this);
+	push(fake?: boolean, dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		if (fake) {
-			currentDiff.fakeChains?.push(this);
+			currentDiff.fakeChains?.push(temp);
 		} else {
-			currentDiff.chains.push(this);
+			currentDiff.chains.push(temp);
 		}
 	}
 }

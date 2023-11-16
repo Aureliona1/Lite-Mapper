@@ -94,21 +94,25 @@ export class AnimateTrack {
 	}
 	/**
 	 * Return the raw json of the animation.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.b,
-			t: this.t,
-			d: this.d
+			b: temp.b,
+			t: temp.t,
+			d: temp.d
 		};
 	}
 	/**
 	 * Push the animation to the current difficulty.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
 		currentDiff.customEvents ??= [];
-		currentDiff.customEvents.push(this);
+		currentDiff.customEvents.push(temp);
 	}
 	/**
 	 * Convert raw custom event json into a track animation.
@@ -174,21 +178,25 @@ export class AssignPathAnimation {
 	}
 	/**
 	 * Return the animation as raw json.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.b,
-			t: this.t,
-			d: this.d
+			b: temp.b,
+			t: temp.t,
+			d: temp.d
 		};
 	}
 	/**
 	 * Push the animation to the current difficulty.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
 		currentDiff.customEvents ??= [];
-		currentDiff.customEvents.push(this);
+		currentDiff.customEvents.push(temp);
 	}
 	/**
 	 * Converts raw custom event json into a path animation.
@@ -249,21 +257,25 @@ export class AssignTrackParent {
 	}
 	/**
 	 * Return the parent track as json.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.b,
-			t: this.t,
-			d: this.d
+			b: temp.b,
+			t: temp.t,
+			d: temp.d
 		};
 	}
 	/**
 	 * Push the assignment to the current difficulty.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
 		currentDiff.customEvents ??= [];
-		currentDiff.customEvents.push(this);
+		currentDiff.customEvents.push(temp);
 	}
 	/**
 	 * Convert raw custom event json into a parent track.
@@ -318,21 +330,25 @@ export class AssignPlayerToTrack {
 	}
 	/**
 	 * Return track assignment as json.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.b,
-			t: this.t,
-			d: this.d
+			b: temp.b,
+			t: temp.t,
+			d: temp.d
 		};
 	}
 	/**
 	 * Push track assignment to current difficulty.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
 		currentDiff.customEvents ??= [];
-		currentDiff.customEvents.push(this);
+		currentDiff.customEvents.push(temp);
 	}
 	/**
 	 * Convert custom event json into player track assignment.
@@ -405,21 +421,25 @@ export class AnimateComponent {
 	}
 	/**
 	 * Return the animation as json.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.b,
-			t: this.t,
-			d: this.d
+			b: temp.b,
+			t: temp.t,
+			d: temp.d
 		};
 	}
 	/**
 	 * Push the animation to the current difficulty.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
 		currentDiff.customEvents ??= [];
-		currentDiff.customEvents.push(this);
+		currentDiff.customEvents.push(temp);
 	}
 	/**
 	 * Convert custom event json into a component animation.

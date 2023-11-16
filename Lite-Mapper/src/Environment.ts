@@ -17,7 +17,8 @@ import {
 	Vec3,
 	Vec4,
 	repeat,
-	rotateVector
+	rotateVector,
+	copy
 } from "./LiteMapper.ts";
 
 export class Environment {
@@ -62,16 +63,19 @@ export class Environment {
 	geometry?: GeometryObjectJSON;
 	/**
 	 * Return your environment object as an object.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return() {
-		jsonPrune(this);
-		return this;
+	return(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
+		return temp;
 	}
 	/**
 	 * Push the environment to the current diff.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
-		currentDiff.environments?.push(this.return());
+	push(dupe = true) {
+		currentDiff.environments?.push(this.return(dupe));
 	}
 }
 

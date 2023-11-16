@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { jsonPrune, currentDiff, Vec3, Vec4, Easing, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, repeat, lerp } from "./LiteMapper.ts";
+import { jsonPrune, currentDiff, Vec3, Vec4, Easing, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, repeat, lerp, copy } from "./LiteMapper.ts";
 
 class TwoWayMap {
 	private reverseMap: Record<any, any>;
@@ -107,15 +107,17 @@ export class LightEvent {
 	}
 	/**
 	 * Return the raw Json of the event.
+	 * @param dupe Whether to copy the object on return.
 	 */
-	return(): LightEventType {
-		jsonPrune(this);
+	return(dupe = true): LightEventType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
 		return {
-			b: this.time,
-			et: LightEventTypesMap.get(this.type),
-			i: LightEventValuesMap.get(this.value),
-			f: this.floatValue,
-			customData: this.customData
+			b: temp.time,
+			et: LightEventTypesMap.get(temp.type),
+			i: LightEventValuesMap.get(temp.value),
+			f: temp.floatValue,
+			customData: temp.customData
 		};
 	}
 	JSONToClass(x: LightEventType) {
@@ -129,10 +131,12 @@ export class LightEvent {
 	}
 	/**
 	 * Push the event to the current diff.
+	 * @param dupe Whether to copy the object on push.
 	 */
-	push() {
-		jsonPrune(this);
-		currentDiff.events.push(this);
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
+		currentDiff.events.push(temp);
 	}
 }
 
