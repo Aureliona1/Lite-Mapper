@@ -252,14 +252,6 @@ export function arrFromFunction(length: number, func: (x: number) => number) {
 	});
 }
 
-export function shuffle<T extends number[]>(array: T, seed: number = Math.random()): T {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(seedRNG(0, 1, seed * Math.PI * (i + 1)) * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-	return array as T;
-}
-
 /**
  * Random number generator with optional seed for reproducible results.
  * @param min The minimun possible number to generate (inclusive).
@@ -618,5 +610,50 @@ export class ArrayProcess<T extends number[]> {
 			temp[i] = lerp(temp[i], end[i], factor[i], ease);
 		});
 		return temp as T;
+	}
+	/**
+	 * Randomly reorder elements in the array. Does not modify the original array.
+	 * @param seed The seed for the random shuffling.
+	 */
+	shuffle(seed: number = Math.random()) {
+		const temp = copy(this.array);
+		for (let i = temp.length - 1; i > 0; i--) {
+			const j = Math.floor(seedRNG(0, 1, seed * Math.PI * (i + 1)) * (i + 1));
+			[temp[i], temp[j]] = [temp[j], temp[i]];
+		}
+		return temp as T;
+	}
+	/**
+	 * Sorts the array from lowest to highest.
+	 * @param modifyOriginal Whether or not to affec the original array.
+	 */
+	sortNumeric(modifyOriginal?: boolean) {
+		if (modifyOriginal) {
+			this.array = this.array.sort((a, b) => {
+				if (a > b) return 1;
+				if (a < b) return -1;
+				return 0;
+			});
+		}
+		const temp = copy(this.array);
+		return temp.sort((a, b) => {
+			if (a > b) return 1;
+			if (a < b) return -1;
+			return 0;
+		}) as T;
+	}
+	/**
+	 * Finds the maximum number in the array.
+	 */
+	max() {
+		const temp = new ArrayProcess(this.array).sortNumeric();
+		return temp[temp.length - 1];
+	}
+	/**
+	 * Finds the minimum number in the array.
+	 */
+	min() {
+		const temp = new ArrayProcess(this.array).sortNumeric();
+		return temp[0];
 	}
 }
