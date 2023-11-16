@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, currentDiff, start, ye3 } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, copy, currentDiff, start, ye3 } from "./LiteMapper.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -288,9 +288,9 @@ export const random = (min: number, max: number) => Math.random() * (max - min) 
  * @returns Vec3 - The rotation for the object at point1.
  */
 export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
-	const vector = [point2[0] - point1[0], point2[1] - point1[1], point2[2] - point1[2]] as Vec3;
-	const angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0];
-	const pitchPoint = rotateVector(vector, [0, -angle[1], 0]);
+	const vector = new ArrayProcess(point2).subtract(point1),
+		angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0],
+		pitchPoint = rotateVector(vector, [0, -angle[1], 0]);
 	angle[0] = (-180 * Math.atan2(pitchPoint[1], pitchPoint[2])) / Math.PI;
 	if (defaultAngle) {
 		return [angle[0] - defaultAngle[0], angle[1] - defaultAngle[1], angle[2] - defaultAngle[2]] as Vec3;
@@ -535,5 +535,88 @@ export function LMCache(process: "Read" | "Write", name: string, data?: any) {
 			LMLog(`LM_Cache suffered from error, invalidating cache: ${e}`, "Error");
 			Deno.writeTextFileSync(fileName, JSON.stringify({}));
 		}
+	}
+}
+
+export class ArrayProcess<T extends number[]> {
+	/**
+	 * Run several mathematical operations on an array.
+	 * @param array The source array.
+	 */
+	constructor(public array: T) {}
+	/**
+	 * Add another array or a single number to the original array. Does not modify the original array.
+	 * @param arr The array or number to add to original array.
+	 */
+	add(arr: T | number) {
+		const temp = copy(this.array);
+		if (typeof arr == "number") {
+			return temp.map(x => x + arr) as T;
+		} else {
+			repeat(temp.length, i => {
+				temp[i] += arr[i];
+			});
+			return temp as T;
+		}
+	}
+	/**
+	 * Subtract another array or a single number from the original array. Does not modify the original array.
+	 * @param arr The array or number to add to original array.
+	 */
+	subtract(arr: T | number) {
+		const temp = copy(this.array);
+		if (typeof arr == "number") {
+			return temp.map(x => x - arr) as T;
+		} else {
+			repeat(temp.length, i => {
+				temp[i] -= arr[i];
+			});
+			return temp as T;
+		}
+	}
+	/**
+	 * Multiply original array by another array or a number. Does not modify the original array.
+	 * @param arr The array or number to multiply to original array.
+	 */
+	multiply(arr: T | number) {
+		const temp = copy(this.array);
+		if (typeof arr == "number") {
+			return temp.map(x => x * arr) as T;
+		} else {
+			repeat(temp.length, i => {
+				temp[i] *= arr[i];
+			});
+			return temp as T;
+		}
+	}
+	/**
+	 * Divide original array by another array or a number. Does not modify the original array.
+	 * @param arr The array or number to divide original array by.
+	 */
+	divide(arr: T | number) {
+		const temp = copy(this.array);
+		if (typeof arr == "number") {
+			return temp.map(x => x / arr) as T;
+		} else {
+			repeat(temp.length, i => {
+				temp[i] /= arr[i];
+			});
+			return temp as T;
+		}
+	}
+	/**
+	 * Interpolate array to another array or a number by a certain fraction. Does not modify the original array.
+	 * @param arr The ending arr or number of the interpolation.
+	 * @param fraction The fraction, or array of fractions to interpolate by.
+	 * @param ease Optional easing.
+	 */
+	lerp(arr: T | number, fraction: T | number, ease: Easing = "easeLinear") {
+		const end: T = typeof arr == "number" ? (new Array(this.array.length).fill(arr) as T) : arr,
+			factor: T = typeof fraction == "number" ? (new Array(this.array.length).fill(fraction) as T) : fraction,
+			temp = copy(this.array);
+		repeat(temp.length, i => {
+			temp[i] = lerp(temp[i], end[i], factor[i], ease);
+		});
+		return temp as T;
 	}
 }

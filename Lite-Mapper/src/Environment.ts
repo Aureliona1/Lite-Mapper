@@ -18,7 +18,8 @@ import {
 	Vec4,
 	repeat,
 	rotateVector,
-	copy
+	copy,
+	ArrayProcess
 } from "./LiteMapper.ts";
 
 export class Environment {
@@ -252,8 +253,7 @@ export class Polygon {
 				cube.track = this.track;
 			}
 			const angle = (Math.PI * 2 * side) / this.sides;
-			cube.position = rotateVector([-Math.sin(angle) * this.radius, -Math.cos(angle) * this.radius, 0], this.rotation);
-			cube.position = [cube.position[0] + this.position[0], cube.position[1] + this.position[1], cube.position[2] + this.position[2]];
+			cube.position = new ArrayProcess(rotateVector([-Math.sin(angle) * this.radius, -Math.cos(angle) * this.radius, 0], this.rotation)).add(this.position);
 			cube.scale = [(this.innercorners ? this.radius - this.scale[1] / 2 : this.radius + this.scale[1] / 2) * Math.tan(Math.PI / this.sides) * 2, this.scale[1], this.scale[2]];
 			cube.rotation = [this.rotation[0], this.rotation[1], this.rotation[2] - (180 * angle) / Math.PI];
 			returnArray.push(cube);
