@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LightEvent, Note, RawMapJSON, Wall, classMap, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -383,6 +383,7 @@ export class BeatMap {
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, undefined, format ? 4 : undefined));
 		this.info.save();
+		LMLog("Map saved...");
 	}
 }
 
