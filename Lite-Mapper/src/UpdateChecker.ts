@@ -3,7 +3,7 @@ import { LMLog } from "./LiteMapper.ts";
 
 export async function LMUpdateCheck() {
 	try {
-		const raw = (await fetch("https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/main/src/LiteMapper/updateChecker.ts")).text(),
+		const raw = (await fetch("https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/main/Lite-Mapper/src/UpdateChecker.ts")).text(),
 			remoteVer = eval(`${/".+";/.exec(await raw)}`),
 			localVer = ver;
 		if (localVer !== remoteVer) {
