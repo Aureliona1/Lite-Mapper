@@ -11,5 +11,6 @@ export async function LMUpdateCheck() {
 		}
 	} catch (e) {
 		LMLog(e, "Error");
+		LMLog("This error is fine, it generally just indicates a wifi error for Lite-Mapper's update checker");
 	}
 }
