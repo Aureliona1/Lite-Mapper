@@ -625,16 +625,8 @@ export class ArrayProcess<T extends number[]> {
 	}
 	/**
 	 * Sorts the array from lowest to highest.
-	 * @param modifyOriginal Whether or not to affec the original array.
 	 */
-	sortNumeric(modifyOriginal?: boolean) {
-		if (modifyOriginal) {
-			this.array = this.array.sort((a, b) => {
-				if (a > b) return 1;
-				if (a < b) return -1;
-				return 0;
-			});
-		}
+	sortNumeric() {
 		const temp = copy(this.array);
 		return temp.sort((a, b) => {
 			if (a > b) return 1;
