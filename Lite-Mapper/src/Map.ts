@@ -307,12 +307,17 @@ export class BeatMap {
 	get useNormalEventsAsCompatibleEvents() {
 		return this.map.useNormalEventsAsCompatibleEvents;
 	}
+
+	optimize = {
+		materials: true
+	};
+
 	/**
 	 * Save your map changes and write the output file.
 	 * @param format Optional to format the json of the output (massively increases the file size).
 	 */
-	save(optimizeMats = true, format?: boolean) {
-		if (optimizeMats) {
+	save(format?: boolean) {
+		if (this.optimize.materials) {
 			optimizeMaterials();
 		}
 		this.rawMap.customData ??= {};
