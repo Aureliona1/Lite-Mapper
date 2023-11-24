@@ -627,18 +627,43 @@ export class ArrayProcess<T extends number[]> {
 			return 0;
 		}) as T;
 	}
-	/**
-	 * Finds the maximum number in the array.
-	 */
-	max() {
-		const temp = new ArrayProcess(this.array).sortNumeric();
-		return temp[temp.length - 1];
+	get max() {
+		return new ArrayProcess(this.array).sortNumeric()[this.array.length - 1];
 	}
-	/**
-	 * Finds the minimum number in the array.
-	 */
-	min() {
+	get min() {
+		return new ArrayProcess(this.array).sortNumeric()[0];
+	}
+	get range() {
+		return this.max - this.min;
+	}
+	get mean() {
+		let out = 0;
+		repeat(this.array.length, i => {
+			out += this.array[i];
+		});
+		return out / this.array.length;
+	}
+	get median() {
 		const temp = new ArrayProcess(this.array).sortNumeric();
-		return temp[0];
+		return temp[Math.floor(temp.length / 2)];
+	}
+	get mode() {
+		let arr: number[][] = [];
+		const set = [...new Set(this.array)];
+		repeat(set.length, i => {
+			let instances = 0;
+			repeat(this.array.length, j => {
+				if (set[i] == this.array[j]) {
+					instances++;
+				}
+			});
+			arr.push([set[i], instances]);
+		});
+		arr = arr.sort((a, b) => {
+			if (a[1] > b[1]) return 1;
+			if (a[1] < b[1]) return -1;
+			return 0;
+		});
+		return arr[arr.length - 1][0];
 	}
 }
