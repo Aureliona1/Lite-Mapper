@@ -271,14 +271,14 @@ export class BeatMap {
 		this.map.customData = x;
 	}
 	get customData() {
-		return this.map.customData ? this.map.customData : {};
+		return this.map.customData ?? {};
 	}
 
 	set customEvents(x) {
 		this.customData.customEvents = x;
 	}
 	get customEvents() {
-		return this.customData?.customEvents;
+		return this.customData.customEvents ?? [];
 	}
 
 	set environments(x) {
@@ -373,9 +373,6 @@ export class BeatMap {
 		this.rawMap.customData.fakeColorNotes ??= [];
 		this.rawMap.customData.fakeObstacles ??= [];
 		this.rawMap.customData.customEvents ??= [];
-		if (!this.rawMap.customData.customEvents) {
-			this.rawMap.customData.customEvents = [];
-		}
 		this.notes.forEach(n => {
 			jsonPrune(n);
 			this.rawMap.colorNotes.push(n.return());

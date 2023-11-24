@@ -111,7 +111,6 @@ export class AnimateTrack {
 	 */
 	push(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(temp);
 	}
 	/**
@@ -195,7 +194,6 @@ export class AssignPathAnimation {
 	 */
 	push(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(temp);
 	}
 	/**
@@ -274,7 +272,6 @@ export class AssignTrackParent {
 	 */
 	push(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(temp);
 	}
 	/**
@@ -347,7 +344,6 @@ export class AssignPlayerToTrack {
 	 */
 	push(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(temp);
 	}
 	/**
@@ -438,7 +434,6 @@ export class AnimateComponent {
 	 */
 	push(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents ??= [];
 		currentDiff.customEvents.push(temp);
 	}
 	/**
