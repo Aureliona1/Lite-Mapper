@@ -611,7 +611,7 @@ export class ArrayProcess<T extends number[]> {
 	shuffle(seed: number = Math.random()) {
 		const temp = copy(this.array);
 		for (let i = temp.length - 1; i > 0; i--) {
-			const j = Math.floor(seedRNG(0, 1, seed * Math.PI * (i + 1)) * (i + 1));
+			const j = random(0, 1, seed * Math.PI * (i + 1), 0) * (i + 1);
 			[temp[i], temp[j]] = [temp[j], temp[i]];
 		}
 		return temp as T;
