@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -311,6 +311,31 @@ export class BeatMap {
 	optimize = {
 		materials: true
 	};
+
+	get settings() {
+		this.info.raw._difficultyBeatmapSets.forEach(x => {
+			x._difficultyBeatmaps.forEach(y => {
+				if (y._beatmapFilename == this.outputDiff + ".dat") {
+					y._customData ??= {};
+					if (y._customData["_settings"]) {
+						return y._customData["_settings"] as HeckSettings;
+					}
+				}
+			});
+		});
+		return {} as HeckSettings;
+	}
+
+	set settings(x) {
+		this.info.raw._difficultyBeatmapSets.forEach(a =>
+			a._difficultyBeatmaps.forEach(y => {
+				if (y._beatmapFilename == this.outputDiff + ".dat") {
+					y._customData ??= {};
+					y._customData["_settings"] = x;
+				}
+			})
+		);
+	}
 
 	/**
 	 * Save your map changes and write the output file.
