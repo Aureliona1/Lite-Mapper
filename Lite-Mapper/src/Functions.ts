@@ -257,20 +257,22 @@ export function arrFromFunction(length: number, func: (x: number) => number) {
  * @param min The minimun possible number to generate (inclusive).
  * @param max The maximum possible number to generate (exclusive).
  * @param seed The optional seed to apply to the generator (leave blank for random).
+ * @param precision (Default - 3) The number of decimals in the random number.
  * @returns Random number.
  */
-export function seedRNG(min: number, max: number, seed: number | string = Date.now()) {
+export function seedRNG(min: number, max: number, seed: number | string = Date.now(), precision = 3) {
 	[min, max] = min > max ? [max, min] : [min, max];
-	return new Seed(seed.toString()).randomFloat(min, max);
+	return Math.round(new Seed(seed.toString()).randomFloat(min, max) * Math.pow(10, precision)) / Math.pow(10, precision);
 }
 
 /**
  * Generate a random number.
  * @param min The minimum possible number to generate (inclusive).
  * @param max The maximum possible number to generate (exclusive).
+ * @param precision (Default - 3) The number of decimals in the random number.
  * @returns Random number.
  */
-export const random = (min: number, max: number) => Math.random() * (max - min) + min;
+export const random = (min: number, max: number, precision = 3) => Math.round((Math.random() * (max - min) + min) * Math.pow(10, precision)) / Math.pow(10, precision);
 
 /**
  * Finds the rotation of an object at point1 so that it faces point2.
