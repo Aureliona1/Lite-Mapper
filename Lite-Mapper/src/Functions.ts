@@ -630,6 +630,16 @@ export class ArrayProcess<T extends number[]> {
 	get max() {
 		return new ArrayProcess(this.array).sortNumeric()[this.array.length - 1];
 	}
+	set max(x) {
+		this.array.forEach(a => {
+			a = x > a ? a : x;
+		});
+	}
+	set min(x) {
+		this.array.forEach(a => {
+			a = x < a ? a : x;
+		});
+	}
 	get min() {
 		return new ArrayProcess(this.array).sortNumeric()[0];
 	}
