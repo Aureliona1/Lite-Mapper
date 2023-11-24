@@ -45,12 +45,6 @@ export class BeatMap {
 	};
 
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", checkForUpdate = true) {
-		if (/[^3].+/.test(this.version)) {
-			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
-		}
-		if (checkForUpdate) {
-			LMUpdateCheck();
-		}
 		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		this.rawMap.basicBeatmapEvents.forEach(e => {
@@ -102,6 +96,7 @@ export class BeatMap {
 				});
 			}
 		}
+		this.map.version = this.rawMap.version;
 		this.map.bpmEvents = this.rawMap.bpmEvents;
 		this.map.basicEventTypesWithKeywords = this.rawMap.basicEventTypesWithKeywords;
 		this.map.colorBoostBeatmapEvents = this.rawMap.colorBoostBeatmapEvents;
@@ -112,7 +107,9 @@ export class BeatMap {
 		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
 		this.map.waypoints = this.rawMap.waypoints;
 		currentDiff = this;
-
+		if (/[^3]\.\d\.\d/.test(this.version)) {
+			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
+		}
 		let inExists = false,
 			outExists = false;
 		this.info.raw._difficultyBeatmapSets.forEach(x => {
@@ -130,6 +127,9 @@ export class BeatMap {
 		}
 		if (!outExists) {
 			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
+		}
+		if (checkForUpdate) {
+			LMUpdateCheck();
 		}
 	}
 
