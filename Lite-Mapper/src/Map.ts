@@ -317,9 +317,7 @@ export class BeatMap {
 			x._difficultyBeatmaps.forEach(y => {
 				if (y._beatmapFilename == this.outputDiff + ".dat") {
 					y._customData ??= {};
-					if (y._customData["_settings"]) {
-						return y._customData["_settings"] as HeckSettings;
-					}
+					return (y._customData["_settings"] ?? {}) as HeckSettings;
 				}
 			});
 		});
@@ -332,6 +330,7 @@ export class BeatMap {
 				if (y._beatmapFilename == this.outputDiff + ".dat") {
 					y._customData ??= {};
 					y._customData["_settings"] = x;
+					jsonPrune(y._customData);
 				}
 			})
 		);
