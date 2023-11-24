@@ -257,7 +257,7 @@ export function arrFromFunction(length: number, func: (x: number) => number) {
  * @param min The minimun possible number to generate (inclusive).
  * @param max The maximum possible number to generate (exclusive).
  * @param seed The optional seed to apply to the generator (leave blank for random).
- * @param precision (Default - 3) The number of decimals in the random number.
+ * @param precision (Default - 3) The number of decimals in the random number. This can be negative to round to different values, e.g., -1 will round to the nearest 10, -2 will round to the nearest 100 etc.
  * @returns Random number.
  */
 export function seedRNG(min: number, max: number, seed: number | string = Date.now(), precision = 3) {
@@ -269,7 +269,7 @@ export function seedRNG(min: number, max: number, seed: number | string = Date.n
  * Generate a random number.
  * @param min The minimum possible number to generate (inclusive).
  * @param max The maximum possible number to generate (exclusive).
- * @param precision (Default - 3) The number of decimals in the random number.
+ * @param precision (Default - 3) The number of decimals in the random number. This can be negative to round to different values, e.g., -1 will round to the nearest 10, -2 will round to the nearest 100 etc.
  * @returns Random number.
  */
 export const random = (min: number, max: number, precision = 3) => Math.round((Math.random() * (max - min) + min) * Math.pow(10, precision)) / Math.pow(10, precision);
