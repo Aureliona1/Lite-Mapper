@@ -10,7 +10,7 @@ export class Note {
 	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public angleOffset = 0) {}
-	public customData: NoteCustomProps = {};
+	customData: NoteCustomProps = {};
 
 	get offset() {
 		return this.customData.noteJumpStartBeatOffset;
@@ -156,7 +156,8 @@ export class Bomb {
 	 * @param pos The [x, y] of the bomb.
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
-	public customData: NoteCustomProps = {};
+	customData: NoteCustomProps = {};
+
 	get offset() {
 		return this.customData.noteJumpStartBeatOffset;
 	}
@@ -296,7 +297,7 @@ export class Wall {
 	 * @param height The height of the wall.
 	 */
 	constructor(public time = 0, public pos = [0, 0], public duration = 1, public width = 1, public height = 1) {}
-	public customData: WallCustomProps = {};
+	customData: WallCustomProps = {};
 
 	set scale(x) {
 		this.customData.size = x;
@@ -430,10 +431,11 @@ export class Arc {
 	 * @param tailDirection The direction of the end of the arc.
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public headDirection = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection = 0) {}
-	public headMultiplier = 1;
+	headMultiplier = 1;
 	tailMultiplier = 1;
 	anchorMode = 1;
 	customData: SliderCustomProps = {};
+
 	get offset() {
 		return this.customData.noteJumpStartBeatOffset;
 	}
@@ -587,8 +589,9 @@ export class Chain {
 	 * @param segments The number of segments in the chain.
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
-	public squishFactor = 1;
+	squishFactor = 1;
 	customData: SliderCustomProps = {};
+
 	get offset() {
 		return this.customData.noteJumpStartBeatOffset;
 	}

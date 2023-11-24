@@ -50,7 +50,7 @@ export class Environment {
 		}
 		return this;
 	}
-	public id?: string;
+	id?: string;
 	lookupMethod?: LookupMethod;
 	active?: boolean;
 	duplicate?: number;
@@ -81,10 +81,10 @@ export class Environment {
 }
 
 export class Material {
-	public color?: Vec3 | Vec4;
-	public track?: string;
-	public shaderKeywords?: string[];
-	public shader: MaterialShader = "Standard";
+	color?: Vec3 | Vec4;
+	track?: string;
+	shaderKeywords?: string[];
+	shader: MaterialShader = "Standard";
 	BTSPillar(shaderKeywords?: KeywordsBTSPillar, color?: Vec3 | Vec4, track?: string) {
 		if (color) {
 			this.color = color;

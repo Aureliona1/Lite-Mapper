@@ -56,7 +56,7 @@ export class LightEvent {
 	 * @param time The time of the event.
 	 */
 	constructor(public time = 0) {}
-	public type: LightEventTypes = "BackLasers";
+	type: LightEventTypes = "BackLasers";
 	value: LightEventValues = "OnRed";
 	floatValue = 1;
 	customData: LightEventCustomData = {};

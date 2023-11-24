@@ -396,7 +396,7 @@ export class BeatMap {
 }
 
 class Info {
-	public raw: infoJSON;
+	raw: infoJSON;
 	constructor() {
 		this.raw = JSON.parse(Deno.readTextFileSync("info.dat"));
 	}
