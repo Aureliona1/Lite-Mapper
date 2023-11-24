@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -314,9 +314,9 @@ export class BeatMap {
 
 	/**
 	 * Save your map changes and write the output file.
-	 * @param format Optional to format the json of the output (massively increases the file size).
+	 * @param formatJSON Optional to format the json of the output (massively increases the file size).
 	 */
-	save(format?: boolean) {
+	save(formatJSON?: boolean, copyMapTo?: string) {
 		if (this.optimize.materials) {
 			optimizeMaterials();
 		}
@@ -386,9 +386,12 @@ export class BeatMap {
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 		jsonPrune(this.rawMap.customData);
 
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, undefined, format ? 4 : undefined));
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, undefined, formatJSON ? 4 : undefined));
 		this.info.save();
 		LMLog("Map saved...");
+		if (copyMapTo) {
+			copyToDir(copyMapTo);
+		}
 	}
 }
 
