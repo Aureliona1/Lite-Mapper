@@ -285,42 +285,42 @@ export class BeatMap {
 		this.customData.environment = x;
 	}
 	get environments() {
-		return this.customData?.environment ? this.customData.environment : [];
+		return this.customData.environment ?? [];
 	}
 
 	set materials(x) {
 		this.customData.materials = x;
 	}
 	get materials() {
-		return this.customData?.materials ? this.customData.materials : {};
+		return this.customData.materials ?? {};
 	}
 
 	set fakeNotes(x) {
 		this.customData.fakeColorNotes = x;
 	}
 	get fakeNotes() {
-		return this.customData?.fakeColorNotes ? this.customData.fakeColorNotes : [];
+		return this.customData.fakeColorNotes ?? [];
 	}
 
 	set fakeBombs(x) {
 		this.customData.fakeBombNotes = x;
 	}
 	get fakeBombs() {
-		return this.customData?.fakeBombNotes ? this.customData.fakeBombNotes : [];
+		return this.customData.fakeBombNotes ?? [];
 	}
 
 	set fakeWalls(x) {
 		this.customData.fakeObstacles = x;
 	}
 	get fakeWalls() {
-		return this.customData?.fakeObstacles ? this.customData.fakeObstacles : [];
+		return this.customData.fakeObstacles ?? [];
 	}
 
 	set fakeChains(x) {
 		this.customData.fakeBurstSliders = x;
 	}
 	get fakeChains() {
-		return this.customData?.fakeBurstSliders ? this.customData.fakeBurstSliders : [];
+		return this.customData.fakeBurstSliders ?? [];
 	}
 
 	set useNormalEventsAsCompatibleEvents(x) {

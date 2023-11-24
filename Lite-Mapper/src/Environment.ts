@@ -76,7 +76,7 @@ export class Environment {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.environments?.push(this.return(dupe));
+		currentDiff.environments.push(this.return(dupe));
 	}
 }
 
