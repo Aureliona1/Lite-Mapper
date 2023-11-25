@@ -269,6 +269,8 @@ export type baseModifiers =
 	| "baseEnvironmentColorWBoost"
 	| "baseObstaclesColor";
 
+export type LightKeyframeFrameType = [number, number, number, number, number, Easing?, ("HSV" | "RGB")?];
+
 // Object Properties
 
 export type ObjectAnimProps = {
