@@ -7,7 +7,6 @@ export * from "./Environment.ts";
 export * from "./Lights.ts";
 export * from "./Objects.ts";
 export * from "./Consts.ts";
-export * from "./LightFrames.ts";
 
 // Functions stolen from ReMapper >:)
 
