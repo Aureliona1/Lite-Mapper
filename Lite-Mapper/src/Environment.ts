@@ -86,119 +86,65 @@ export class Material {
 	shaderKeywords?: string[];
 	shader: MaterialShader = "Standard";
 	BTSPillar(shaderKeywords?: KeywordsBTSPillar, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "BTSPillar";
 		return this as GeometryMaterialJSON;
 	}
 	OpaqueLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "OpaqueLight";
 		return this as GeometryMaterialJSON;
 	}
 	TransparentLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "TransparentLight";
 		return this as GeometryMaterialJSON;
 	}
 	BaseWater(shaderKeywords?: KeywordsBaseWater, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "BaseWater";
 		return this as GeometryMaterialJSON;
 	}
 	BillieWater(shaderKeywords?: KeywordsBillieWater, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "BillieWater";
 		return this as GeometryMaterialJSON;
 	}
 	Standard(shaderKeywords?: KeywordsStandard, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "Standard";
 		return this as GeometryMaterialJSON;
 	}
 	InterscopeConcrete(shaderKeywords?: KeywordsInterscopeConcrete, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "InterscopeConcrete";
 		return this as GeometryMaterialJSON;
 	}
 	InterscopeCar(shaderKeywords?: KeywordsInterscopeCar, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "InterscopeCar";
 		return this as GeometryMaterialJSON;
 	}
 	WaterfallMirror(shaderKeywords?: KeywordsWaterfallMirror, color?: Vec3 | Vec4, track?: string) {
-		if (color) {
-			this.color = color;
-		}
-		if (track) {
-			this.track = track;
-		}
-		if (shaderKeywords) {
-			this.shaderKeywords = shaderKeywords;
-		}
+		this.color = color ?? this.color;
+		this.track = track ?? this.track;
+		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
 		this.shader = "WaterfallMirror";
 		return this as GeometryMaterialJSON;
 	}
