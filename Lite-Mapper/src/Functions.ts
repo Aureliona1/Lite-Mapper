@@ -621,11 +621,7 @@ export class ArrayProcess<T extends number[]> {
 	 */
 	sortNumeric() {
 		const temp = copy(this.array);
-		return temp.sort((a, b) => {
-			if (a > b) return 1;
-			if (a < b) return -1;
-			return 0;
-		}) as T;
+		return temp.sort((a, b) => a - b) as T;
 	}
 	get max() {
 		return new ArrayProcess(this.array).sortNumeric()[this.array.length - 1];
@@ -669,11 +665,7 @@ export class ArrayProcess<T extends number[]> {
 			});
 			arr.push([set[i], instances]);
 		});
-		arr = arr.sort((a, b) => {
-			if (a[1] > b[1]) return 1;
-			if (a[1] < b[1]) return -1;
-			return 0;
-		});
+		arr = arr.sort((a, b) => a[1] - b[1]);
 		return arr[arr.length - 1][0];
 	}
 }

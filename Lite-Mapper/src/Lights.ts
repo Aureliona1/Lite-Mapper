@@ -261,11 +261,7 @@ export class LightKeyframe {
 	constructor(public time = 0, public duration = 1, public type: LightEventTypes = "BackLasers", public ids?: number | number[]) {}
 	private animation: LightKeyframeFrameType[] = [];
 	get keyframes() {
-		return this.animation.sort((a, b) => {
-			if (a[4] > b[4]) return 1;
-			if (a[4] < b[4]) return -1;
-			return 0;
-		});
+		return this.animation.sort((a, b) => a[4] - b[4]);
 	}
 	set keyframes(x) {
 		this.animation = x;
