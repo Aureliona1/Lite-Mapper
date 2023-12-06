@@ -258,6 +258,13 @@ export function strobeGenerator(time: number, duration: number, density = 1, typ
 }
 
 export class LightKeyframe {
+	/**
+	 * Create a series of lighting events based on a keyframe system.
+	 * @param time The time to start the animation.
+	 * @param duration The duration of the animation.
+	 * @param type The light type to target.
+	 * @param ids The light id/s to target.
+	 */
 	constructor(public time = 0, public duration = 1, public type: LightEventTypes = "BackLasers", public ids?: number | number[]) {}
 	private animation: LightKeyframeFrameType[] = [];
 	get keyframes() {
