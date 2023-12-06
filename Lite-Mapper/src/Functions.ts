@@ -628,12 +628,12 @@ export class ArrayProcess<T extends number[]> {
 	}
 	set max(x) {
 		this.array.forEach(a => {
-			a = x > a ? a : x;
+			a = a > x ? x : a;
 		});
 	}
 	set min(x) {
 		this.array.forEach(a => {
-			a = x < a ? a : x;
+			a = a < x ? x : a;
 		});
 	}
 	get min() {
