@@ -317,20 +317,6 @@ export function runTime() {
 }
 
 /**
- * Converts a time in ms to years, weeks, days, etc...
- * @param ms Time in ms.
- */
-export function msToTime(ms: number) {
-	const seconds = Math.floor(ms / 1000),
-		minutes = Math.floor(seconds / 60),
-		hours = Math.floor(minutes / 60),
-		days = Math.floor(hours / 24),
-		weeks = Math.floor(days / 7),
-		years = Math.floor(weeks / 52);
-	return `Years: ${years}, Weeks: ${weeks % 52}, Days: ${days % 7}, Hours: ${hours % 24}, Minutes: ${minutes % 60}, Seconds: ${seconds % 60}, Ms: ${ms % 1000}`;
-}
-
-/**
  * Console log with appended LM message.
  * @param message Message to log.
  * @param error Optional error level.
