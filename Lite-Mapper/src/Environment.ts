@@ -207,3 +207,47 @@ export class Polygon {
 		return returnArray;
 	}
 }
+
+class staticFog {
+	private fog = new Environment().env("[0]Environment", "EndsWith");
+	private get components() {
+		this.fog.components ??= {};
+		this.fog.components.BloomFogEnvironment ??= {};
+		return this.fog.components.BloomFogEnvironment;
+	}
+	private set components(x) {
+		this.fog.components ??= {};
+		this.fog.components.BloomFogEnvironment ??= {};
+		this.fog.components.BloomFogEnvironment = x;
+	}
+	attenuation(x: number) {
+		this.components.attenuation = x;
+		return this;
+	}
+	height(x: number) {
+		this.components.height = x;
+		return this;
+	}
+	startY(x: number) {
+		this.components.startY = x;
+		return this;
+	}
+	offset(x: number) {
+		this.components.offset = x;
+		return this;
+	}
+	push() {
+		this.fog.push();
+	}
+}
+
+export class Fog {
+	static() {
+		return new staticFog();
+	}
+	assignFogTrack(track: string) {
+		const fog = new Environment().env("[0]Environment", "EndsWith");
+		fog.track = track;
+		fog.push();
+	}
+}
