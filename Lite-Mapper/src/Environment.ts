@@ -19,7 +19,8 @@ import {
 	repeat,
 	rotateVector,
 	copy,
-	ArrayProcess
+	ArrayProcess,
+	AnimateComponent
 } from "./LiteMapper.ts";
 
 export class Environment {
@@ -249,5 +250,8 @@ export class Fog {
 		const fog = new Environment().env("[0]Environment", "EndsWith");
 		fog.track = track;
 		fog.push();
+	}
+	animated(track = "fog") {
+		return new AnimateComponent(track);
 	}
 }
