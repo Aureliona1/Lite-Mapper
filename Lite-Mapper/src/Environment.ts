@@ -246,12 +246,13 @@ export class Fog {
 	static() {
 		return new staticFog();
 	}
-	assignFogTrack(track: string) {
+	private assignFogTrack(track: string) {
 		const fog = new Environment().env("[0]Environment", "EndsWith");
 		fog.track = track;
 		fog.push();
 	}
 	animated(track = "fog") {
+		this.assignFogTrack(track);
 		return new AnimateComponent(track);
 	}
 }
