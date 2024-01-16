@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, copy, currentDiff, start, ye3 } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, copy, currentDiff, start, ye3 } from "./LiteMapper.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -654,4 +654,45 @@ export class ArrayProcess<T extends number[]> {
 		arr = arr.sort((a, b) => a[1] - b[1]);
 		return arr[arr.length - 1][0];
 	}
+}
+
+/**
+ * Creates the basic conditions for animating the player and notes over a period of time.
+ * @param time The time to start the animation.
+ * @param duration The duration of the animation.
+ * @param playerTrack The name of the player track.
+ * @param noteTrack The name of the track to assign the notes.
+ * @returns Track animation for the player.
+ */
+export function PlayerAnim(time = 0, duration = 1, playerTrack = "player", noteTrack = "notes") {
+	new AssignPlayerToTrack(playerTrack, time).push();
+	new AssignTrackParent([noteTrack], playerTrack, time).push();
+	filterNotes(
+		false,
+		x => x.time >= time && x.time < time + duration,
+		x => {
+			x.track = noteTrack;
+		}
+	);
+	filterBombs(
+		false,
+		x => x.time >= time && x.time < time + duration,
+		x => {
+			x.track = noteTrack;
+		}
+	);
+	filterChains(
+		false,
+		x => x.time >= time && x.time < time + duration,
+		x => {
+			x.track = noteTrack;
+		}
+	);
+	filterArcs(
+		x => x.time >= time && x.time < time + duration,
+		x => {
+			x.track = noteTrack;
+		}
+	);
+	return new AnimateTrack(playerTrack, time, duration);
 }
