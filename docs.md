@@ -66,28 +66,6 @@ Then once you have made all the changes you would like, you can push the note to
 note.push();
 ```
 
-Due to the way that Lite-Mapper handles objects, you will need to re-initialize the object every time you want to make changes.
-So, this will work:
-
-```js
-repeat(10, i => {
-	const note = new Note();
-	note.time = i;
-	note.push();
-});
-```
-
-But this will not:
-
-```js
-const note = new Note();
-repeat(10, i => {
-	note.time = i;
-	note.push();
-});
-// Every note will have the same time value.
-```
-
 ### Environment / Geometry
 
 Lite-Mapper has a class for creating environment and geometry objects.
@@ -95,7 +73,7 @@ Lite-Mapper has a class for creating environment and geometry objects.
 Similar to other objects, you need to initialize the environment first.
 
 ```js
-const env = new Environment().env();
+const env = new Environment();
 ```
 
 Then you can make changes to the object, `Environment()` has methods for specifically creating an environment object or a geometry object.
