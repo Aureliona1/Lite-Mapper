@@ -149,6 +149,15 @@ export class Material {
 		this.shader = "WaterfallMirror";
 		return this;
 	}
+	/**
+	 * Import raw material json into a class.
+	 */
+	import(raw: GeometryMaterialJSON) {
+		return raw as Material;
+	}
+	/**
+	 * Return the class as json.
+	 */
 	return() {
 		const out: GeometryMaterialJSON = {
 			color: this.color,
@@ -159,6 +168,10 @@ export class Material {
 		jsonPrune(out);
 		return out;
 	}
+	/**
+	 * Push the material to the current diff.
+	 * @param name The name of the material.
+	 */
 	push(name: string) {
 		currentDiff.materials[name] = this.return();
 	}
