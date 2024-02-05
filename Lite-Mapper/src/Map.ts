@@ -1,11 +1,11 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, RawMapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
 	start = 0;
 
 export class BeatMap {
-	private rawMap: RawMapJSON = {
+	private rawMap: V3MapJSON = {
 		version: "3.2.0",
 		bpmEvents: [],
 		rotationEvents: [],
@@ -363,7 +363,7 @@ export class BeatMap {
 	 * @param diff The name of the input difficulty to add elements from.
 	 */
 	addInputDiff(diff: DiffNames) {
-		const input: RawMapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
+		const input: V3MapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
 		input.basicBeatmapEvents.forEach(e => {
 			new LightEvent().JSONToClass(e).push();
 		});

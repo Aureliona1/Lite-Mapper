@@ -91,7 +91,51 @@ export type infoJSON = {
 	}[];
 };
 
-export type RawMapJSON = {
+export type V2MapJSON = {
+	_version: string;
+	_notes: {
+		_time: number;
+		_lineIndex: number;
+		_lineLayer: number;
+		_type: number;
+		_cutDirection: number;
+		_customData?: Record<any, any>;
+	}[];
+	_sliders: {
+		_colorType: number;
+		_headTime: number;
+		_headLineIndex: number;
+		_headLineLayer: number;
+		_headControlPointLengthMultiplier: number;
+		_headCutDirection: number;
+		_tailTime: number;
+		_tailLineIndex: number;
+		_tailLineLayer: number;
+		_tailControlPointLengthMultiplier: number;
+		_tailCutDirection: number;
+		_sliderMidAnchorMode: number;
+		_customData?: Record<any, any>;
+	}[];
+	_obstacles: {
+		_time: number;
+		_lineIndex: number;
+		_type: number;
+		_duration: number;
+		_width: number;
+		_customData?: Record<any, any>;
+	}[];
+	_events: {
+		_time: number;
+		_type: number;
+		_value: number;
+		_floatValue: number;
+		_customData?: Record<any, any>;
+	}[];
+	_waypoints: any[];
+	_customData?: Record<any, any>;
+};
+
+export type V3MapJSON = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
 	rotationEvents: { b: number; e: number; r: number }[];
