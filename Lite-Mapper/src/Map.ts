@@ -359,6 +359,63 @@ export class BeatMap {
 	}
 
 	/**
+	 * Adds elements and object from an additional difficulty file to your map.
+	 * @param diff The name of the input difficulty to add elements from.
+	 */
+	addInputDiff(diff: DiffNames) {
+		const input: RawMapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
+		input.basicBeatmapEvents.forEach(e => {
+			new LightEvent().JSONToClass(e).push();
+		});
+		input.bombNotes.forEach(n => {
+			new Bomb().JSONToClass(n).push();
+		});
+		input.burstSliders.forEach(n => {
+			new Chain().JSONToClass(n).push();
+		});
+		input.colorNotes.forEach(n => {
+			new Note().JSONToClass(n).push();
+		});
+		input.obstacles.forEach(n => {
+			new Wall().JSONToClass(n).push();
+		});
+		input.sliders.forEach(n => {
+			new Arc().JSONToClass(n).push();
+		});
+		if (input.customData) {
+			if (input.customData.customEvents) {
+				this.customEvents ??= [];
+				input.customData.customEvents.forEach(n => {
+					this.customEvents.push(JSONToCE(n));
+				});
+			}
+			if (input.customData.environment) {
+				this.environments = [...this.environments, ...input.customData.environment];
+			}
+			if (input.customData.fakeBombNotes) {
+				input.customData.fakeBombNotes.forEach(n => {
+					new Bomb().JSONToClass(n).push(true);
+				});
+			}
+			if (input.customData.fakeBurstSliders) {
+				input.customData.fakeBurstSliders.forEach(n => {
+					new Chain().JSONToClass(n).push(true);
+				});
+			}
+			if (input.customData.fakeColorNotes) {
+				input.customData.fakeColorNotes.forEach(n => {
+					new Note().JSONToClass(n).push(true);
+				});
+			}
+			if (input.customData.fakeObstacles) {
+				input.customData.fakeObstacles.forEach(n => {
+					new Wall().JSONToClass(n).push(true);
+				});
+			}
+		}
+	}
+
+	/**
 	 * Save your map changes and write the output file.
 	 * @param formatJSON Optional to format the json of the output (massively increases the file size).
 	 * @param copyMapTo Optional directory to copy map contents to (useful when working outside of beat saber directory).
@@ -430,7 +487,7 @@ export class BeatMap {
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 		jsonPrune(this.rawMap.customData);
 
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, undefined, formatJSON ? 4 : undefined));
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, null, formatJSON ? 4 : undefined));
 		this.info.save();
 		LMLog("Map saved...");
 		if (copyMapTo) {
@@ -455,6 +512,6 @@ class Info {
 				}
 			});
 		});
-		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw, undefined, 4));
+		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw, null, 4));
 	}
 }
