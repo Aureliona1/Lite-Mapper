@@ -1,5 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
-
 import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
 
 // BeatMap types
@@ -75,7 +73,7 @@ export type infoJSON = {
 			};
 		};
 	}[];
-	_customData?: Record<any, any>;
+	_customData?: Record<string, unknown>;
 	_difficultyBeatmapSets: {
 		_beatmapCharacteristicName: BeatMapCharacteristicNames;
 		_difficultyBeatmaps: {
@@ -86,7 +84,7 @@ export type infoJSON = {
 			_noteJumpStartBeatOffset: number;
 			_beatmapColorSchemeIdx: number;
 			_environmentNameIdx: number;
-			_customData?: Record<any, any>;
+			_customData?: Record<string, unknown>;
 		}[];
 	}[];
 };
@@ -99,7 +97,7 @@ export type V2MapJSON = {
 		_lineLayer: number;
 		_type: number;
 		_cutDirection: number;
-		_customData?: Record<any, any>;
+		_customData?: Record<string, unknown>;
 	}[];
 	_sliders: {
 		_colorType: number;
@@ -114,7 +112,7 @@ export type V2MapJSON = {
 		_tailControlPointLengthMultiplier: number;
 		_tailCutDirection: number;
 		_sliderMidAnchorMode: number;
-		_customData?: Record<any, any>;
+		_customData?: Record<string, unknown>;
 	}[];
 	_obstacles: {
 		_time: number;
@@ -122,17 +120,17 @@ export type V2MapJSON = {
 		_type: number;
 		_duration: number;
 		_width: number;
-		_customData?: Record<any, any>;
+		_customData?: Record<string, unknown>;
 	}[];
 	_events: {
 		_time: number;
 		_type: number;
 		_value: number;
 		_floatValue: number;
-		_customData?: Record<any, any>;
+		_customData?: Record<string, unknown>;
 	}[];
-	_waypoints: any[];
-	_customData?: Record<any, any>;
+	_waypoints: unknown[];
+	_customData?: Record<string, unknown>;
 };
 
 export type V3MapJSON = {
@@ -144,18 +142,18 @@ export type V3MapJSON = {
 	obstacles: ObstacleType[];
 	sliders: SliderType[];
 	burstSliders: BurstSliderType[];
-	waypoints: any[];
+	waypoints: unknown[];
 	basicBeatmapEvents: LightEventType[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
 	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
 	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
 	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
-	basicEventTypesWithKeywords: Record<any, any>;
+	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData?: {
 		customEvents?: CustomEventType[];
 		environment?: Environment[];
-		materials?: Record<any, GeometryMaterialJSON>;
+		materials?: Record<string, GeometryMaterialJSON>;
 		fakeColorNotes?: NoteType[];
 		fakeBombNotes?: BombType[];
 		fakeObstacles?: ObstacleType[];
@@ -172,18 +170,18 @@ export type classMap = {
 	obstacles: Wall[];
 	sliders: Arc[];
 	burstSliders: Chain[];
-	waypoints: any[];
+	waypoints: unknown[];
 	basicBeatmapEvents: LightEvent[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
 	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
 	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
 	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
-	basicEventTypesWithKeywords: Record<any, any>;
+	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	customData?: {
 		customEvents?: Array<AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent>;
 		environment?: Environment[];
-		materials?: Record<any, GeometryMaterialJSON>;
+		materials?: Record<string, GeometryMaterialJSON>;
 		fakeColorNotes?: Note[];
 		fakeBombNotes?: Bomb[];
 		fakeObstacles?: Wall[];
