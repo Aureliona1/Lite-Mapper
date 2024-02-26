@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
 
 // BeatMap types
@@ -73,7 +74,7 @@ export type infoJSON = {
 			};
 		};
 	}[];
-	_customData?: Record<string, unknown>;
+	_customData?: Record<string, any>;
 	_difficultyBeatmapSets: {
 		_beatmapCharacteristicName: BeatMapCharacteristicNames;
 		_difficultyBeatmaps: {
@@ -84,7 +85,7 @@ export type infoJSON = {
 			_noteJumpStartBeatOffset: number;
 			_beatmapColorSchemeIdx: number;
 			_environmentNameIdx: number;
-			_customData?: Record<string, unknown>;
+			_customData?: Record<string, any>;
 		}[];
 	}[];
 };
@@ -130,7 +131,7 @@ export type V2MapJSON = {
 		_customData?: Record<string, unknown>;
 	}[];
 	_waypoints: unknown[];
-	_customData?: Record<string, unknown>;
+	_customData?: Record<string, any>;
 };
 
 export type V3MapJSON = {
