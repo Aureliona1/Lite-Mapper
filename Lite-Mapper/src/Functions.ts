@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec3, Wall, copy, currentDiff, start, ye3 } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, GeometryMaterialJSON, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, copy, currentDiff, start, ye3 } from "./LiteMapper.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -651,4 +651,45 @@ export function PlayerAnim(time = 0, duration = 1, playerTrack = "player", noteT
 		}
 	);
 	return new AnimateTrack(playerTrack, time, duration);
+}
+
+/**
+ * Abstraction of hypot function. Finds the distance between 2 vectors.
+ * @param vec1 The first vector.
+ * @param vec2 The second vector.
+ */
+export function distance(vec1: Vec3, vec2: Vec3) {
+	return Math.hypot(...new ArrayProcess(vec2).subtract(vec1));
+}
+
+/**
+ * Maps a value from an existing range into another.
+ * @param val The value.
+ * @param from The range from which to map.
+ * @param to THe range to map to.
+ */
+export function mapRange(val: number, from: Vec2, to: Vec2, precision: number = 5) {
+	return Math.floor(Math.pow(10, precision) * (((val - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0])) / Math.pow(10, precision);
+}
+
+/**
+ * Clamp a number within a range.
+ */
+export function clamp(val: number, range: Vec2) {
+	range = range[0] > range[1] ? [range[1], range[0]] : range;
+	return val < range[0] ? range[0] : val > range[1] ? range[1] : val;
+}
+
+/**
+ * EXPERIMENTAL!!!
+ * Convert color from hsv format to rgb.
+ * @param color The HSV color.
+ * @returns RGBA
+ */
+export function hsv2rgb(color: Vec4) {
+	const r: Vec3 = [0, 1, 0],
+		g = rotateVector(r, [0, 0, 120]),
+		b = rotateVector(r, [0, 0, -120]),
+		colorVec = rotateVector([0, clamp(color[1], [0, 1]), 0], [0, 0, color[0] * 360]);
+	return [distance(r, colorVec), distance(g, colorVec), distance(b, colorVec)].map(x => clamp(mapRange(x, [0, Math.sqrt(3)], [color[2] / 0.4226, 0], 4), [0, color[2]])).concat(color[3]) as Vec4;
 }
