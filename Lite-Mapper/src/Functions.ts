@@ -690,6 +690,6 @@ export function hsv2rgb(color: Vec4) {
 	const r: Vec3 = [0, 1, 0],
 		g = rotateVector(r, [0, 0, 120]),
 		b = rotateVector(r, [0, 0, -120]),
-		colorVec = rotateVector([0, clamp(color[1], [0, 1]), 0], [0, 0, color[0] * 360]);
+		colorVec = rotateVector([0, Math.pow(clamp(color[1], [0, 1]), 1 / 2), 0], [0, 0, color[0] * 360]);
 	return [distance(r, colorVec), distance(g, colorVec), distance(b, colorVec)].map(x => clamp(mapRange(x, [0, Math.sqrt(3)], [color[2] / 0.4226, 0], 4), [0, color[2]])).concat(color[3]) as Vec4;
 }

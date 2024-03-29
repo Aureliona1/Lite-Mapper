@@ -30,7 +30,7 @@ export class Note {
 		this.customData.animation = x;
 	}
 	get animation() {
-		return this.customData.animation;
+		return this.customData.animation ?? {};
 	}
 
 	set rotation(x) {
@@ -176,7 +176,7 @@ export class Bomb {
 		this.customData.animation = x;
 	}
 	get animation() {
-		return this.customData.animation;
+		return this.customData.animation ?? {};
 	}
 
 	set rotation(x) {
@@ -324,7 +324,7 @@ export class Wall {
 		this.customData.animation = x;
 	}
 	get animation() {
-		return this.customData.animation;
+		return this.customData.animation ?? {};
 	}
 
 	set rotation(x) {
@@ -454,7 +454,7 @@ export class Arc {
 		this.customData.animation = x;
 	}
 	get animation() {
-		return this.customData.animation;
+		return this.customData.animation ?? {};
 	}
 
 	set rotation(x) {
@@ -610,7 +610,7 @@ export class Chain {
 		this.customData.animation = x;
 	}
 	get animation() {
-		return this.customData.animation;
+		return this.customData.animation ?? {};
 	}
 
 	set rotation(x) {
