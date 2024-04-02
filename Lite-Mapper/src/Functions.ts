@@ -559,12 +559,31 @@ export class ArrayProcess<T extends number[]> {
 		return temp as T;
 	}
 	/**
-	 * Sorts the array from lowest to highest.
+	 * Sorts the array from lowest to highest. Does not modify the original array.
 	 */
 	sortNumeric() {
 		const temp = copy(this.array);
 		return temp.sort((a, b) => a - b) as T;
 	}
+
+	/**
+	 * Maps the array from one range to another. Does not modify the original array.
+	 */
+	mapRange(from: Vec2, to: Vec2) {
+		const temp = copy(this.array);
+		return temp.map(x => mapRange(x, from, to)) as T;
+	}
+
+	/**
+	 * Clamps the range of the array to within a set min and max.
+	 */
+	clampRange(min: number, max: number) {
+		[min, max] = min > max ? [max, min] : [min, max];
+		this.min = min;
+		this.max = max;
+		return this.array as T;
+	}
+
 	get max() {
 		return new ArrayProcess(this.array).sortNumeric()[this.array.length - 1];
 	}
@@ -668,7 +687,7 @@ export function distance(vec1: Vec3, vec2: Vec3) {
  * @param from The range from which to map.
  * @param to THe range to map to.
  */
-export function mapRange(val: number, from: Vec2, to: Vec2, precision: number = 5) {
+export function mapRange(val: number, from: Vec2, to: Vec2, precision = 5) {
 	return Math.floor(Math.pow(10, precision) * (((val - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0])) / Math.pow(10, precision);
 }
 
