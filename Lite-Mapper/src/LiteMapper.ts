@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
+export * from "./ArrayProcess.ts";
 export * from "./Functions.ts";
 export * from "./Types.ts";
 export * from "./Map.ts";
