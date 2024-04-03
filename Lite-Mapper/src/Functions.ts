@@ -534,15 +534,24 @@ export function clamp(val: number, range: Vec2) {
 }
 
 /**
- * EXPERIMENTAL!!!
  * Convert color from hsv format to rgb.
- * @param color The HSV color.
- * @returns RGBA
+ * @param color The color in hsv format, all values are from 0-1.
  */
 export function hsv2rgb(color: Vec4) {
-	const r: Vec3 = [0, 1, 0],
-		g = rotateVector(r, [0, 0, 120]),
-		b = rotateVector(r, [0, 0, -120]),
-		colorVec = rotateVector([0, Math.pow(clamp(color[1], [0, 1]), 1 / 2), 0], [0, 0, color[0] * 360]);
-	return [distance(r, colorVec), distance(g, colorVec), distance(b, colorVec)].map(x => clamp(mapRange(x, [0, Math.sqrt(3)], [color[2] / 0.4226, 0], 4), [0, color[2]])).concat(color[3]) as Vec4;
+	const [h, s, v, a] = color;
+	const f = (n: number, k = (n + h * 6) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+	return [f(5), f(3), f(1), a] as Vec4;
+}
+
+/**
+ * Convert color from rgb format to hsv.
+ * @param color The color in rgb format, all values are from 0-1.
+ */
+export function rgb2hsv(color: Vec4) {
+	const max = Math.max(color[0], color[1], color[2]);
+	const min = Math.min(color[0], color[1], color[2]);
+	const delta = max - min;
+	const h = delta === 0 ? 0 : max === color[0] ? (color[1] - color[2]) / delta + (color[1] < color[2] ? 6 : 0) : max === color[1] ? (color[2] - color[0]) / delta + 2 : (color[0] - color[1]) / delta + 4;
+	const s = max === 0 ? 0 : delta / max;
+	return [h / 6, s, max, color[3]] as Vec4;
 }
