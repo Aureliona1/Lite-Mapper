@@ -96,21 +96,15 @@ export class ArrayProcess<T extends number[]> {
 	/**
 	 * Sorts the array from lowest to highest. Does not modify the original array.
 	 */
-	sortNumeric() {
-		const temp = copy(this.array);
-		return temp.sort((a, b) => a - b) as T;
-	}
+	sortNumeric = () => copy(this.array).sort((a, b) => a - b) as T;
 
 	/**
 	 * Maps the array from one range to another. Does not modify the original array.
 	 */
-	mapRange(from: Vec2, to: Vec2) {
-		const temp = copy(this.array);
-		return temp.map(x => mapRange(x, from, to)) as T;
-	}
+	mapRange = (from: Vec2, to: Vec2) => copy(this.array).map(x => mapRange(x, from, to)) as T;
 
 	/**
-	 * Clamps the range of the array to within a set min and max.
+	 * Clamps the range of the array to within a set min and max. This does modify the original array.
 	 */
 	clampRange(min: number, max: number) {
 		[min, max] = min > max ? [max, min] : [min, max];

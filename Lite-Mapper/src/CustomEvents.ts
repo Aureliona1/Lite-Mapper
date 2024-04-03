@@ -110,8 +110,7 @@ export class AnimateTrack {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents.push(temp);
+		currentDiff.customEvents.push(dupe ? copy(this) : this);
 	}
 	/**
 	 * Convert raw custom event json into a track animation.
@@ -193,8 +192,7 @@ export class AssignPathAnimation {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents.push(temp);
+		currentDiff.customEvents.push(dupe ? copy(this) : this);
 	}
 	/**
 	 * Converts raw custom event json into a path animation.
@@ -271,8 +269,7 @@ export class AssignTrackParent {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents.push(temp);
+		currentDiff.customEvents.push(dupe ? copy(this) : this);
 	}
 	/**
 	 * Convert raw custom event json into a parent track.
@@ -343,8 +340,7 @@ export class AssignPlayerToTrack {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents.push(temp);
+		currentDiff.customEvents.push(dupe ? copy(this) : this);
 	}
 	/**
 	 * Convert custom event json into player track assignment.
@@ -433,8 +429,7 @@ export class AnimateComponent {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		currentDiff.customEvents.push(temp);
+		currentDiff.customEvents.push(dupe ? copy(this) : this);
 	}
 	/**
 	 * Convert custom event json into a component animation.
