@@ -133,7 +133,15 @@ export class BeatMap {
 		}
 	}
 
-	public info = new Info();
+	// Hidden info that only initialises if it gets used, to prevent git file changes.
+	private trueInfo: Info | undefined = undefined;
+
+	get info() {
+		return this.trueInfo ?? new Info();
+	}
+	set info(x: Info) {
+		this.trueInfo = x;
+	}
 
 	suggest(mod: "Chroma" | "Cinema") {
 		this.info.raw._difficultyBeatmapSets.forEach(x => {
