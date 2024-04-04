@@ -556,3 +556,12 @@ export function rgb2hsv(color: Vec4) {
 	const s = max === 0 ? 0 : delta / max;
 	return [h / 6, s, max, color[3]] as Vec4;
 }
+
+export class BatchMaker {
+	constructor(public arr: number[] = []) {}
+	run(runner: (x: number) => void) {
+		repeat(this.arr.length, i => {
+			runner(this.arr[i]);
+		});
+	}
+}
