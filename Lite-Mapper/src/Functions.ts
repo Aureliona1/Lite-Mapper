@@ -157,14 +157,15 @@ function multiplymats(mat1: number[][], mat2: number[][]) {
 }
 
 /**
- * Rotate a vector around [0, 0, 0].
- * @param position The vector position.
+ * Rotate a vector based on euler rotations.
+ * @param start The start position of the vector. The vector will be rotated around this position.
+ * @param end The end position of the vecotr.
  * @param rotation The rotation to apply.
  * @returns Vec3
  */
-export function rotateVector(position: Vec3, rotation: Vec3) {
+export function rotateVector(start: Vec3, end: Vec3, rotation: Vec3) {
 	rotation = rotation.map(x => (x * Math.PI) / 180) as Vec3;
-	let pos: number[][] = [[position[0]], [position[1]], [position[2]]];
+	let pos: number[][] = [[end[0] - start[0]], [end[1] - start[1]], [end[2] - start[2]]];
 	const xmat: number[][] = [
 		[1, 0, 0],
 		[0, Math.cos(rotation[0]), -Math.sin(rotation[0])],
@@ -183,8 +184,7 @@ export function rotateVector(position: Vec3, rotation: Vec3) {
 	pos = multiplymats(zmat, pos);
 	pos = multiplymats(xmat, pos);
 	pos = multiplymats(ymat, pos);
-	const result = [pos[0][0], pos[1][0], pos[2][0]];
-	return result as Vec3;
+	return [pos[0][0] + start[0], pos[1][0] + start[1], pos[2][0] + start[2]] as Vec3;
 }
 
 /**
@@ -231,7 +231,7 @@ export function random(min: number, max: number, seed: number | string = Date.no
 export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
 	const vector = new ArrayProcess(point2).subtract(point1),
 		angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0],
-		pitchPoint = rotateVector(vector, [0, -angle[1], 0]);
+		pitchPoint = rotateVector([0, 0, 0], vector, [0, -angle[1], 0]);
 	angle[0] = (-180 * Math.atan2(pitchPoint[1], pitchPoint[2])) / Math.PI;
 	if (defaultAngle) {
 		return [angle[0] - defaultAngle[0], angle[1] - defaultAngle[1], angle[2] - defaultAngle[2]] as Vec3;
