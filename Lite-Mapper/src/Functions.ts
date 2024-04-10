@@ -216,7 +216,7 @@ export function arrFromFunction(length: number, func: (x: number) => number) {
  * @param precision (Default - 3) The number of decimals in the random number. This can be negative to round to different values, e.g., -1 will round to the nearest 10, -2 will round to the nearest 100 etc.
  * @returns Random number.
  */
-export function random(min: number, max: number, seed: number | string = Date.now(), precision = 3) {
+export function random(min: number, max: number, seed: number | string = Math.random(), precision = 3) {
 	[min, max] = min > max ? [max, min] : [min, max];
 	return Math.round(new Seed(seed.toString()).randomFloat(min, max) * Math.pow(10, precision)) / Math.pow(10, precision);
 }
