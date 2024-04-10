@@ -1,3 +1,4 @@
+import { jsonDecimals } from "./LiteMapper.ts";
 import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
@@ -339,7 +340,8 @@ export class BeatMap {
 	}
 
 	optimize = {
-		materials: true
+		materials: true,
+		precision: 5
 	};
 
 	get settings() {
@@ -495,7 +497,7 @@ export class BeatMap {
 		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
 		jsonPrune(this.rawMap.customData);
 
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(this.rawMap, null, formatJSON ? 4 : undefined));
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(jsonDecimals(this.rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		this.info.save();
 		LMLog("Map saved...");
 		if (copyMapTo) {

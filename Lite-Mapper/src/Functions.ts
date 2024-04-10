@@ -556,3 +556,23 @@ export function rgb2hsv(color: Vec4) {
 	const s = max === 0 ? 0 : delta / max;
 	return [h / 6, s, max, color[3]] as Vec4;
 }
+
+/**
+ * Recursively sets the precision of numbers in an object or array.
+ * @param o The object, or number to set the precision of.
+ * @param precision The number of decimals.
+ */
+export function jsonDecimals(o: any, precision = 5) {
+	if (typeof o == "number") {
+		return Math.round(o * Math.pow(10, precision)) / Math.pow(10, precision);
+	} else if (!(typeof o == "number" || typeof o == "object")) {
+		return o;
+	} else if (Array.isArray(o)) {
+		o = o.map(x => jsonDecimals(x, precision));
+	} else {
+		Object.keys(o).forEach(key => {
+			o[key] = jsonDecimals(o[key], precision);
+		});
+	}
+	return o;
+}
