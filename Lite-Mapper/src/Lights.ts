@@ -55,11 +55,7 @@ export class LightEvent {
 	 * Create a new lighting event.
 	 * @param time The time of the event.
 	 */
-	constructor(public time = 0) {}
-	type: LightEventTypes = "BackLasers";
-	value: LightEventValues = "OnRed";
-	floatValue = 1;
-	customData: LightEventCustomData = {};
+	constructor(public time = 0, public type: LightEventTypes = "BackLasers", public value: LightEventValues = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
 
 	set lightID(x) {
 		this.customData.lightID = x;
@@ -89,6 +85,10 @@ export class LightEvent {
 		return this.customData.easing;
 	}
 
+	setEasing(ease: Easing) {
+		this.easing = ease;
+		return this;
+	}
 	setLightID(id: number | number[]) {
 		this.lightID = id;
 		return this;
@@ -225,7 +225,7 @@ export class lightGradient {
  * @param type The event type to use.
  * @param color The on color to use, the off color will always be [0,0,0,0]. Can also be a boolean to use vanilla colors.
  * @param ids Specific ids to target.
- * @param ease Whether to use an easing on the strobe. Any special easings like, bounce, elastic, etc... will yield very weird results.
+ * @param ease Whether to use an easing on the strobe. Any special easings like bounce, elastic, etc... will yield very weird results.
  */
 export function strobeGenerator(time: number, duration: number, density = 1, type: LightEventTypes, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
 	repeat(duration * density, i => {
