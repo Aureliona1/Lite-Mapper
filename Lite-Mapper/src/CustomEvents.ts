@@ -64,12 +64,7 @@ export class AnimateTrack {
 		return this.d.duration;
 	}
 	get animate() {
-		const temp = copy(this.d);
-		delete temp.track;
-		delete temp.duration;
-		delete temp.easing;
-		delete temp.repeat;
-		return temp as TrackAnimProps;
+		return copy(this.d) as TrackAnimProps;
 	}
 	set animate(x) {
 		const temp = copy(this.d);
