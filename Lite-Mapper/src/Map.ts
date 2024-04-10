@@ -1,5 +1,4 @@
-import { jsonDecimals } from "./LiteMapper.ts";
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, jsonDecimals, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -44,7 +43,12 @@ export class BeatMap {
 		useNormalEventsAsCompatibleEvents: false,
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [] }
 	};
-
+	/**
+	 * Initialise a new map.
+	 * @param inputDiff The input difficulty, this will be unmodified.
+	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
+	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
+	 */
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", checkForUpdate = true) {
 		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
@@ -143,7 +147,10 @@ export class BeatMap {
 	set info(x: Info) {
 		this.trueInfo = x;
 	}
-
+	/**
+	 * Add a mod suggestion to the map.
+	 * @param mod The mod to suggest.
+	 */
 	suggest(mod: "Chroma" | "Cinema") {
 		this.info.raw._difficultyBeatmapSets.forEach(x => {
 			x._difficultyBeatmaps.forEach(y => {
@@ -161,6 +168,10 @@ export class BeatMap {
 		});
 	}
 
+	/**
+	 * Add a mod requirement to the map.
+	 * @param mod The mod requirement to add.
+	 */
 	require(mod: "Chroma" | "Noodle Extensions") {
 		this.info.raw._difficultyBeatmapSets.forEach(x => {
 			x._difficultyBeatmaps.forEach(y => {
