@@ -226,7 +226,7 @@ export class Polygon {
 				cube.track = this.track;
 			}
 			const angle = (Math.PI * 2 * side) / this.sides;
-			cube.position = new ArrayProcess(rotateVector([-Math.sin(angle) * this.radius, -Math.cos(angle) * this.radius, 0], this.rotation)).add(this.position);
+			cube.position = new ArrayProcess(rotateVector([0, 0, 0], [-Math.sin(angle) * this.radius, -Math.cos(angle) * this.radius, 0], this.rotation)).add(this.position);
 			cube.scale = [(this.innercorners ? this.radius - this.scale[1] / 2 : this.radius + this.scale[1] / 2) * Math.tan(Math.PI / this.sides) * 2, this.scale[1], this.scale[2]];
 			cube.rotation = [this.rotation[0], this.rotation[1], this.rotation[2] - (180 * angle) / Math.PI];
 			returnArray.push(cube);
