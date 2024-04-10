@@ -369,7 +369,7 @@ export class BeatMap {
 	}
 
 	/**
-	 * Adds elements and object from an additional difficulty file to your map.
+	 * Adds elements and objects from an additional difficulty file to your map.
 	 * @param diff The name of the input difficulty to add elements from.
 	 */
 	addInputDiff(diff: DiffNames) {
@@ -498,7 +498,9 @@ export class BeatMap {
 		jsonPrune(this.rawMap.customData);
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(jsonDecimals(this.rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
-		this.info.save();
+		if (this.trueInfo) {
+			this.info.save();
+		}
 		LMLog("Map saved...");
 		if (copyMapTo) {
 			copyToDir(copyMapTo);
