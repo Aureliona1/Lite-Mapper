@@ -64,15 +64,10 @@ export class AnimateTrack {
 		return this.d.duration;
 	}
 	get animate() {
-		return copy(this.d) as TrackAnimProps;
+		return this.d as TrackAnimProps;
 	}
 	set animate(x) {
-		const temp = copy(this.d);
-		this.d = x;
-		this.d.track = temp.track;
-		this.d.duration = temp.duration;
-		this.d.easing = temp.easing;
-		this.d.repeat = temp.repeat;
+		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
 	get easing() {
@@ -157,16 +152,10 @@ export class AssignPathAnimation {
 		return this.d.easing;
 	}
 	get animate() {
-		const temp = copy(this.d);
-		delete temp.track;
-		delete temp.easing;
-		return temp as PathAnimProps;
+		return this.d as PathAnimProps;
 	}
 	set animate(x) {
-		const temp = copy(this.d);
-		this.d = x;
-		this.d.track = temp.track;
-		this.d.easing = temp.easing;
+		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
 	/**
