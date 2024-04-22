@@ -197,16 +197,11 @@ export function repeat(rep: number, code: (x: number) => void) {
 }
 
 /**
- * Create a new array from a function of x. e.g arrFromFunction(10, x => { return 2 * x })
- * @param length The length of the arr.
- * @param func The function to run through the arr.
- * @returns arr
+ * Create a new array from a function of x. e.g arrFromFunction(10, x => x * 2)
+ * @param length The length of the array.
+ * @param func The function to run through the array.
  */
-export function arrFromFunction(length: number, func: (x: number) => number) {
-	return Array.from(Array(length).keys()).map(x => {
-		return func(x);
-	});
-}
+export const arrFromFunction = (length: number, func: (x: number) => any) => Array.from(Array(length).keys()).map(x => func(x));
 
 /**
  * Generate a random number.
@@ -516,13 +511,24 @@ export function distance(vec1: Vec3, vec2: Vec3) {
 }
 
 /**
- * Maps a value from an existing range into another.
+ * Maps a value from an existing range into another, also works recusrively on arrays or objects.
  * @param val The value.
  * @param from The range from which to map.
- * @param to THe range to map to.
+ * @param to The range to map to.
  */
-export function mapRange(val: number, from: Vec2, to: Vec2, precision = 5) {
-	return Math.floor(Math.pow(10, precision) * (((val - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0])) / Math.pow(10, precision);
+export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5) {
+	if (typeof val == "number") {
+		return Math.floor(Math.pow(10, precision) * (((val - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0])) / Math.pow(10, precision);
+	} else if (!(typeof val == "number" || typeof val == "object")) {
+		return val;
+	} else if (Array.isArray(val)) {
+		val = val.map(x => mapRange(x, from, to, precision));
+	} else {
+		Object.keys(val).forEach(key => {
+			val[key] = mapRange(val[key], from, to, precision);
+		});
+	}
+	return val;
 }
 
 /**
@@ -558,7 +564,7 @@ export function rgb2hsv(color: Vec4) {
 }
 
 /**
- * Recursively sets the precision of numbers in an object or array.
+ * Recursively sets the precision of numbers in an object, array, or number.
  * @param o The object, or number to set the precision of.
  * @param precision The number of decimals.
  */
