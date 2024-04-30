@@ -72,7 +72,7 @@ export class ArrayProcess<T extends number[]> {
 	 * @param fraction The fraction, or array of fractions to interpolate by.
 	 * @param ease Optional easing.
 	 */
-	lerp(arr: T | number, fraction: T | number, ease: Easing = "easeLinear") {
+	lerp(arr: T | number, fraction: T | number = 0.5, ease: Easing = "easeLinear") {
 		const end: T = typeof arr == "number" ? (new Array(this.array.length).fill(arr) as T) : arr,
 			factor: T = typeof fraction == "number" ? (new Array(this.array.length).fill(fraction) as T) : fraction,
 			temp = copy(this.array);
