@@ -282,11 +282,7 @@ export function LMLog(message: any, error?: "Warning" | "Error") {
 	}
 }
 
-function duplicateArrsNoOrder<T extends any[]>(arr1: T, arr2: T) {
-	arr1 = arr1.sort();
-	arr2 = arr2.sort();
-	return arr1.toString() == arr2.toString();
-}
+const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
 function identicalMaterials(mat1: GeometryMaterialJSON | string = { shader: "BTSPillar" }, mat2: GeometryMaterialJSON | string = { shader: "BTSPillar" }) {
 	if (typeof mat1 == "string" || typeof mat2 == "string") {
