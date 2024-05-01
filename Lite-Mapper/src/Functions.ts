@@ -530,9 +530,20 @@ export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5) {
 /**
  * Clamp a number within a range.
  */
-export function clamp(val: number, range: Vec2) {
+export function clamp(val: any, range: Vec2) {
 	range = range[0] > range[1] ? [range[1], range[0]] : range;
-	return val < range[0] ? range[0] : val > range[1] ? range[1] : val;
+	if (typeof val == "number") {
+		return val < range[0] ? range[0] : val > range[1] ? range[1] : val;
+	} else if (!(typeof val == "number" || typeof val == "object")) {
+		return val;
+	} else if (Array.isArray(val)) {
+		val = val.map(x => clamp(x, range));
+	} else {
+		Object.keys(val).forEach(key => {
+			val[key] = clamp(val[key], range);
+		});
+	}
+	return val;
 }
 
 /**
