@@ -1,3 +1,4 @@
+import { LookupMethod } from "./LiteMapper.ts";
 import { GeometryMaterialJSON, Vec3 } from "./Types.ts";
 
 export const ye = -69420;
@@ -85,5 +86,24 @@ export const MaterialPresets: Record<string, GeometryMaterialJSON> = {
 	ShinyMirror2D: {
 		shader: "InterscopeCar",
 		shaderKeywords: ["DIFFUSE", "FOG", "REFLECTION_PROBE"]
+	}
+};
+
+export const ENV_PARAM: Record<string, Record<string, [string, LookupMethod]>> = {
+	BTS: {
+		DOOR: ["MagicDoorSprite", "Regex"],
+		CLOUDS_HIGH: ["HighCloudsGenerator$", "Regex"],
+		CLOUDS_LOW: ["LowCloudsGenerator$", "Regex"],
+		CLOUDS_ALL: ["Clouds$", "Regex"],
+		SOLID_LASER: ["SmallPillarPair\\.\\[\\d*\\]PillarL\\.\\[\\d*\\]LaserL$", "Regex"]
+	},
+	BILLIE: {
+		DIRECTIONAL_LIGHT: ["Day\\.\\[\\d+\\]\\w+Front$", "Regex"],
+		SOLID_LASER: ["\\w+\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+LH$", "Regex"],
+		SUN: ["Sun$", "Regex"],
+		CLOUDS: ["Clouds$", "Regex"],
+		SMOKE: ["BigSmokePS$", "Regex"],
+		RAIL_LIGHT: ["t\\.\\[\\d+\\]Neon\\w+L$", "Regex"],
+		RAIN: ["Rain$", "Regex"]
 	}
 };
