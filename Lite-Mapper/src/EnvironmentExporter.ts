@@ -47,11 +47,11 @@ export function exportShareableEnv(settings: USESettings) {
 			`${settings.name}.dat`,
 			JSON.stringify({
 				version: "1.0.0",
-				name: settings.name ? settings.name : `${currentDiff.info.raw._songName} environment`,
-				author: settings.author ? settings.author : currentDiff.info.raw._levelAuthorName,
-				environmentVersion: settings.environmentVersion ? settings.environmentVersion : "0.0.1",
+				name: settings.name ?? `${currentDiff.info.raw._songName} environment`,
+				author: settings.author ?? currentDiff.info.raw._levelAuthorName,
+				environmentVersion: settings.environmentVersion ?? "0.0.1",
 				environmentName: currentDiff.info.raw._environmentName,
-				description: settings.description ? settings.description : "Empty description...",
+				description: settings.description ?? "Empty description...",
 				features: settings.features,
 				environment: envArray,
 				materials: currentDiff.materials
