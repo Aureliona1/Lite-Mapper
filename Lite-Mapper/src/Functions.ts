@@ -430,7 +430,7 @@ export function lerp(start: number, end: number, fraction: number, easing: Easin
  * @param data The data to write (if write process is specified), if left undefined the property will be removed from the cache.
  */
 export function LMCache(process: "Read" | "Write", name: string, data?: any) {
-	const fileName = "MK_Cache.json";
+	const fileName = "LM_Cache.json";
 	ensureFileSync(fileName);
 	if (process == "Read") {
 		try {
