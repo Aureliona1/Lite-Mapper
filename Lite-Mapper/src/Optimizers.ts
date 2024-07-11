@@ -1,5 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-import { LightEvent } from "./Lights.ts";
 import { GeometryMaterialJSON, currentDiff, filterEnvironments, repeat } from "./LiteMapper.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
@@ -112,19 +111,4 @@ export function optimizeMaterials() {
 		});
 	});
 	currentDiff.materials = tempMat;
-}
-
-export function optimizeEvents() {
-	const events = currentDiff.events,
-		newArr: LightEvent[] = [],
-		ignoreI: number[] = [];
-	// Handle all lightIDS as arrs
-	repeat(events.length, i => {
-		if (typeof events[i].lightID == "number") {
-			events[i].lightID = [events[i].lightID as number];
-		}
-	});
-	repeat(events.length, i => {
-		for (let j = i + 1; j < events.length; j++) {}
-	});
 }
