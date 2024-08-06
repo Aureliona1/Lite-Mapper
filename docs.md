@@ -184,3 +184,50 @@ filterNotes(
 
 The above code will search through all notes (excluding fake notes) for any between beat 0 and beat 10.
 It will then make the filtered notes white.
+
+### Lights / Events
+
+Lite-Mapper has several features to assist with lighting your map. Generally, it is recommended to light your map with the same program that you made the notes. However, not all effects are realistic to create in these programs.
+
+To create a basic lighting event, like most other features of Lite-Mapper, the event will need to be initialised. This can be done like so:
+
+```js
+const event = new LightEvent();
+```
+
+The `LightEvent` class has several methods to make events easier to create in a single line without needing to declare a variable.
+
+The most effective way of creating quick events in a single line looks something like this.
+
+```js
+new LightEvent(5).setType("BackLasers").setValue("On").setColor([1, 0, 0, 1]).push();
+```
+
+This will create an event at beat 5 that affects the back lasers (this is the same as type = 0), it will turn the lights on with a red color.
+
+#### Light Keyframes
+
+Lite-Mapper has another class to create lighting events with an alternative syntax.
+`LightKeyframe` uses a keyframe-style animation to animate the color of a light over a set period of time.
+
+Like a regular event, you will need to initialise the class first, like so:
+
+```js
+new LightKeyframe();
+```
+
+This class can also be run in a single line, like so:
+
+```js
+new LightKeyframe(5, 0, "BackLasers").addFrames([1, 0, 0, 1, 0]).push();
+```
+
+This will do exactly the same thing as the event example from the previous section.
+
+Expanding on this, you can add any sort of color animation you want.
+
+```js
+new LightKeyframe(0, 12, "BackLasers").addFrames([1, 0, 0, 1, 0], [0, 1, 0, 1, 0.5, "easeLinear", "HSV"], [0, 0, 1, 1, 1, "easeLinear", "HSV"]).push();
+```
+
+This will animate the "Back Laser" lights to go from red to green to blue from beat 0 to 12.

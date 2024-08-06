@@ -84,23 +84,37 @@ export class LightEvent {
 	get easing() {
 		return this.customData.easing;
 	}
-
+	/**
+	 * Set the easing of the event (if "in" type).
+	 */
 	setEasing(ease: Easing) {
 		this.easing = ease;
 		return this;
 	}
+	/**
+	 * Set the light id(s) of the event.
+	 */
 	setLightID(id: number | number[]) {
 		this.lightID = id;
 		return this;
 	}
+	/**
+	 * Set the color of the event.
+	 */
 	setColor(col: Vec3 | Vec4) {
 		this.color = col;
 		return this;
 	}
+	/**
+	 * Set the lightType of the event.
+	 */
 	setType(type: LightEventTypes) {
 		this.type = type;
 		return this;
 	}
+	/**
+	 * Set the value of the event.
+	 */
 	setValue(val: LightEventValues) {
 		this.value = val;
 		return this;
@@ -278,10 +292,8 @@ export class LightKeyframe {
 	 * Add keyframes to your animation.
 	 * @param frames The frames to add.
 	 */
-	add(...frames: LightKeyframeFrameType[]) {
-		frames.forEach(x => {
-			this.keyframes.push(x);
-		});
+	addFrames(...frames: LightKeyframeFrameType[]) {
+		this.keyframes = [...this.keyframes, ...frames];
 		return this;
 	}
 	push(dupe = true) {
