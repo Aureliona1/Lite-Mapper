@@ -317,20 +317,22 @@ export function lerp(start: number, end: number, fraction: number, easing: Easin
  * @param name The name of the entry in the chache to access.
  * @param data The data to write (if write process is specified), if left undefined the property will be removed from the cache.
  */
-export function LMCache(process: "Read" | "Write", name: string, data?: any) {
+export function LMCache(process: "Read" | "Write" | "Clear", name = "", data?: any) {
 	const fileName = "LM_Cache.json";
 	ensureFileSync(fileName);
 	if (process == "Read") {
 		try {
-			const cache: Record<string, any> = JSON.parse(Deno.readTextFileSync(fileName));
+			const raw = Deno.readTextFileSync(fileName),
+				cache: Record<string, any> = JSON.parse(raw == "" ? "{}" : raw);
 			return cache[name];
 		} catch (e) {
-			LMLog(`LM_Cache suffered from error, invalidating cache: ${e}`, "Error");
+			console.log(`Cache suffered from error, invalidating cache: ${e}`);
 			Deno.writeTextFileSync(fileName, JSON.stringify({}));
 		}
-	} else {
+	} else if (process == "Write") {
 		try {
-			const cache: Record<string, any> = JSON.parse(Deno.readTextFileSync(fileName));
+			const raw = Deno.readTextFileSync(fileName),
+				cache: Record<string, any> = JSON.parse(raw == "" ? "{}" : raw);
 			if (typeof data == "undefined") {
 				delete cache[name];
 			} else {
@@ -338,9 +340,11 @@ export function LMCache(process: "Read" | "Write", name: string, data?: any) {
 			}
 			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
 		} catch (e) {
-			LMLog(`LM_Cache suffered from error, invalidating cache: ${e}`, "Error");
+			console.log(`Cache suffered from error, invalidating cache: ${e}`);
 			Deno.writeTextFileSync(fileName, JSON.stringify({}));
 		}
+	} else {
+		Deno.writeTextFileSync(fileName, JSON.stringify({}));
 	}
 }
 
