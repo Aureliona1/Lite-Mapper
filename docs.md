@@ -117,6 +117,15 @@ You can also use the `Material()` class to create a material, this class also ha
 map.materials["Mat"] = new Material().BTSPillar();
 ```
 
+Lite-Mapper has an inbuilt material optimizer that runs automatically when you save the map. This optimizer changes the names of affected materials.
+To disable this, change the value in `map.optimize.materials` to `false`.
+
+```js
+map.optimize.materials = false;
+```
+
+However, this optimizer is incredibly valuable to speed up the performance of your map in-game, in most cases this setting should remain on.
+
 ### Custom Events
 
 There are several types of custom event supported by Heck.

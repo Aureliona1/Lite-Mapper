@@ -11,11 +11,11 @@ import { AnimateComponent, AnimateTrack, Arc, ArrayProcess, AssignPathAnimation,
  * @param condition The condition that notes must pass to be affected.
  * @param action The action to apply to passing notes.
  */
-export function filterNotes(fake: boolean, condition: (x: Note) => boolean, action: (x: Note) => void) {
+export function filterNotes(fake: boolean, condition: (x: Note) => boolean, action: (x: Note, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeNotes.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.fakeNotes.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.notes.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.notes.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	}
 }
 
@@ -24,8 +24,8 @@ export function filterNotes(fake: boolean, condition: (x: Note) => boolean, acti
  * @param condition The condition that environments must pass to be affected.
  * @param action The action to apply to passing environment.
  */
-export function filterEnvironments(condition: (x: Environment) => boolean, action: (x: Environment) => void) {
-	currentDiff.environments.filter(x => condition(x)).forEach(x => action(x));
+export function filterEnvironments(condition: (x: Environment) => boolean, action: (x: Environment, i: number) => void) {
+	currentDiff.environments.filter(x => condition(x)).forEach((x, i) => action(x, i));
 }
 
 /**
@@ -34,11 +34,11 @@ export function filterEnvironments(condition: (x: Environment) => boolean, actio
  * @param condition The condition that bombs must pass to be affected.
  * @param action The action to apply to passing bombs.
  */
-export function filterBombs(fake: boolean, condition: (x: Bomb) => boolean, action: (x: Bomb) => void) {
+export function filterBombs(fake: boolean, condition: (x: Bomb) => boolean, action: (x: Bomb, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeBombs.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.fakeBombs.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.bombs.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.bombs.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	}
 }
 
@@ -47,8 +47,8 @@ export function filterBombs(fake: boolean, condition: (x: Bomb) => boolean, acti
  * @param condition The condition that arcs must pass to be affected.
  * @param action The action to apply to passing arcs.
  */
-export function filterArcs(condition: (x: Arc) => boolean, action: (x: Arc) => void) {
-	currentDiff.arcs.filter(x => condition(x)).forEach(x => action(x));
+export function filterArcs(condition: (x: Arc) => boolean, action: (x: Arc, i: number) => void) {
+	currentDiff.arcs.filter(x => condition(x)).forEach((x, i) => action(x, i));
 }
 
 /**
@@ -57,11 +57,11 @@ export function filterArcs(condition: (x: Arc) => boolean, action: (x: Arc) => v
  * @param condition The condition that chains must pass to be affected.
  * @param action The action to apply to passing chains.
  */
-export function filterChains(fake: boolean, condition: (x: Chain) => boolean, action: (x: Chain) => void) {
+export function filterChains(fake: boolean, condition: (x: Chain) => boolean, action: (x: Chain, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeChains.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.fakeChains.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.chains.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.chains.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	}
 }
 
@@ -71,11 +71,11 @@ export function filterChains(fake: boolean, condition: (x: Chain) => boolean, ac
  * @param condition The condition that walls must pass to be affected.
  * @param action The action to apply to passing walls.
  */
-export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, action: (x: Wall) => void) {
+export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, action: (x: Wall, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeWalls.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.fakeWalls.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.walls.filter(x => condition(x)).forEach(x => action(x));
+		currentDiff.walls.filter(x => condition(x)).forEach((x, i) => action(x, i));
 	}
 }
 
@@ -84,8 +84,8 @@ export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, acti
  * @param condition The condition that events must pass to be affected.
  * @param action The action to apply to passing events.
  */
-export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: LightEvent) => void) {
-	currentDiff.events.filter(x => condition(x)).forEach(x => action(x));
+export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: LightEvent, i: number) => void) {
+	currentDiff.events.filter(x => condition(x)).forEach((x, i) => action(x, i));
 }
 
 /**
@@ -93,11 +93,11 @@ export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: 
  * @param condition The condition that animations must pass to be affected.
  * @param action The action to apply to passing animations.
  */
-export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, action: (x: AnimateTrack) => void) {
-	currentDiff.customEvents?.forEach(e => {
+export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, action: (x: AnimateTrack, i: number) => void) {
+	currentDiff.customEvents?.forEach((e, i) => {
 		if (e.type == "AnimateTrack") {
 			if (condition(e as AnimateTrack)) {
-				action(e as AnimateTrack);
+				action(e as AnimateTrack, i);
 			}
 		}
 	});
@@ -108,11 +108,11 @@ export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, a
  * @param condition The condition that animations must pass to be affected.
  * @param action The action to apply to passing animations.
  */
-export function filterComponentAnimations(condition: (x: AnimateComponent) => boolean, action: (x: AnimateComponent) => void) {
-	currentDiff.customEvents?.forEach(e => {
+export function filterComponentAnimations(condition: (x: AnimateComponent) => boolean, action: (x: AnimateComponent, i: number) => void) {
+	currentDiff.customEvents?.forEach((e, i) => {
 		if (e.type == "AnimateComponent") {
 			if (condition(e as AnimateComponent)) {
-				action(e as AnimateComponent);
+				action(e as AnimateComponent, i);
 			}
 		}
 	});
@@ -123,11 +123,11 @@ export function filterComponentAnimations(condition: (x: AnimateComponent) => bo
  * @param condition The condition that animations must pass to be affected.
  * @param action The action to apply to passing animations.
  */
-export function filterPathAnimations(condition: (x: AssignPathAnimation) => boolean, action: (x: AssignPathAnimation) => void) {
-	currentDiff.customEvents?.forEach(e => {
+export function filterPathAnimations(condition: (x: AssignPathAnimation) => boolean, action: (x: AssignPathAnimation, i: number) => void) {
+	currentDiff.customEvents?.forEach((e, i) => {
 		if (e.type == "AssignPathAnimation") {
 			if (condition(e as AssignPathAnimation)) {
-				action(e as AssignPathAnimation);
+				action(e as AssignPathAnimation, i);
 			}
 		}
 	});
