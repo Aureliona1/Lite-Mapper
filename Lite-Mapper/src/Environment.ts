@@ -1,6 +1,6 @@
 import {
-	jsonPrune,
-	currentDiff,
+	AnimateComponent,
+	ArrayProcess,
 	ComponentStaticProps,
 	GeometryMaterialJSON,
 	GeometryObjectJSON,
@@ -16,11 +16,11 @@ import {
 	MaterialShader,
 	Vec3,
 	Vec4,
-	repeat,
-	rotateVector,
 	copy,
-	ArrayProcess,
-	AnimateComponent
+	currentDiff,
+	jsonPrune,
+	repeat,
+	rotateVector
 } from "./LiteMapper.ts";
 
 export class Environment {
