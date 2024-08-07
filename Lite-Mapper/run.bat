@@ -1,2 +1,2 @@
 @echo off
-denon LiteMapper
+denon lm
