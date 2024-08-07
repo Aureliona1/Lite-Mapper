@@ -1,5 +1,4 @@
-import { LookupMethod } from "./LiteMapper.ts";
-import { GeometryMaterialJSON, Vec3 } from "./Types.ts";
+import { GeometryMaterialJSON, LookupMethod, MaterialPresetNames, Vec3 } from "./LiteMapper.ts";
 
 export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];
@@ -7,7 +6,7 @@ export const ye3: Vec3 = [ye, ye, ye];
 /**
  * Ported from https://github.com/Shonshyn/BS-Tools-for-Mappers/blob/main/Geo%20Materials/materials.ts
  */
-export const MaterialPresets: Record<string, GeometryMaterialJSON> = {
+export const MaterialPresets: Record<MaterialPresetNames, GeometryMaterialJSON> = {
 	FixedConcrete: {
 		shader: "InterscopeConcrete",
 		shaderKeywords: [
@@ -89,21 +88,21 @@ export const MaterialPresets: Record<string, GeometryMaterialJSON> = {
 	}
 };
 
-export const ENV_PARAM: Record<string, Record<string, [string, LookupMethod]>> = {
+export const ENV_PARAM = {
 	BTS: {
-		DOOR: ["MagicDoorSprite", "Regex"],
-		CLOUDS_HIGH: ["HighCloudsGenerator$", "Regex"],
-		CLOUDS_LOW: ["LowCloudsGenerator$", "Regex"],
-		CLOUDS_ALL: ["Clouds$", "Regex"],
-		SOLID_LASER: ["SmallPillarPair\\.\\[\\d*\\]PillarL\\.\\[\\d*\\]LaserL$", "Regex"]
+		DOOR: ["MagicDoorSprite", "Regex"] as [string, LookupMethod],
+		CLOUDS_HIGH: ["HighCloudsGenerator$", "Regex"] as [string, LookupMethod],
+		CLOUDS_LOW: ["LowCloudsGenerator$", "Regex"] as [string, LookupMethod],
+		CLOUDS_ALL: ["Clouds$", "Regex"] as [string, LookupMethod],
+		SOLID_LASER: ["SmallPillarPair\\.\\[\\d*\\]PillarL\\.\\[\\d*\\]LaserL$", "Regex"] as [string, LookupMethod]
 	},
 	BILLIE: {
-		DIRECTIONAL_LIGHT: ["Day\\.\\[\\d+\\]\\w+Front$", "Regex"],
-		SOLID_LASER: ["\\w+\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+LH$", "Regex"],
-		SUN: ["Sun$", "Regex"],
-		CLOUDS: ["Clouds$", "Regex"],
-		SMOKE: ["BigSmokePS$", "Regex"],
-		RAIL_LIGHT: ["t\\.\\[\\d+\\]Neon\\w+L$", "Regex"],
-		RAIN: ["Rain$", "Regex"]
+		DIRECTIONAL_LIGHT: ["Day\\.\\[\\d+\\]\\w+Front$", "Regex"] as [string, LookupMethod],
+		SOLID_LASER: ["\\w+\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+LH$", "Regex"] as [string, LookupMethod],
+		SUN: ["Sun$", "Regex"] as [string, LookupMethod],
+		CLOUDS: ["Clouds$", "Regex"] as [string, LookupMethod],
+		SMOKE: ["BigSmokePS$", "Regex"] as [string, LookupMethod],
+		RAIL_LIGHT: ["t\\.\\[\\d+\\]Neon\\w+L$", "Regex"] as [string, LookupMethod],
+		RAIN: ["Rain$", "Regex"] as [string, LookupMethod]
 	}
 };

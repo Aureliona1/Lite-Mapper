@@ -547,3 +547,7 @@ export type KeywordsInterscopeConcrete = (
 export type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE")[];
 
 export type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
+
+// Function and class prop types
+
+export type MaterialPresetNames = "FixedConcrete" | "Dirt" | "BlurryMetal" | "ShinyMetal" | "ShinyMetal2D" | "Glass" | "Grid" | "FogLight" | "Invisible" | "SlightReflection" | "SlightReflectionNoColor" | "BlurryMirror" | "BlurryMirror2D" | "ShinyMirror" | "ShinyMirror2D";

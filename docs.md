@@ -231,3 +231,48 @@ new LightKeyframe(0, 12, "BackLasers").addFrames([1, 0, 0, 1, 0], [0, 1, 0, 1, 0
 ```
 
 This will animate the "Back Laser" lights to go from red to green to blue from beat 0 to 12.
+
+## Minor Features
+
+Lite-Mapper also has a bunch of minor features to assist in the creation of maps, these features help to simplify common processes in mapping and scripting.
+
+### Arrays
+
+Lite-Mapper has a class to help with operations on arrays of numbers. The class has methods to automate large processes on arrays.
+
+To begin working on an array the class needs to be initialised. Like so:
+
+```js
+const arr = new ArrayProcess([1, 2, 3, 4, 5]);
+```
+
+Then several processes can be run on the array.
+
+Example: adding another array to the source array:
+
+```js
+const arr = [1, 2, 3, 4, 5];
+const arr2 = [6, 7, 8, 9, 0];
+
+const added = new ArrayProcess(arr).add(arr2); // [7, 9, 11, 13, 5]
+```
+
+### Constants
+
+Lite-Mapper has a number of constant values that may be used when mapping.
+
+#### Material Presets
+
+Ported from [Shonshyn's mapping tools repo](https://github.com/Shonshyn/BS-Tools-for-Mappers), the `MaterialPresets` constant has several pre-made materials that you can directly add to any geometry object in your map.
+
+```js
+map.materials["Glass"] = MaterialPresets.Glass;
+```
+
+#### Environment Params
+
+The `ENV_PARAM` constant has several preset ids and lookups for commonly used environment objects in Beat Saber.
+
+```js
+const env = new Environment().env(...ENV_PARAM.BTS.SOLID_LASER);
+```
