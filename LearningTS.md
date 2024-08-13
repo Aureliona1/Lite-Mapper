@@ -10,6 +10,8 @@ A basic knowledge of using a computer is also required, you be able to navigate 
 
 ## Basic Installation
 
+### Visual Studio Code
+
 To begin, you will need to install an IDE. IDEs are software designed to make writing code easier, _technically_ you can use any text-editor software that can write raw text files. However, IDEs make this much easier with code formatting, syntax highlighting and much more.
 
 The IDE that we will use for this guide is [VSCode](https://code.visualstudio.com/).
@@ -19,3 +21,18 @@ Follow the link above to go to the main page for Visual Studio Code.
 **Important**: Do not confuse Visual Studio Code (free software), with Visual Studio (paid software). Visual Studio Code has a blue icon and Visual Studio has a purple icon.
 
 Download VSCode and go through the installation process.
+
+### Deno
+
+Deno is the TypeScript interpreter that Lite-Mapper uses. It is required in order to run TypeScript scripts.
+
+#### What is an interpreter
+
+You can skip straight to [Deno Installation](#installing-deno) if you already understand interpreters and compilers.
+Otherwise, read on.
+
+All
+
+#### Installing Deno
+
+### VSCode Extension
