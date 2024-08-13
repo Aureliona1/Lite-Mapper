@@ -54,3 +54,23 @@ We will go into using Denon more later.
 
 Time for your first script, the standard first script for programming is a Hello World script.
 This is to test that the coding environment is working and build on to more advanced scripts.
+
+On the left of VSCode, go to the explorer tab (it hould be at the top).
+Then in the explorer tab, double click and type `helloWorld.ts` which will create the file for your script.
+
+With this script, we want to log the message `"Hello World"` to the console.
+To do this, we need to call the `console` object.
+Start typing the word `console` and when it appears at the top of the pop-up menu (usually after the first s), press `tab`.
+
+Then press `.` and the pop-up menu shold come back. This menu is very useful as it shows autocomplete suggestions for your code which can be very helpful.
+Use the down arrow to navigate down to the option that says `log`, or you can start typing the word `log` and it will go to the top of the pop-up menu, press `tab` when `log` is highlighted in this menu.
+
+Then, you will need a set of brackets, and the message that you want to log.
+Resulting in this:
+
+```js
+console.log("Hello World");
+```
+
+To run your code, open the terminal up again with `` ctrl + ` `` and type `deno run helloWorld.ts`.
+Or if you have Denon installed,
