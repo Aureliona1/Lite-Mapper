@@ -46,7 +46,7 @@ Now open up the command palette with `ctrl + shift + P` and type `Deno: Initiali
 Another thing to install that is optional, but highly recommended is [Denon](https://deno.land/x/denon).
 Denon will run your script automatically every time you save the script file.
 
-To install denon, open up a terminal in VSCode using `ctrl +`\` and type `deno install -qAf --unstable https://deno.land/x/denon/denon.ts`.
+To install denon, open up a terminal in VSCode using ` ctrl + \`` and type  `deno install -qAf --unstable https://deno.land/x/denon/denon.ts`.
 
 We will go into using Denon more later.
 
