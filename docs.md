@@ -266,7 +266,15 @@ Lite-Mapper has a number of constant values that may be used when mapping.
 Ported from [Shonshyn's mapping tools repo](https://github.com/Shonshyn/BS-Tools-for-Mappers), the `MaterialPresets` constant has several pre-made materials that you can directly add to any geometry object in your map.
 
 ```js
-map.materials["Glass"] = MaterialPresets.Glass;
+new Material().import(MaterialPresets.Glass).push("Glass");
+```
+
+You can also modify any properties about the materials before adding them to your map.
+
+```js
+const mat = new Material().import(MaterialPresets.Glass);
+mat.color = [1, 0, 0];
+mat.push("Glass");
 ```
 
 #### Environment Params
