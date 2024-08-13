@@ -18,3 +18,11 @@ For mac and ChromeBook users, `run.bat` probably won't work. In this case, open 
 ## Documentation
 
 To read about what kind of things to put in your script.ts, head over to the [docs](docs.md) page.
+
+## TypeScript
+
+Lite-Mapper is made entirely in TypeScript, which is basically the object-oriented little brother to JavaScript (also note that any valid js is valid ts) with type checking. If you can code in JS, you can code in TS.
+
+If you don't know how to code in either, then consider learning from one of the many online [resources](https://www.w3schools.com/typescript/).
+
+Or from this [guide](LearningTS.md) that explains how to use TypeScript with Lite-Mapper.
