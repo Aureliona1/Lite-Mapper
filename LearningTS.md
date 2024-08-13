@@ -20,19 +20,10 @@ Follow the link above to go to the main page for Visual Studio Code.
 
 **Important**: Do not confuse Visual Studio Code (free software), with Visual Studio (paid software). Visual Studio Code has a blue icon and Visual Studio has a purple icon.
 
-Download VSCode and go through the installation process.
+Download VSCode and go through the installation process. In the VSCode installer, make sure both of the "Add Open With Code" boxes are ticked. These features will come in handy later.
 
-### Deno
+Next, you will need a working directory to make some scripts from. Right now we will just start with a random folder, however later on when we are using Lite-Mapper, you will need to use your Beat Saber WIP map folder.
 
-Deno is the TypeScript interpreter that Lite-Mapper uses. It is required in order to run TypeScript scripts.
-
-#### What is an interpreter
-
-You can skip straight to [Deno Installation](#installing-deno) if you already understand interpreters and compilers.
-Otherwise, read on.
-
-All
-
-#### Installing Deno
+For now, just create a folder somehwere and name it something like "TypeScript practice"
 
 ### VSCode Extension
