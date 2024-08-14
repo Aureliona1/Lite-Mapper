@@ -50,6 +50,10 @@ To install denon, open up a terminal in VSCode using `` ctrl + `  `` and type `d
 
 We will go into using Denon more later.
 
+### (Optional) Prettier Formatter
+
+Another extension that is useful for coding is the prettier code formatter.
+
 ## Hello World
 
 Time for your first script, the standard first script for programming is a Hello World script.
@@ -73,4 +77,4 @@ console.log("Hello World");
 ```
 
 To run your code, open the terminal up again with `` ctrl + ` `` and type `deno run helloWorld.ts`.
-Or if you have Denon installed,
+Or if you have Denon installed, you can type `denon helloWorld.ts`. Now whenever you save the script, it will run for you.
