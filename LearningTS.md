@@ -78,3 +78,85 @@ console.log("Hello World");
 
 To run your code, open the terminal up again with `` ctrl + ` `` and type `deno run helloWorld.ts`.
 Or if you have Denon installed, you can type `denon helloWorld.ts`. Now whenever you save the script, it will run for you.
+If you want denon to stop running your code, press `ctrl + c` and it will ask "Are you sure?" press Y and `enter`.
+
+## Variables
+
+Variables are very important concepts in code that you will use in just about every script you make.
+Variables can be thought of like a container with a label on it, the container can hold some piece of information that you can use later.
+
+In TypeScript, variables can be declared in one of two ways.
+You will need to decide which way to use depending on how you plan to use the variable later.
+
+### Let
+
+If you plan on re-assigning the variable in the future. You can declare it with the `let` keyword.
+
+```js
+let pi = 3.1415;
+```
+
+Using `let` means that you can modify the variable or even completely re-assign it at any point in the future.
+
+For example:
+
+```js
+// Suppose there was a variable that keeps track of the number of students at a school.
+// At the beginning, there were 100 students.
+let studentCount = 100;
+
+// But then 10 more decided to enrol.
+studentCount = studentCount + 10;
+
+// Now studentCount is 110.
+
+// Now let's say that the school shut down and all the students left
+studentCount = 0;
+```
+
+Notice how we were using the `=` operator to assign a new value to the `studentCount` variable.
+
+**Extra stuff that you might use later:**
+If you simply want to perform basic arithmetic (math) operations on a `let` variable, you can use the `+=`, `-=`, `++` etc... operators.
+
+For example:
+
+```js
+let count = 1;
+count += 5; // count = 6
+count++; // count = 7
+count *= 2; // count = 14
+count--; //count = 13
+```
+
+### Const
+
+If you don't plan on re-assigning the variable later, you can use the `const` keyword to declare your variable.
+
+```js
+const pi = 3.1415;
+```
+
+For the pi example, it would make sense to use `const` over `let` since pi is a constant value that never changes.
+
+There still are some changes you can make to `const` variables, but these will come up later.
+
+### Const vs Let in VSCode
+
+VSCode will normally (if set up correctly) give a little warning (yellow) squiggle under variables that are declared with `let` when they really should use `const`.
+It will also give an error (red) squiggle under variables that are declared with `const` but are edited later.
+
+### Worked example of variables in hello world
+
+Let's apply the ideas of variables to the [Hello World](#hello-world) script from earlier.
+
+Open up your script from earlier.
+
+`console.log()` accepts any data type as the output. Which means that we can write more that just writing in quotation marks.
+
+For example:
+
+```js
+const pi = 3.1415;
+console.log(pi); // "3.1415"
+```
