@@ -31,6 +31,11 @@ For a better understanding of how properties and objects work, read the [Heck](h
 
 ## Using Lite-Mapper
 
+Most of Lite-Mapper's code has extensive JSDoc comments to help self-document the code as you write it.
+This will appear automatically as you type out functions, classes, and variables in VSCode.
+
+Additionally, if you want to view the source code or internal functionality of anything, you can type it out in your script, then hold `ctrl` and click on the item.
+
 ### Map Initialization
 
 Before adding anything to your script, you will need to initialize your map.

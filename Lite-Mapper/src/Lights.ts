@@ -202,7 +202,7 @@ export class lightGradient {
 		return this;
 	}
 
-	/**push the gradient to the difficulty */
+	/**Push the gradient to the difficulty */
 	push() {
 		const ev = new LightEvent(this.time).setType(this.lightType).setValue("On").setColor(this.colors[0]);
 		if (this.lightID) {
