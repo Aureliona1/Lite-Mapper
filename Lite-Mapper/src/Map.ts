@@ -521,9 +521,60 @@ export class BeatMap {
 
 class Info {
 	raw: infoJSON;
+	/**
+	 * Initialise the info file reader.
+	 */
 	constructor() {
-		this.raw = JSON.parse(Deno.readTextFileSync("info.dat"));
+		try {
+			this.raw = JSON.parse(Deno.readTextFileSync("info.dat"));
+		} catch (e) {
+			LMLog("Error reading info file:\n" + e, "Error");
+			LMLog("Writing temporary fallback info file...");
+			this.raw = {
+				_version: "2.0.0",
+				_songName: "",
+				_songSubName: "",
+				_songAuthorName: "",
+				_levelAuthorName: "",
+				_beatsPerMinute: 100,
+				_shuffle: 0,
+				_shufflePeriod: 0.5,
+				_previewStartTime: 0,
+				_previewDuration: 10,
+				_songFilename: "song.ogg",
+				_coverImageFilename: "cover.jpg",
+				_environmentName: "DefaultEnvironment",
+				_allDirectionsEnvironmentName: "GlassDesertEnvironment",
+				_songTimeOffset: 0,
+				_difficultyBeatmapSets: [
+					{
+						_beatmapCharacteristicName: "Standard",
+						_difficultyBeatmaps: [
+							{
+								_difficulty: "Expert",
+								_difficultyRank: 7,
+								_beatmapFilename: "ExpertStandard.dat",
+								_noteJumpMovementSpeed: 16,
+								_noteJumpStartBeatOffset: 0
+							},
+							{
+								_difficulty: "ExpertPlus",
+								_difficultyRank: 9,
+								_beatmapFilename: "ExpertPlusStandard.dat",
+								_noteJumpMovementSpeed: 16,
+								_noteJumpStartBeatOffset: 0
+							}
+						]
+					}
+				]
+			};
+			this.save();
+			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load until you do this!\x1b[0m");
+		}
 	}
+	/**
+	 * Write to the info file.
+	 */
 	save() {
 		if (this.raw._customData) {
 			jsonPrune(this.raw._customData);

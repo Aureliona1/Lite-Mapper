@@ -25,11 +25,18 @@ import {
 
 export class Environment {
 	/**
-	 * Create a new environment object.
-	 * @param id The environment id.
-	 * @param lookupMethod The lookup method for your environment.
+	 * Create a new environment or geometry object.
+	 * You will need to use `.env()` or `.geo()` after this.
 	 */
 	constructor() {}
+
+	/**
+	 * Create a new Environment modification.
+	 *
+	 * **NOTE:** This overrides `.geo()`, you cannot use geometry and environment on the same object.
+	 * @param id The Chroma id of the object/s you wish to target.
+	 * @param lookup The lookup method for finding these objects.
+	 */
 	env(id: string, lookup: LookupMethod) {
 		this.id = id;
 		this.lookupMethod = lookup;
@@ -38,6 +45,14 @@ export class Environment {
 		}
 		return this;
 	}
+
+	/**
+	 * Create a new Geometry object.
+	 *
+	 * **NOTE:** This overrides `.env()`, you cannot use environment and geometry on the same object.
+	 * @param type The geometry primitive type to use.
+	 * @param mat The material of the geometry object.
+	 */
 	geo(type: GeometryObjectTypes, mat: GeometryMaterialJSON | string) {
 		this.geometry = {
 			type: type,
@@ -63,6 +78,7 @@ export class Environment {
 	localRotation?: Vec3;
 	track?: string | string[];
 	geometry?: GeometryObjectJSON;
+
 	/**
 	 * Return your environment object as an object.
 	 * @param dupe Whether to copy the object on return.
@@ -72,6 +88,7 @@ export class Environment {
 		jsonPrune(temp);
 		return temp;
 	}
+
 	/**
 	 * Push the environment to the current diff.
 	 * @param dupe Whether to copy the object on push.
@@ -149,12 +166,14 @@ export class Material {
 		this.shader = "WaterfallMirror";
 		return this;
 	}
+
 	/**
 	 * Import raw material json into a class.
 	 */
 	import(raw: GeometryMaterialJSON) {
 		return raw as Material;
 	}
+
 	/**
 	 * Return the class as json.
 	 */
@@ -168,6 +187,7 @@ export class Material {
 		jsonPrune(out);
 		return out;
 	}
+
 	/**
 	 * Push the material to the current diff.
 	 * @param name The name of the material.

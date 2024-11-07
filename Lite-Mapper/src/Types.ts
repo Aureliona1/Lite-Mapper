@@ -10,7 +10,7 @@ export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "Ex
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
 
 export type infoJSON = {
-	_version: "2.1.0";
+	_version: "2.1.0" | "2.0.0";
 	_songName: string;
 	_songSubName: string;
 	_songAuthorName: string;
@@ -25,8 +25,8 @@ export type infoJSON = {
 	_environmentName: EnvironmentNames;
 	_allDirectionsEnvironmentName: string;
 	_songTimeOffset: number;
-	_environmentNames: [];
-	_colorSchemes: {
+	_environmentNames?: [];
+	_colorSchemes?: {
 		useOverride: boolean;
 		colorScheme: {
 			colorSchemeId: string;
@@ -83,8 +83,8 @@ export type infoJSON = {
 			_beatmapFilename: string;
 			_noteJumpMovementSpeed: number;
 			_noteJumpStartBeatOffset: number;
-			_beatmapColorSchemeIdx: number;
-			_environmentNameIdx: number;
+			_beatmapColorSchemeIdx?: number;
+			_environmentNameIdx?: number;
 			_customData?: Record<string, any>;
 		}[];
 	}[];
@@ -366,6 +366,10 @@ export type SliderCustomProps = {
 	animation?: ObjectAnimProps;
 	track?: string | string[];
 };
+
+export type ObjectDirections = "Up" | "Down" | "Left" | "Right" | "Up Left" | "Up Right" | "Down Left" | "Down Right" | "Dot";
+export type ObjectColors = "Left" | "Right";
+
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 export type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 export type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };

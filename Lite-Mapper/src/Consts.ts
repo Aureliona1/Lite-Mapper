@@ -4,7 +4,7 @@ export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];
 
 /**
- * Ported from https://github.com/Shonshyn/BS-Tools-for-Mappers/blob/main/Geo%20Materials/materials.ts
+ * Ported from https://github.com/Shonshyn/BS-Tools-for-Mappers
  */
 export const MaterialPresets: Record<MaterialPresetNames, GeometryMaterialJSON> = {
 	FixedConcrete: {
@@ -88,6 +88,13 @@ export const MaterialPresets: Record<MaterialPresetNames, GeometryMaterialJSON> 
 	}
 };
 
+/**
+ * Useful environment constants. Use in your map as such:
+ * ```ts
+ * const env = new Environment().env(...ENV_PARAM.BILLIE.RAIN);
+ * env.push();
+ * ```
+ */
 export const ENV_PARAM = {
 	BTS: {
 		DOOR: ["MagicDoorSprite", "Regex"] as [string, LookupMethod],

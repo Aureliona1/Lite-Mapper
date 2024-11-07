@@ -1,23 +1,4 @@
-// deno-lint-ignore-file no-explicit-any
-import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, LightKeyframeFrameType, repeat, Vec3, Vec4 } from "./LiteMapper.ts";
-
-class TwoWayMap {
-	private reverseMap: Record<any, any>;
-	constructor(private map: Record<any, any>) {
-		this.map = map;
-		this.reverseMap = {};
-		for (const key in map) {
-			const value = map[key];
-			this.reverseMap[value] = key;
-		}
-	}
-	get(key: any) {
-		return this.map[key];
-	}
-	revGet(key: any) {
-		return this.reverseMap[key];
-	}
-}
+import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, LightKeyframeFrameType, repeat, TwoWayMap, Vec3, Vec4 } from "./LiteMapper.ts";
 
 const LightEventTypesMap = new TwoWayMap({
 	BackLasers: 0,
@@ -52,8 +33,25 @@ const LightEventValuesMap = new TwoWayMap({
 
 export class LightEvent {
 	/**
-	 * Create a new lighting event.
-	 * @param time The time of the event.
+	 * Create a new lighting event. Every parameter is optional and can be added later.
+	 *
+	 * For example:
+	 * ```ts
+	 * const event = new LightEvent();
+	 * event.time = 10;
+	 * event.type = "LeftLasers";
+	 * event.value = "On";
+	 * event.push();
+	 * ```
+	 * Additionally, you can create an entire light event in a single line using methods.
+	 * ```ts
+	 * new LightEvent(10, "BackLasers", "On").setColor([1, 0, 0, 1]).setLightID(69).push();
+	 * ```
+	 * @param time The time of the event (Default - 0).
+	 * @param type (string) The event type (Default - "BackLasers").
+	 * @param value (string) The event value (Default - "On").
+	 * @param customData Custom data to add to the event (you can do this later with methods like `.setColor()`).
+	 * @param floatValue This controls the brightness of the light, avoid using this, use alpha on color.
 	 */
 	constructor(public time = 0, public type: LightEventTypes = "BackLasers", public value: LightEventValues = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
 

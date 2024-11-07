@@ -65,3 +65,24 @@ export function jsonPrune(obj: Record<string, any>) {
 		}
 	});
 }
+
+export class TwoWayMap {
+	private reverseMap: Record<any, any>;
+	/**
+	 * This is an internal class used by Lite-Mapper, most mapping cases will not require this class.
+	 */
+	constructor(private map: Record<any, any>) {
+		this.map = map;
+		this.reverseMap = {};
+		for (const key in map) {
+			const value = map[key];
+			this.reverseMap[value] = key;
+		}
+	}
+	get(key: any) {
+		return this.map[key];
+	}
+	revGet(key: any) {
+		return this.reverseMap[key];
+	}
+}

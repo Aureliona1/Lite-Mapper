@@ -1,15 +1,42 @@
-import { BombType, BurstSliderType, NoteCustomProps, NoteType, ObstacleType, SliderCustomProps, SliderType, Vec2, WallCustomProps, copy, currentDiff, jsonPrune } from "./LiteMapper.ts";
+import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune } from "./LiteMapper.ts";
+
+const ObjectDirectionsMap = new TwoWayMap({
+	Up: 0,
+	Down: 1,
+	Left: 2,
+	Right: 3,
+	"Up Left": 4,
+	"Up Right": 5,
+	"Down Left": 6,
+	"Down Right": 7,
+	Dot: 8
+});
+
+const ObjectColorsMap = new TwoWayMap({
+	Left: 0,
+	Right: 1
+});
 
 export class Note {
 	/**
-	 * Create a new note.
-	 * @param time The time of the note.
-	 * @param pos The [x, y] of the note.
-	 * @param type Note is left: 0, or right: 1.
-	 * @param direction The cut direction of the note.
+	 * Create a new note. All paramaters here are optional and can be edited later.
+	 *
+	 * For example:
+	 * ```ts
+	 * const note = new Note();
+	 * note.time = 0;
+	 * note.x = 1;
+	 * note.y = 2;
+	 * note.direction = "Down";
+	 * note.push();
+	 * ```
+	 * @param time The time of the note (Default - 0).
+	 * @param pos The [x, y] of the note (Default - [0, 0]).
+	 * @param type (string) If the note is a left or right note (Default - "Left").
+	 * @param direction (string) The cut direction of the note (Default - "Dot").
 	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public angleOffset = 0) {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public direction: ObjectDirections = "Dot", public angleOffset = 0) {}
 	customData: NoteCustomProps = {};
 
 	get offset() {
@@ -114,8 +141,8 @@ export class Note {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: temp.type,
-			d: temp.direction,
+			c: ObjectColorsMap.get(temp.type),
+			d: ObjectDirectionsMap.get(temp.direction),
 			a: temp.angleOffset,
 			customData: temp.customData
 		};
@@ -124,8 +151,8 @@ export class Note {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
-		this.type = x.c;
-		this.direction = x.d;
+		this.type = ObjectColorsMap.revGet(x.c);
+		this.direction = ObjectDirectionsMap.revGet(x.d);
 		this.angleOffset = x.a;
 		if (x.customData) {
 			this.customData = x.customData;
@@ -152,8 +179,8 @@ export class Note {
 export class Bomb {
 	/**
 	 * Create a new bomb.
-	 * @param time The time of the bomb.
-	 * @param pos The [x, y] of the bomb.
+	 * @param time The time of the bomb (Default - 0).
+	 * @param pos The [x, y] of the bomb (Default - [0, 0]).
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
 	customData: NoteCustomProps = {};
@@ -290,11 +317,11 @@ export class Bomb {
 export class Wall {
 	/**
 	 * Create a new wall.
-	 * @param time The time of the wall.
-	 * @param pos The [x, y] of the wall.
-	 * @param duration The duration of the wall.
-	 * @param width The width of the wall.
-	 * @param height The height of the wall.
+	 * @param time The time of the wall (Default - 0).
+	 * @param pos The [x, y] of the wall (Default - [0, 0]).
+	 * @param duration The duration of the wall (Default - 1).
+	 * @param width The width of the wall (Default - 1).
+	 * @param height The height of the wall (Default - 1).
 	 */
 	constructor(public time = 0, public pos = [0, 0], public duration = 1, public width = 1, public height = 1) {}
 	customData: WallCustomProps = {};
@@ -422,15 +449,15 @@ export class Wall {
 export class Arc {
 	/**
 	 * Create a new arc.
-	 * @param time The time of the arc.
-	 * @param type The color of the arc (left / right).
-	 * @param pos The starting position of the arc.
-	 * @param headDirection The starting direction of the arc.
-	 * @param tailBeat The final beat of the arc.
-	 * @param tailPos The final position of the arc.
-	 * @param tailDirection The direction of the end of the arc.
+	 * @param time The time of the arc (Default - 0).
+	 * @param pos The starting position of the arc (Default - [0, 0]).
+	 * @param type (string) The color of the arc (left / right) (Default - "Left").
+	 * @param headDirection (string) The starting direction of the arc (Default - "Up").
+	 * @param tailBeat The final beat of the arc (Default - 1).
+	 * @param tailPos The final position of the arc (Default - [0, 0]).
+	 * @param tailDirection The direction of the end of the arc (Default - "Down").
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public headDirection = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection = 0) {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public headDirection: ObjectDirections = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirections = "Down") {}
 	headMultiplier = 1;
 	tailMultiplier = 1;
 	anchorMode = 1;
@@ -534,15 +561,15 @@ export class Arc {
 		jsonPrune(temp);
 		return {
 			b: temp.time,
-			c: temp.type,
+			c: ObjectColorsMap.get(temp.type),
 			x: temp.x,
 			y: temp.y,
-			d: temp.headDirection,
+			d: ObjectDirectionsMap.get(temp.headDirection),
 			mu: temp.headMultiplier,
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
-			tc: temp.tailDirection,
+			tc: ObjectDirectionsMap.get(temp.tailDirection),
 			tmu: temp.tailMultiplier,
 			m: temp.anchorMode,
 			customData: temp.customData
@@ -550,15 +577,15 @@ export class Arc {
 	}
 	JSONToClass(x: SliderType) {
 		this.time = x.b;
-		this.type = x.c;
+		this.type = ObjectColorsMap.revGet(x.c);
 		this.x = x.x;
 		this.y = x.y;
-		this.headDirection = x.d;
+		this.headDirection = ObjectDirectionsMap.revGet(x.d);
 		this.headMultiplier = x.mu;
 		this.tailBeat = x.tb;
 		this.tx = x.tx;
 		this.ty = x.ty;
-		this.tailDirection = x.tc;
+		this.tailDirection = ObjectDirectionsMap.revGet(x.tc);
 		this.tailMultiplier = x.tmu;
 		this.anchorMode = x.m;
 		if (x.customData) {
@@ -580,15 +607,15 @@ export class Arc {
 export class Chain {
 	/**
 	 * Create a new chain (burstSlider) object.
-	 * @param time The time of the chain.
-	 * @param pos The [x, y] of the chain.
-	 * @param type The type of the chain (left/right).
-	 * @param direction The cut direction of the head of the chain.
-	 * @param tailBeat The beat at the end of the chain.
-	 * @param tailPos The [x, y] of the end of the chain.
-	 * @param segments The number of segments in the chain.
+	 * @param time The time of the chain (Default - 0).
+	 * @param pos The [x, y] of the chain (Default - [0, 0]).
+	 * @param type (string) The type of the chain (left/right) (Default - "Left").
+	 * @param direction (string) The cut direction of the head of the chain (Default - "Down").
+	 * @param tailBeat The beat at the end of the chain (Default - 1).
+	 * @param tailPos The [x, y] of the end of the chain (Default - [0, 0]).
+	 * @param segments The number of segments in the chain (Default - 5).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type = 0, public direction = 0, public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public direction: ObjectDirections = "Down", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
 	squishFactor = 1;
 	customData: SliderCustomProps = {};
 
@@ -692,8 +719,8 @@ export class Chain {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: temp.type,
-			d: temp.direction,
+			c: ObjectColorsMap.get(temp.type),
+			d: ObjectDirectionsMap.get(temp.direction),
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
@@ -706,8 +733,8 @@ export class Chain {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
-		this.type = x.c;
-		this.direction = x.d;
+		this.type = ObjectColorsMap.revGet(x.c);
+		this.direction = ObjectDirectionsMap.revGet(x.d);
 		this.tailBeat = x.tb;
 		this.tx = x.tx;
 		this.ty = x.ty;
