@@ -268,7 +268,7 @@ export function runTime() {
 }
 
 /**
- * Console log with appended LM message.
+ * Console log with prepended LM message.
  * @param message Message to log.
  * @param error Optional error level.
  */
@@ -313,38 +313,41 @@ export function lerp(start: number, end: number, fraction: number, easing: Easin
 
 /**
  * Access and modify the LM_Cache.
- * @param process Whether to read the cache or write to it.
- * @param name The name of the entry in the chache to access.
+ * @param process Whether to read, write to, clear, or get the entries of the cache.
+ *
+ * * Read - If name is specified, returns the entry in the cache with that name. If name is unspecified, returns the contents of the entire cache.
+ * * Write - If data is specified, writes that data to the named entry in the cache. If data is unspecified, deletes the named entry on the cache.
+ * * Clear - **Avoid using this!** Completely wipes the contents of the cache.
+ * * Entries - Returns an array of the adressable names in the cache.
+ * @param name The name of the entry in the cache to access.
  * @param data The data to write (if write process is specified), if left undefined the property will be removed from the cache.
  */
-export function LMCache(process: "Read" | "Write" | "Clear", name = "", data?: any) {
+
+export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = "", data?: any) {
 	const fileName = "LM_Cache.json";
 	ensureFileSync(fileName);
-	if (process == "Read") {
+	if (process == "Clear") {
+		Deno.writeTextFileSync(fileName, JSON.stringify({}));
+	} else {
 		try {
 			const raw = Deno.readTextFileSync(fileName),
 				cache: Record<string, any> = JSON.parse(raw == "" ? "{}" : raw);
-			return cache[name];
-		} catch (e) {
-			console.log(`Cache suffered from error, invalidating cache: ${e}`);
-			Deno.writeTextFileSync(fileName, JSON.stringify({}));
-		}
-	} else if (process == "Write") {
-		try {
-			const raw = Deno.readTextFileSync(fileName),
-				cache: Record<string, any> = JSON.parse(raw == "" ? "{}" : raw);
-			if (typeof data == "undefined") {
-				delete cache[name];
-			} else {
-				cache[name] = data;
+			if (process == "Write") {
+				if (typeof data == "undefined") {
+					delete cache[name];
+				} else {
+					cache[name] = data;
+				}
+			} else if (process == "Read") {
+				return name == "" ? cache : cache[name];
+			} else if (process == "Entries") {
+				return Object.getOwnPropertyNames(cache);
 			}
 			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
 		} catch (e) {
 			console.log(`Cache suffered from error, invalidating cache: ${e}`);
-			Deno.writeTextFileSync(fileName, JSON.stringify({}));
+			LMCache("Clear");
 		}
-	} else {
-		Deno.writeTextFileSync(fileName, JSON.stringify({}));
 	}
 }
 
@@ -356,41 +359,45 @@ export function LMCache(process: "Read" | "Write" | "Clear", name = "", data?: a
  * @param noteTrack The name of the track to assign the notes.
  * @returns Track animation for the player.
  */
-export function PlayerAnim(time = 0, duration = 1, playerTrack = "player", noteTrack = "notes") {
-	new AssignPlayerToTrack(playerTrack, time).push();
-	new AssignTrackParent([noteTrack], playerTrack, time).push();
-	filterNotes(
-		false,
-		x => x.time >= time && x.time < time + duration,
-		x => {
-			x.track = noteTrack;
-		}
-	);
-	filterBombs(
-		false,
-		x => x.time >= time && x.time < time + duration,
-		x => {
-			x.track = noteTrack;
-		}
-	);
-	filterChains(
-		false,
-		x => x.time >= time && x.time < time + duration,
-		x => {
-			x.track = noteTrack;
-		}
-	);
-	filterArcs(
-		x => x.time >= time && x.time < time + duration,
-		x => {
-			x.track = noteTrack;
-		}
-	);
-	return new AnimateTrack(playerTrack, time, duration);
+export class PlayerAnim {
+	constructor(time = 0, duration = 1, playerTrack = "player", noteTrack = "notes") {
+		new AssignPlayerToTrack(playerTrack, time).push();
+		new AssignTrackParent([noteTrack], playerTrack, time).push();
+		filterNotes(
+			false,
+			x => x.time >= time && x.time < time + duration,
+			x => {
+				x.track = noteTrack;
+			}
+		);
+		filterBombs(
+			false,
+			x => x.time >= time && x.time < time + duration,
+			x => {
+				x.track = noteTrack;
+			}
+		);
+		filterChains(
+			false,
+			x => x.time >= time && x.time < time + duration,
+			x => {
+				x.track = noteTrack;
+			}
+		);
+		filterArcs(
+			x => x.time >= time && x.time < time + duration,
+			x => {
+				x.track = noteTrack;
+			}
+		);
+		return new AnimateTrack(playerTrack, time, duration);
+	}
 }
 
 /**
- * Abstraction of hypot function. Finds the distance between 2 vectors.
+ * Finds the distance between 2 vectors.
+ *
+ * Abstraction of hypot function.
  * @param vec1 The first vector.
  * @param vec2 The second vector.
  */
@@ -399,14 +406,16 @@ export function distance(vec1: Vec3, vec2: Vec3) {
 }
 
 /**
- * Maps a value from an existing range into another, also works recusrively on arrays or objects.
- * @param val The value.
+ * Maps a value from an existing range into another, also works recursively on arrays or objects.
+ * @param val The value, array, or object of values to map.
  * @param from The range from which to map.
  * @param to The range to map to.
+ * @param precision The number of decimal points to round to (can be nagative to round to tens, hundreds etc.).
+ * @param easing Optional easing to apply to the range.
  */
-export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5) {
+export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5, easing?: Easing) {
 	if (typeof val == "number") {
-		return Math.floor(Math.pow(10, precision) * (((val - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0])) / Math.pow(10, precision);
+		return Math.floor(Math.pow(10, precision) * lerp(to[0], to[1], (val - from[0]) / (from[1] - from[0]), easing)) / Math.pow(10, precision);
 	} else if (!(typeof val == "number" || typeof val == "object")) {
 		return val;
 	} else if (Array.isArray(val)) {
@@ -420,12 +429,14 @@ export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5) {
 }
 
 /**
- * Clamp a number within a range.
+ * Clamp a number within a range, also works recursively on arrays or objects.
+ * @param val The value, array, or object of values to clamp.
+ * @param range The range (inclusive) to clamp the value within.
  */
 export function clamp(val: any, range: Vec2) {
 	range = range[0] > range[1] ? [range[1], range[0]] : range;
 	if (typeof val == "number") {
-		return val < range[0] ? range[0] : val > range[1] ? range[1] : val;
+		return Math.max(Math.min(...range), Math.min(Math.max(...range), val));
 	} else if (!(typeof val == "number" || typeof val == "object")) {
 		return val;
 	} else if (Array.isArray(val)) {
@@ -440,7 +451,8 @@ export function clamp(val: any, range: Vec2) {
 
 /**
  * Convert color from hsv format to rgb.
- * @param color The color in hsv format, all values are from 0-1.
+ * @param color The color in hsv format, all values range from 0-1 (inclusive).
+ * @returns Linear rgb (0-1).
  */
 export function hsv2rgb(color: Vec4) {
 	const [h, s, v, a] = color;
@@ -451,7 +463,7 @@ export function hsv2rgb(color: Vec4) {
 
 /**
  * Convert color from rgb format to hsv.
- * @param color The color in rgb format, all values are from 0-1.
+ * @param color The color in rgb format (linear rgb 0-1 inclusive).
  */
 export function rgb2hsv(color: Vec4) {
 	const max = Math.max(color[0], color[1], color[2]);
@@ -467,16 +479,16 @@ export function rgb2hsv(color: Vec4) {
  * @param o The object, or number to set the precision of.
  * @param precision The number of decimals.
  */
-export function jsonDecimals(o: any, precision = 5) {
+export function decimals(o: any, precision = 5) {
 	if (typeof o == "number") {
 		return Math.round(o * Math.pow(10, precision)) / Math.pow(10, precision);
 	} else if (!(typeof o == "number" || typeof o == "object")) {
 		return o;
 	} else if (Array.isArray(o)) {
-		o = o.map(x => jsonDecimals(x, precision));
+		o = o.map(x => decimals(x, precision));
 	} else {
 		Object.keys(o).forEach(key => {
-			o[key] = jsonDecimals(o[key], precision);
+			o[key] = decimals(o[key], precision);
 		});
 	}
 	return o;
