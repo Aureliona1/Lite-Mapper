@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, ArrayProcess, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, currentDiff, start, ye3 } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, NumArr, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, currentDiff, start, ye3 } from "./LiteMapper.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -224,7 +224,7 @@ export function random(min: number, max: number, seed: number | string = Math.ra
  * @returns Vec3 - The rotation for the object at point1.
  */
 export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
-	const vector = new ArrayProcess(point2).subtract(point1),
+	const vector = new NumArr(point2).subtract(point1),
 		angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0],
 		pitchPoint = rotateVector([0, 0, 0], vector, [0, -angle[1], 0]);
 	angle[0] = (-180 * Math.atan2(pitchPoint[1], pitchPoint[2])) / Math.PI;
@@ -402,7 +402,7 @@ export class PlayerAnim {
  * @param vec2 The second vector.
  */
 export function distance(vec1: Vec3, vec2: Vec3) {
-	return Math.hypot(...new ArrayProcess(vec2).subtract(vec1));
+	return Math.hypot(...new NumArr(vec2).subtract(vec1));
 }
 
 /**
@@ -568,4 +568,16 @@ export function jsonPrune(obj: Record<string, any>) {
 			delete obj[prop];
 		}
 	});
+}
+
+/**
+ * Remove entries from an array and return the modified array. Affects the original array, therefore you do not need to reassign.
+ * @param arr The array to remove elements from.
+ * @param indexes The indexes of the elements to remove.
+ */
+export function arrRem<T extends any[]>(arr: T, indexes: number[]) {
+	for (let i = indexes.length - 1; i >= 0; i--) {
+		arr.splice(indexes[i], 1);
+	}
+	return arr as T;
 }

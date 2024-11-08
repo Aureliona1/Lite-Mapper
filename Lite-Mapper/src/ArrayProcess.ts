@@ -1,6 +1,6 @@
 import { Easing, Vec2, copy, lerp, mapRange, random, repeat } from "./LiteMapper.ts";
 
-export class ArrayProcess<T extends number[]> {
+export class NumArr<T extends number[]> {
 	/**
 	 * Run several mathematical operations on an array.
 	 * @param array The source array.
@@ -114,7 +114,7 @@ export class ArrayProcess<T extends number[]> {
 	}
 
 	get max() {
-		return new ArrayProcess(this.array).sortNumeric()[this.array.length - 1];
+		return Math.max(...this.array);
 	}
 	set max(x) {
 		this.array.forEach(a => {
@@ -127,7 +127,7 @@ export class ArrayProcess<T extends number[]> {
 		});
 	}
 	get min() {
-		return new ArrayProcess(this.array).sortNumeric()[0];
+		return Math.min(...this.array);
 	}
 	get range() {
 		return this.max - this.min;
@@ -140,8 +140,7 @@ export class ArrayProcess<T extends number[]> {
 		return out / this.array.length;
 	}
 	get median() {
-		const temp = new ArrayProcess(this.array).sortNumeric();
-		return temp[Math.floor(temp.length / 2)];
+		return this.sortNumeric()[Math.floor(this.array.length / 2)];
 	}
 	get mode() {
 		let arr: number[][] = [];
@@ -157,5 +156,17 @@ export class ArrayProcess<T extends number[]> {
 		});
 		arr = arr.sort((a, b) => a[1] - b[1]);
 		return arr[arr.length - 1][0];
+	}
+	/**
+	 * Return the product of all the elements in the array.
+	 */
+	get product() {
+		return this.array.reduce((a, b) => a * b);
+	}
+	/**
+	 * Return the sum of all the elements in the array.
+	 */
+	get sum() {
+		return this.array.reduce((a, b) => a + b);
 	}
 }
