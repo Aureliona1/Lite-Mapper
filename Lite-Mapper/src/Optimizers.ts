@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat } from "./LiteMapper.ts";
+import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./LiteMapper.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
@@ -204,6 +204,7 @@ export class GeoTrackStack {
 	push() {
 		this.internalStack.forEach(x => {
 			const geo = new Environment().geo(this.type, this.material);
+			geo.position = ye3;
 			geo.track = x[0];
 			geo.push();
 		});
