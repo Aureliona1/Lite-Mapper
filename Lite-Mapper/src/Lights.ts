@@ -19,6 +19,7 @@ const LightEventValuesMap = new TwoWayMap({
 	FlashBlue: 2,
 	FadeBlue: 3,
 	Transition: 4,
+	In: 4,
 	TransitionBlue: 4,
 	On: 5,
 	OnRed: 5,
