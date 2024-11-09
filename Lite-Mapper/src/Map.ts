@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, BookMark } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -99,6 +99,17 @@ export class BeatMap {
 				this.rawMap.customData.fakeObstacles.forEach(n => {
 					new Wall().JSONToClass(n).push(true);
 				});
+			}
+			if (this.rawMap.customData.bookmarks) {
+				this.rawMap.customData.bookmarks.forEach(b => {
+					new BookMark().JSONToClass(b).push(true);
+				});
+			}
+			if (this.rawMap.customData.time) {
+				this.chromapperValues.mappingTime = this.rawMap.customData.time;
+			}
+			if (this.rawMap.customData.bookmarksUseOfficialBpmEvents) {
+				this.chromapperValues.bookmarksUseOfficialBPMEvents = this.rawMap.customData.bookmarksUseOfficialBpmEvents;
 			}
 		}
 		this.map.version = this.rawMap.version;
@@ -343,6 +354,18 @@ export class BeatMap {
 		return this.customData.fakeBurstSliders ?? [];
 	}
 
+	set bookmarks(x) {
+		this.customData.bookmarks = x;
+	}
+	get bookmarks() {
+		return this.customData.bookmarks ?? [];
+	}
+
+	readonly chromapperValues = {
+		mappingTime: 0,
+		bookmarksUseOfficialBPMEvents: true
+	};
+
 	set useNormalEventsAsCompatibleEvents(x) {
 		this.map.useNormalEventsAsCompatibleEvents = x;
 	}
@@ -433,6 +456,17 @@ export class BeatMap {
 					new Wall().JSONToClass(n).push(true);
 				});
 			}
+			if (input.customData.bookmarks) {
+				input.customData.bookmarks.forEach(b => {
+					new BookMark().JSONToClass(b).push(true);
+				});
+			}
+			if (input.customData.time) {
+				this.chromapperValues.mappingTime += input.customData.time;
+			}
+			if (input.customData.bookmarksUseOfficialBpmEvents) {
+				this.chromapperValues.bookmarksUseOfficialBPMEvents = input.customData.bookmarksUseOfficialBpmEvents;
+			}
 		}
 	}
 
@@ -451,6 +485,7 @@ export class BeatMap {
 		this.rawMap.customData.fakeColorNotes ??= [];
 		this.rawMap.customData.fakeObstacles ??= [];
 		this.rawMap.customData.customEvents ??= [];
+		this.rawMap.customData.bookmarks ??= [];
 		this.notes.forEach(n => {
 			jsonPrune(n);
 			this.rawMap.colorNotes.push(n.return());
@@ -494,6 +529,10 @@ export class BeatMap {
 		this.customEvents?.forEach(n => {
 			jsonPrune(n);
 			this.rawMap.customData?.customEvents?.push(CEToJSON(n));
+		});
+		this.bookmarks.forEach(b => {
+			jsonPrune(b);
+			this.rawMap.customData?.bookmarks?.push(b.return());
 		});
 
 		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;

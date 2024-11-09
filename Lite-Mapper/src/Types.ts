@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, BookMark, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
 
 // BeatMap types
 
@@ -159,6 +159,9 @@ export type V3MapJSON = {
 		fakeBombNotes?: BombType[];
 		fakeObstacles?: ObstacleType[];
 		fakeBurstSliders?: BurstSliderType[];
+		bookmarks?: BookmarkType[];
+		bookmarksUseOfficialBpmEvents?: boolean;
+		time?: number;
 	};
 };
 
@@ -187,6 +190,7 @@ export type classMap = {
 		fakeBombNotes?: Bomb[];
 		fakeObstacles?: Wall[];
 		fakeBurstSliders?: Chain[];
+		bookmarks?: BookMark[];
 	};
 };
 
@@ -378,6 +382,7 @@ export type BurstSliderType = { b: number; x: number; y: number; c: number; d: n
 export type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
 export type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+export type BookmarkType = { b: number; n: string; c: Vec4 };
 
 export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed";
 export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";

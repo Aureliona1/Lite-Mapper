@@ -1,4 +1,4 @@
-import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune } from "./LiteMapper.ts";
+import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune, Vec4, BookmarkType } from "./LiteMapper.ts";
 
 const ObjectDirectionsMap = new TwoWayMap({
 	Up: 0,
@@ -758,5 +758,29 @@ export class Chain {
 		} else {
 			currentDiff.chains.push(temp);
 		}
+	}
+}
+
+export class BookMark {
+	constructor(public time = 0, public name = "", public color: Vec4 = [1, 1, 1, 1]) {}
+	return(dupe = true): BookmarkType {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
+		return {
+			b: this.time,
+			n: name,
+			c: this.color
+		};
+	}
+	JSONToClass(x: BookmarkType) {
+		this.time = x.b;
+		this.name = x.n;
+		this.color = x.c;
+		return this;
+	}
+	push(dupe = true) {
+		const temp = dupe ? copy(this) : this;
+		jsonPrune(temp);
+		currentDiff.bookmarks?.push(temp);
 	}
 }
