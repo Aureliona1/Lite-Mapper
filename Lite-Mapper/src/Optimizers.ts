@@ -1,5 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
-import { Environment, GeometryMaterialJSON, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./mod.ts";
+import { ye3 } from "./Consts.ts";
+import { Environment } from "./Environment.ts";
+import { repeat, filterEnvironments, arrRem } from "./Functions.ts";
+import { currentDiff } from "./Map.ts";
+import { GeometryMaterialJSON, Vec2 } from "./Types.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
@@ -114,7 +118,7 @@ export function optimizeMaterials() {
 }
 
 export class GeoTrackStack {
-	internalStack: [string, Vec2[]][] = [];
+	internalStack: [number, Vec2[]][] = [];
 	private maxCounter = 0; // For naming new tracks
 
 	/**
@@ -148,9 +152,10 @@ export class GeoTrackStack {
 	 * Request an array of available tracks within a time period. If not enough track are available (or none are), new tracks will be created.
 	 * @param count The number of tracks to request.
 	 * @param time The time that the tracks will be used for.
+	 * @param id Whether to return an array of track names, or a numerical "id" of the object (still string although it can be parsed).
 	 * @returns An array of available tracks.
 	 */
-	request(count: number, time: Vec2) {
+	request(count: number, time: Vec2, id = false) {
 		time = time[0] > time[1] ? [time[1], time[0]] : time; // Sort time values
 		const out: string[] = [];
 		// Get all the indices of available tracks.
@@ -175,18 +180,18 @@ export class GeoTrackStack {
 
 		// Add any available tracks to the output, and add the time to the tracks (they are now unavailable at this time for future calls).
 		for (let i = 0; i < available.length && i < count; i++) {
-			out.push(available[i][0]);
+			out.push(id ? available[i][0].toString() : this.track + available[i][0]);
 			available[i][1].push(time);
 		}
 
 		// If there weren't enough available tracks, we need to make new ones
 		while (out.length < count) {
 			// Create the new track
-			const newTrack = [this.track + this.maxCounter, [time]] as [string, Vec2[]];
+			const newTrack = [this.maxCounter, [time]] as [number, Vec2[]];
 			this.maxCounter++;
 
 			// Add the track to the arrays
-			out.push(newTrack[0]);
+			out.push(id ? newTrack[0].toString() : this.track + newTrack[0]);
 			available.push(newTrack);
 		}
 
@@ -203,7 +208,7 @@ export class GeoTrackStack {
 	push() {
 		this.object.position = ye3;
 		this.internalStack.forEach(x => {
-			this.object.track = x[0];
+			this.object.track = this.track + x[0];
 			this.object.push();
 		});
 	}

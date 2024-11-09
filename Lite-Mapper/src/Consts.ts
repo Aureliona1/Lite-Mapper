@@ -1,4 +1,5 @@
-import { GeometryMaterialJSON, LookupMethod, MaterialPresetNames, TwoWayMap, Vec3 } from "./mod.ts";
+import { TwoWayMap } from "./Functions.ts";
+import { Vec3, MaterialPresetNames, GeometryMaterialJSON, LookupMethod } from "./Types.ts";
 
 export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];

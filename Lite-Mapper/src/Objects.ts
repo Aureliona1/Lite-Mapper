@@ -1,25 +1,7 @@
-import {
-	BombType,
-	BookmarkType,
-	BurstSliderType,
-	copy,
-	currentDiff,
-	jsonPrune,
-	NoteCustomProps,
-	NoteType,
-	ObjectColors,
-	ObjectColorsMap,
-	ObjectColorsNumericalValues,
-	ObjectDirections,
-	ObjectDirectionsMap,
-	ObjectDirectionsNumericalValues,
-	ObstacleType,
-	SliderCustomProps,
-	SliderType,
-	Vec2,
-	Vec4,
-	WallCustomProps
-} from "./mod.ts";
+import { ObjectColorsMap, ObjectDirectionsMap, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Consts.ts";
+import { currentDiff } from "./Map.ts";
+import { copy, jsonPrune } from "./mod.ts";
+import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteType, BombType, WallCustomProps, ObstacleType, SliderCustomProps, SliderType, BurstSliderType, Vec4, BookmarkType } from "./Types.ts";
 
 export class Note {
 	/**

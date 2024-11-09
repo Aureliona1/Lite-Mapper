@@ -1,4 +1,8 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, Bookmark } from "./mod.ts";
+import { LightEvent } from "./Lights.ts";
+import { JSONToCE, LMLog, jsonPrune, CEToJSON, decimals, copyToDir } from "./mod.ts";
+import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
+import { optimizeMaterials } from "./Optimizers.ts";
+import { V3MapJSON, classMap, DiffNames, HeckSettings, infoJSON } from "./Types.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,

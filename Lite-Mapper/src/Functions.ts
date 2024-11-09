@@ -3,7 +3,13 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, NumArr, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, currentDiff, start, ye3 } from "./mod.ts";
+import { NumArr } from "./ArrayProcess.ts";
+import { ye3 } from "./Consts.ts";
+import { Environment } from "./Environment.ts";
+import { LightEvent } from "./Lights.ts";
+import { currentDiff, AnimateTrack, AnimateComponent, AssignPathAnimation, start, AssignPlayerToTrack, AssignTrackParent } from "./mod.ts";
+import { Note, Bomb, Arc, Chain, Wall } from "./Objects.ts";
+import { Vec3, LookupMethod, Easing, Vec2, Vec4 } from "./Types.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

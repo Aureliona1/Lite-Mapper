@@ -1,27 +1,23 @@
+import { NumArr } from "./ArrayProcess.ts";
+import { currentDiff } from "./Map.ts";
+import { copy, jsonPrune, repeat, rotateVector, AnimateComponent } from "./mod.ts";
 import {
-	AnimateComponent,
-	ComponentStaticProps,
-	GeometryMaterialJSON,
-	GeometryObjectJSON,
+	LookupMethod,
 	GeometryObjectTypes,
+	GeometryMaterialJSON,
+	ComponentStaticProps,
+	Vec3,
+	GeometryObjectJSON,
+	Vec4,
+	MaterialShader,
 	KeywordsBTSPillar,
 	KeywordsBaseWater,
 	KeywordsBillieWater,
-	KeywordsInterscopeCar,
-	KeywordsInterscopeConcrete,
 	KeywordsStandard,
-	KeywordsWaterfallMirror,
-	LookupMethod,
-	MaterialShader,
-	NumArr,
-	Vec3,
-	Vec4,
-	copy,
-	currentDiff,
-	jsonPrune,
-	repeat,
-	rotateVector
-} from "./mod.ts";
+	KeywordsInterscopeConcrete,
+	KeywordsInterscopeCar,
+	KeywordsWaterfallMirror
+} from "./Types.ts";
 
 export class Environment {
 	/**

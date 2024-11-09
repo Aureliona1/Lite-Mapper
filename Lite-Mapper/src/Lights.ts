@@ -1,4 +1,7 @@
-import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventTypesMap, LightEventValues, LightEventValuesMap, LightKeyframeFrameType, LightTypesNumericalValues, LightValueNumericalValues, repeat, Vec3, Vec4 } from "./mod.ts";
+import { LightEventTypesMap, LightEventValuesMap, LightTypesNumericalValues, LightValueNumericalValues } from "./Consts.ts";
+import { currentDiff } from "./Map.ts";
+import { copy, jsonPrune, repeat, lerp } from "./mod.ts";
+import { LightEventTypes, LightEventValues, LightEventCustomData, Easing, Vec3, Vec4, LightEventType, LightKeyframeFrameType } from "./Types.ts";
 
 export class LightEvent {
 	/**

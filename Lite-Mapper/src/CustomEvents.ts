@@ -1,4 +1,6 @@
-import { ComponentAnimProps, CustomEventNames, CustomEventType, PathAnimAllProps, PathAnimProps, PlayerObjectControllers, PlayerToTrackProps, TrackAnimAllProps, TrackAnimProps, TrackParentProps, copy, currentDiff, jsonPrune } from "./mod.ts";
+import { jsonPrune, copy } from "./Functions.ts";
+import { currentDiff } from "./Map.ts";
+import { CustomEventType, CustomEventNames, TrackAnimAllProps, TrackAnimProps, PathAnimAllProps, PathAnimProps, TrackParentProps, PlayerObjectControllers, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
 
 /**
  * Convert custom event json into respective class.

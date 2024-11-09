@@ -1,4 +1,7 @@
-import { Environment, LMLog, LightEventType, copy, currentDiff } from "./mod.ts";
+import { Environment } from "./Environment.ts";
+import { currentDiff } from "./Map.ts";
+import { copy, LMLog } from "./mod.ts";
+import { LightEventType } from "./Types.ts";
 
 export type USESettings = {
 	name?: string;
