@@ -312,6 +312,9 @@ export class GeoTrackStack {
 						}
 					}
 				});
+				anim.animate.position = posAnims;
+				anim.animate.rotation = rotAnims;
+				anim.animate.scale = scaleAnims;
 				currentDiff.customEvents = arrRem(currentDiff.customEvents, removeIndices);
 				if (removeIndices.length) {
 					newAnims.push(anim);
