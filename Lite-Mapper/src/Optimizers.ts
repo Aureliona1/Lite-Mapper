@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./LiteMapper.ts";
+import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./mod.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 

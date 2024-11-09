@@ -1,4 +1,4 @@
-import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune, Vec4, BookmarkType } from "./LiteMapper.ts";
+import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune, Vec4, BookmarkType } from "./mod.ts";
 
 const ObjectDirectionsMap = new TwoWayMap({
 	Up: 0,

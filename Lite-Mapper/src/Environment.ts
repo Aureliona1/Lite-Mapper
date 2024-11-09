@@ -21,7 +21,7 @@ import {
 	jsonPrune,
 	repeat,
 	rotateVector
-} from "./LiteMapper.ts";
+} from "./mod.ts";
 
 export class Environment {
 	/**

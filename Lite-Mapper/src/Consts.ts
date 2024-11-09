@@ -1,4 +1,4 @@
-import { GeometryMaterialJSON, LookupMethod, MaterialPresetNames, Vec3 } from "./LiteMapper.ts";
+import { GeometryMaterialJSON, LookupMethod, MaterialPresetNames, Vec3 } from "./mod.ts";
 
 export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];

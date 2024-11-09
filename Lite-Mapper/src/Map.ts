@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, Bookmark } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, Bookmark } from "./mod.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,

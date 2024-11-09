@@ -1,4 +1,4 @@
-import { ComponentAnimProps, CustomEventNames, CustomEventType, PathAnimAllProps, PathAnimProps, PlayerObjectControllers, PlayerToTrackProps, TrackAnimAllProps, TrackAnimProps, TrackParentProps, copy, currentDiff, jsonPrune } from "./LiteMapper.ts";
+import { ComponentAnimProps, CustomEventNames, CustomEventType, PathAnimAllProps, PathAnimProps, PlayerObjectControllers, PlayerToTrackProps, TrackAnimAllProps, TrackAnimProps, TrackParentProps, copy, currentDiff, jsonPrune } from "./mod.ts";
 
 /**
  * Convert custom event json into respective class.

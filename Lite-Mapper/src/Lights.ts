@@ -1,4 +1,4 @@
-import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, LightKeyframeFrameType, repeat, TwoWayMap, Vec3, Vec4 } from "./LiteMapper.ts";
+import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, LightKeyframeFrameType, repeat, TwoWayMap, Vec3, Vec4 } from "./mod.ts";
 
 const LightEventTypesMap = new TwoWayMap({
 	BackLasers: 0,

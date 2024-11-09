@@ -1,4 +1,4 @@
-import { Environment, LMLog, LightEventType, copy, currentDiff } from "./LiteMapper.ts";
+import { Environment, LMLog, LightEventType, copy, currentDiff } from "./mod.ts";
 
 export type USESettings = {
 	name?: string;

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Bookmark, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Bookmark, Chain, Environment, LightEvent, Note, Wall } from "./mod.ts";
 
 // BeatMap types
 

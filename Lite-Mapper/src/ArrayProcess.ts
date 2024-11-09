@@ -1,4 +1,4 @@
-import { Easing, Vec2, copy, lerp, mapRange, random, repeat } from "./LiteMapper.ts";
+import { Easing, Vec2, copy, lerp, mapRange, random, repeat } from "./mod.ts";
 
 export class NumArr<T extends number[]> {
 	/**

@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { AnimateComponent, AnimateTrack, Arc, NumArr, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, currentDiff, start, ye3 } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, NumArr, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Chain, Easing, Environment, LightEvent, LookupMethod, Note, Vec2, Vec3, Vec4, Wall, currentDiff, start, ye3 } from "./mod.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -201,7 +201,7 @@ export function repeat(rep: number, code: (x: number) => void) {
  * @param length The length of the array.
  * @param func The function to run through the array.
  */
-export const arrFromFunction = (length: number, func: (x: number) => any) => Array.from(Array(length).keys()).map(x => func(x));
+export const arrFromFunction = <T extends any>(length: number, func: (x: number) => T) => Array.from(Array(length).keys()).map(x => func(x));
 
 /**
  * Generate a random number.
