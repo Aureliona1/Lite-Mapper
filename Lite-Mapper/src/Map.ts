@@ -41,7 +41,7 @@ export class BeatMap {
 		lightTranslationEventBoxGroups: [],
 		basicEventTypesWithKeywords: {},
 		useNormalEventsAsCompatibleEvents: false,
-		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [] }
+		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
 	};
 	/**
 	 * Initialise a new map.
