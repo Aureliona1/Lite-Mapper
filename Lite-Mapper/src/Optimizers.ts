@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { AnimateTrack, Environment, GeometryMaterialJSON, GeometryObjectTypes, KFVec3, Vec2, arrRem, currentDiff, filterEnvironments, mapRange, repeat, ye3 } from "./LiteMapper.ts";
+import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./LiteMapper.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
@@ -200,129 +200,13 @@ export class GeoTrackStack {
 
 	/**
 	 * Create the geometry objects for each track, and add them to the map.
-	 * @param optimizeTracks Whether to also optimize corresponding track animations for each geeometry object (Default - false).
-	 *
-	 * This does not work for modifier keyframes, set this to falsee if you use modifier keyframes on any geometry objects from the stack.
 	 */
-	push(optimizeTracks = false) {
+	push() {
 		this.internalStack.forEach(x => {
 			const geo = new Environment().geo(this.type, this.material);
 			geo.position = ye3;
 			geo.track = x[0];
 			geo.push();
 		});
-
-		if (optimizeTracks) {
-			// Create an array of all the new animations to add
-			const newAnims: AnimateTrack[] = [];
-			this.internalStack.forEach(x => {
-				// Get the total start and end times of the geometry.
-				const startTime = x[1][0][0];
-				const endTime = x[1][x[1].length - 1][1];
-
-				// Init a new track anim to combine all the other ones into
-				const anim = new AnimateTrack(x[0], startTime, endTime - startTime);
-				const posAnims: KFVec3[] = [];
-				const rotAnims: KFVec3[] = [];
-				const scaleAnims: KFVec3[] = [];
-				// Init an arr that will contain the indices of all the duplicate track anims
-				const removeIndices: number[] = [];
-				currentDiff.customEvents.forEach((e, i) => {
-					if (e.type == "AnimateTrack") {
-						e = e as AnimateTrack;
-						const time = e.time;
-						const duration = e.duration ?? 1;
-						if (e.track == x[0]) {
-							removeIndices.push(i); // We know to remove this anim since its a dupe
-
-							// Positions
-							if (e.animate.position) {
-								// Check if it's just a Vec3
-								if (e.animate.position.length == 3 && typeof e.animate.position[0] == "number") {
-									posAnims.push([...e.animate.position, (e.time - startTime) / (endTime - startTime), "easeStep"] as KFVec3);
-								} else {
-									// Set it to KFVec3 since I cba working out how to do modifiers.
-									e.animate.position = e.animate.position as KFVec3[];
-
-									// Re-scale time
-									e.animate.position.forEach(x => {
-										x[3] = mapRange(x[3], [time, time + duration], [startTime, endTime]);
-									});
-
-									// Add a step easing at the start
-									if (!e.animate.position[0][4]) {
-										e.animate.position[0].push("easeStep");
-									} else {
-										e.animate.position[0][4] = "easeStep";
-									}
-
-									posAnims.push(...e.animate.position);
-								}
-							}
-
-							// Rotations
-							if (e.animate.rotation) {
-								// Check if it's just a Vec3
-								if (e.animate.rotation.length == 3 && typeof e.animate.rotation[0] == "number") {
-									rotAnims.push([...e.animate.rotation, (e.time - startTime) / (endTime - startTime), "easeStep"] as KFVec3);
-								} else {
-									// Set it to KFVec3 since I cba working out how to do modifiers.
-									e.animate.rotation = e.animate.rotation as KFVec3[];
-
-									// Re-scale time
-									e.animate.rotation.forEach(x => {
-										x[3] = mapRange(x[3], [time, time + duration], [startTime, endTime]);
-									});
-
-									// Add a step easing at the start
-									if (!e.animate.rotation[0][4]) {
-										e.animate.rotation[0].push("easeStep");
-									} else {
-										e.animate.rotation[0][4] = "easeStep";
-									}
-
-									rotAnims.push(...e.animate.rotation);
-								}
-							}
-
-							// Scale
-							if (e.animate.scale) {
-								// Check if it's just a Vec3
-								if (e.animate.scale.length == 3 && typeof e.animate.scale[0] == "number") {
-									scaleAnims.push([...e.animate.scale, (e.time - startTime) / (endTime - startTime), "easeStep"] as KFVec3);
-								} else {
-									// Set it to KFVec3 since I cba working out how to do modifiers.
-									e.animate.scale = e.animate.scale as KFVec3[];
-
-									// Re-scale time
-									e.animate.scale.forEach(x => {
-										x[3] = mapRange(x[3], [time, time + duration], [startTime, endTime]);
-									});
-
-									// Add a step easing at the start
-									if (!e.animate.scale[0][4]) {
-										e.animate.scale[0].push("easeStep");
-									} else {
-										e.animate.scale[0][4] = "easeStep";
-									}
-
-									scaleAnims.push(...e.animate.scale);
-								}
-							}
-						}
-					}
-				});
-				anim.animate.position = posAnims;
-				anim.animate.rotation = rotAnims;
-				anim.animate.scale = scaleAnims;
-				currentDiff.customEvents = arrRem(currentDiff.customEvents, removeIndices);
-				if (removeIndices.length) {
-					newAnims.push(anim);
-				}
-			});
-			newAnims.forEach(x => {
-				x.push();
-			});
-		}
 	}
 }
