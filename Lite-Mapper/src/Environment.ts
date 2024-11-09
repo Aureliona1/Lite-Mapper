@@ -1,6 +1,5 @@
 import {
 	AnimateComponent,
-	NumArr,
 	ComponentStaticProps,
 	GeometryMaterialJSON,
 	GeometryObjectJSON,
@@ -14,6 +13,7 @@ import {
 	KeywordsWaterfallMirror,
 	LookupMethod,
 	MaterialShader,
+	NumArr,
 	Vec3,
 	Vec4,
 	copy,
@@ -288,6 +288,59 @@ class staticFog {
 	}
 }
 
+class AnimatedFog {
+	constructor(public readonly track: string, public time: number, public duration: number) {
+		this.componentAnimation = new AnimateComponent(track, time, duration);
+	}
+	private componentAnimation: AnimateComponent;
+	private get fog() {
+		return this.componentAnimation.fog ?? {};
+	}
+	private set fog(x) {
+		this.componentAnimation.fog = x;
+	}
+	get attenuation() {
+		return this.fog.attenuation;
+	}
+	set attenuation(x) {
+		this.fog.attenuation = x;
+	}
+	get height() {
+		return this.fog.height;
+	}
+	set height(x) {
+		this.fog.height = x;
+	}
+	get startY() {
+		return this.fog.startY;
+	}
+	set startY(x) {
+		this.fog.startY = x;
+	}
+	get offset() {
+		return this.fog.offset;
+	}
+	set offset(x) {
+		this.fog.offset = x;
+	}
+	/**
+	 * Get the json of the underlying component animation.
+	 * @param dupe Whether to copy the object on return.
+	 */
+	return(dupe = true) {
+		return this.componentAnimation.return(dupe);
+	}
+	/**
+	 * Push the fog animation.
+	 * @param dupe Whether to copy the object on push.
+	 */
+	push(dupe = true) {
+		this.componentAnimation.time = this.time;
+		this.componentAnimation.duration = this.duration;
+		this.componentAnimation.push(dupe);
+	}
+}
+
 export class Fog {
 	static() {
 		return new staticFog();
@@ -297,8 +350,8 @@ export class Fog {
 		fog.track = track;
 		fog.push();
 	}
-	animated(track = "fog") {
+	animated(track = "fog", time = 0, duration = 1) {
 		this.assignFogTrack(track);
-		return new AnimateComponent(track);
+		return new AnimatedFog(track, time, duration);
 	}
 }

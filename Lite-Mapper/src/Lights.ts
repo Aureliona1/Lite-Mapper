@@ -1,36 +1,4 @@
-import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventValues, LightKeyframeFrameType, repeat, TwoWayMap, Vec3, Vec4 } from "./mod.ts";
-
-const LightEventTypesMap = new TwoWayMap({
-	BackLasers: 0,
-	RingLights: 1,
-	LeftLasers: 2,
-	RightLasers: 3,
-	CenterLights: 4,
-	BoostColors: 5,
-	RingSpin: 8,
-	RingZoom: 9,
-	LeftLaserSpeed: 12,
-	RightLaserSpeed: 13
-});
-
-const LightEventValuesMap = new TwoWayMap({
-	Off: 0,
-	OnBlue: 1,
-	FlashBlue: 2,
-	FadeBlue: 3,
-	Transition: 4,
-	In: 4,
-	TransitionBlue: 4,
-	On: 5,
-	OnRed: 5,
-	FlashRed: 6,
-	FadeRed: 7,
-	TransitionRed: 8,
-	OnWhite: 9,
-	FlashWhite: 10,
-	FadeWhite: 11,
-	TransitionWhite: 12
-});
+import { copy, currentDiff, Easing, jsonPrune, lerp, LightEventCustomData, LightEventType, LightEventTypes, LightEventTypesMap, LightEventValues, LightEventValuesMap, LightKeyframeFrameType, LightTypesNumericalValues, LightValueNumericalValues, repeat, Vec3, Vec4 } from "./mod.ts";
 
 export class LightEvent {
 	/**
@@ -135,8 +103,8 @@ export class LightEvent {
 	}
 	JSONToClass(x: LightEventType) {
 		this.time = x.b;
-		this.type = LightEventTypesMap.revGet(x.et);
-		this.value = LightEventValuesMap.revGet(x.i);
+		this.type = LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
+		this.value = LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
 		if (x.customData) {
 			this.customData = x.customData;
 		}

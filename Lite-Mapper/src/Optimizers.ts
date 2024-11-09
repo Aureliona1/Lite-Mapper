@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Environment, GeometryMaterialJSON, GeometryObjectTypes, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./mod.ts";
+import { Environment, GeometryMaterialJSON, Vec2, arrRem, currentDiff, filterEnvironments, repeat, ye3 } from "./mod.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
@@ -139,11 +139,10 @@ export class GeoTrackStack {
 	 * });
 	 * stack.push();
 	 * ```
-	 * @param type The geometry object type.
-	 * @param material The geometry object material.
-	 * @param track The name of the track to use, the stack will append a number to this.
+	 * @param object The generic object to use on the stack.
+	 * @param track Track must be defined here, not on the object.
 	 */
-	constructor(private type: GeometryObjectTypes, private material: GeometryMaterialJSON, private track = Math.random().toString()) {}
+	constructor(public object: Environment = new Environment().geo("Cube", { shader: "BTSPillar" }), public readonly track = Math.random().toString()) {}
 
 	/**
 	 * Request an array of available tracks within a time period. If not enough track are available (or none are), new tracks will be created.
@@ -161,7 +160,7 @@ export class GeoTrackStack {
 		const available = this.internalStack.filter((x, i) => {
 			let free = true;
 			x[1].forEach(y => {
-				if (time.toString() == y.toString() || (time[0] >= y[0] && time[0] < y[1]) || (time[1] > y[0] && time[1] <= y[1])) {
+				if ((time[0] >= y[0] && time[0] < y[1]) || (time[1] > y[0] && time[1] <= y[1]) || (time[0] <= y[0] && time[1] >= y[1])) {
 					free = false;
 				}
 			});
@@ -202,11 +201,10 @@ export class GeoTrackStack {
 	 * Create the geometry objects for each track, and add them to the map.
 	 */
 	push() {
+		this.object.position = ye3;
 		this.internalStack.forEach(x => {
-			const geo = new Environment().geo(this.type, this.material);
-			geo.position = ye3;
-			geo.track = x[0];
-			geo.push();
+			this.object.track = x[0];
+			this.object.push();
 		});
 	}
 }

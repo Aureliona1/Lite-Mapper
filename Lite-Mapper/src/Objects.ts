@@ -1,21 +1,25 @@
-import { BombType, BurstSliderType, ObjectColors, NoteCustomProps, ObjectDirections, NoteType, ObstacleType, SliderCustomProps, SliderType, TwoWayMap, Vec2, WallCustomProps, copy, currentDiff, jsonPrune, Vec4, BookmarkType } from "./mod.ts";
-
-const ObjectDirectionsMap = new TwoWayMap({
-	Up: 0,
-	Down: 1,
-	Left: 2,
-	Right: 3,
-	"Up Left": 4,
-	"Up Right": 5,
-	"Down Left": 6,
-	"Down Right": 7,
-	Dot: 8
-});
-
-const ObjectColorsMap = new TwoWayMap({
-	Left: 0,
-	Right: 1
-});
+import {
+	BombType,
+	BookmarkType,
+	BurstSliderType,
+	copy,
+	currentDiff,
+	jsonPrune,
+	NoteCustomProps,
+	NoteType,
+	ObjectColors,
+	ObjectColorsMap,
+	ObjectColorsNumericalValues,
+	ObjectDirections,
+	ObjectDirectionsMap,
+	ObjectDirectionsNumericalValues,
+	ObstacleType,
+	SliderCustomProps,
+	SliderType,
+	Vec2,
+	Vec4,
+	WallCustomProps
+} from "./mod.ts";
 
 export class Note {
 	/**
@@ -151,8 +155,8 @@ export class Note {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
-		this.type = ObjectColorsMap.revGet(x.c);
-		this.direction = ObjectDirectionsMap.revGet(x.d);
+		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
+		this.direction = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
 		this.angleOffset = x.a;
 		if (x.customData) {
 			this.customData = x.customData;
@@ -577,15 +581,15 @@ export class Arc {
 	}
 	JSONToClass(x: SliderType) {
 		this.time = x.b;
-		this.type = ObjectColorsMap.revGet(x.c);
+		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
 		this.x = x.x;
 		this.y = x.y;
-		this.headDirection = ObjectDirectionsMap.revGet(x.d);
+		this.headDirection = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
 		this.headMultiplier = x.mu;
 		this.tailBeat = x.tb;
 		this.tx = x.tx;
 		this.ty = x.ty;
-		this.tailDirection = ObjectDirectionsMap.revGet(x.tc);
+		this.tailDirection = ObjectDirectionsMap.revGet(x.tc as ObjectDirectionsNumericalValues);
 		this.tailMultiplier = x.tmu;
 		this.anchorMode = x.m;
 		if (x.customData) {
@@ -733,8 +737,8 @@ export class Chain {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
-		this.type = ObjectColorsMap.revGet(x.c);
-		this.direction = ObjectDirectionsMap.revGet(x.d);
+		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
+		this.direction = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
 		this.tailBeat = x.tb;
 		this.tx = x.tx;
 		this.ty = x.ty;
