@@ -290,9 +290,11 @@ class AnimatedFog {
 	}
 	private componentAnimation: AnimateComponent;
 	private get fog() {
-		return this.componentAnimation.fog ?? {};
+		this.componentAnimation.fog ??= {};
+		return this.componentAnimation.fog;
 	}
 	private set fog(x) {
+		this.componentAnimation.fog ??= {};
 		this.componentAnimation.fog = x;
 	}
 	get attenuation() {
