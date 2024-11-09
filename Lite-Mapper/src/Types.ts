@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, BookMark, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
+import { AnimateComponent, AnimateTrack, Arc, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, Bomb, Bookmark, Chain, Environment, LightEvent, Note, Wall } from "./LiteMapper.ts";
 
 // BeatMap types
 
@@ -190,7 +190,7 @@ export type classMap = {
 		fakeBombNotes?: Bomb[];
 		fakeObstacles?: Wall[];
 		fakeBurstSliders?: Chain[];
-		bookmarks?: BookMark[];
+		bookmarks?: Bookmark[];
 	};
 };
 

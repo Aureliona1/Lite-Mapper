@@ -1,4 +1,4 @@
-import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, BookMark } from "./LiteMapper.ts";
+import { Arc, Bomb, CEToJSON, Chain, DiffNames, HeckSettings, JSONToCE, LMLog, LightEvent, Note, V3MapJSON, Wall, classMap, copyToDir, infoJSON, decimals, jsonPrune, optimizeMaterials, Bookmark } from "./LiteMapper.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -52,6 +52,11 @@ export class BeatMap {
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", checkForUpdate = true) {
 		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+
+		// Set current diff
+		currentDiff = this;
+
+		// Classify vanilla items
 		this.rawMap.basicBeatmapEvents.forEach(e => {
 			new LightEvent().JSONToClass(e).push();
 		});
@@ -70,6 +75,8 @@ export class BeatMap {
 		this.rawMap.sliders.forEach(n => {
 			new Arc().JSONToClass(n).push();
 		});
+
+		// Check for custom data
 		if (this.rawMap.customData) {
 			if (this.rawMap.customData.customEvents) {
 				this.customEvents = [];
@@ -102,7 +109,7 @@ export class BeatMap {
 			}
 			if (this.rawMap.customData.bookmarks) {
 				this.rawMap.customData.bookmarks.forEach(b => {
-					new BookMark().JSONToClass(b).push(true);
+					new Bookmark().JSONToClass(b).push(true);
 				});
 			}
 			if (this.rawMap.customData.time) {
@@ -112,6 +119,8 @@ export class BeatMap {
 				this.chromapperValues.bookmarksUseOfficialBPMEvents = this.rawMap.customData.bookmarksUseOfficialBpmEvents;
 			}
 		}
+
+		// Pass over direct values
 		this.map.version = this.rawMap.version;
 		this.map.bpmEvents = this.rawMap.bpmEvents;
 		this.map.basicEventTypesWithKeywords = this.rawMap.basicEventTypesWithKeywords;
@@ -122,10 +131,13 @@ export class BeatMap {
 		this.map.rotationEvents = this.rawMap.rotationEvents;
 		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
 		this.map.waypoints = this.rawMap.waypoints;
-		currentDiff = this;
+
+		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
 		if (/[^3]\.\d\.\d/.test(this.version)) {
 			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
 		}
+
+		// Make sure the input and outputs actually exist
 		let inExists = false,
 			outExists = false;
 		this.info.raw._difficultyBeatmapSets.forEach(x => {
@@ -158,6 +170,7 @@ export class BeatMap {
 	set info(x: Info) {
 		this.trueInfo = x;
 	}
+
 	/**
 	 * Add a mod suggestion to the map.
 	 * @param mod The mod to suggest.
@@ -373,6 +386,14 @@ export class BeatMap {
 		return this.map.useNormalEventsAsCompatibleEvents;
 	}
 
+	/**
+	 * Optimizer settings.
+	 *
+	 * Currently supports:
+	 *
+	 * * `precision` -  Decimal rounding (Defualt - 5).
+	 * * `materials` - Material optimization (Default - true)
+	 */
 	optimize = {
 		materials: true,
 		precision: 5
@@ -458,7 +479,7 @@ export class BeatMap {
 			}
 			if (input.customData.bookmarks) {
 				input.customData.bookmarks.forEach(b => {
-					new BookMark().JSONToClass(b).push(true);
+					new Bookmark().JSONToClass(b).push(true);
 				});
 			}
 			if (input.customData.time) {
@@ -608,7 +629,7 @@ class Info {
 				]
 			};
 			this.save();
-			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load until you do this!\x1b[0m");
+			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load ingame until you do this!\x1b[0m");
 		}
 	}
 	/**

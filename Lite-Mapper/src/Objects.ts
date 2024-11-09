@@ -761,7 +761,7 @@ export class Chain {
 	}
 }
 
-export class BookMark {
+export class Bookmark {
 	constructor(public time = 0, public name = "", public color: Vec4 = [1, 1, 1, 1]) {}
 	return(dupe = true): BookmarkType {
 		const temp = dupe ? copy(this) : this;
