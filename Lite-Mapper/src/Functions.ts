@@ -280,11 +280,11 @@ export function runTime() {
  */
 export function LMLog(message: any, error?: "Warning" | "Error") {
 	if (error == "Warning") {
-		console.log(`\x1b[33m[Warning in LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
+		console.log(`\x1b[33m[Warning in LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
 	} else if (error == "Error") {
-		console.log(`\x1b[33m[Error in LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
+		console.log(`\x1b[33m[Error in LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
 	} else {
-		console.log(`\x1b[37m[LiteMapper: ${runTime()}ms] ${message}\x1b[37m`);
+		console.log(`\x1b[37m[LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
 	}
 }
 
