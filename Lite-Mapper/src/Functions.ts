@@ -501,22 +501,6 @@ export function decimals(o: any, precision = 5) {
 	return o;
 }
 
-export class TwoWayMap<S extends string | number | symbol, T extends string | number | symbol> {
-	private reverseMap: Record<T, S>;
-	/**
-	 * This is an internal class used by Lite-Mapper, most mapping cases will not require this class.
-	 */
-	constructor(private map: Record<S, T>) {
-		this.reverseMap = Object.fromEntries(Object.entries(map).map(x => [x[1], x[0]]));
-	}
-	get(key: S) {
-		return this.map[key];
-	}
-	revGet(key: T) {
-		return this.reverseMap[key];
-	}
-}
-
 // Functions stolen from ReMapper >:)
 
 export function copy<T>(obj: T): T {

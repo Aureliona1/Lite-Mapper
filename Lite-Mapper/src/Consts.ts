@@ -1,4 +1,3 @@
-import { TwoWayMap } from "./Functions.ts";
 import { Vec3, MaterialPresetNames, GeometryMaterialJSON, LookupMethod } from "./Types.ts";
 
 export const ye = -69420;
@@ -114,6 +113,22 @@ export const ENV_PARAM = {
 		RAIN: ["Rain$", "Regex"] as [string, LookupMethod]
 	}
 };
+
+class TwoWayMap<S extends string | number | symbol, T extends string | number | symbol> {
+	private reverseMap: Record<T, S>;
+	/**
+	 * This is an internal class used by Lite-Mapper, most mapping cases will not require this class.
+	 */
+	constructor(private map: Record<S, T>) {
+		this.reverseMap = Object.fromEntries(Object.entries(map).map(x => [x[1], x[0]]));
+	}
+	get(key: S) {
+		return this.map[key];
+	}
+	revGet(key: T) {
+		return this.reverseMap[key];
+	}
+}
 
 /**
  * Internal type for mapping numerical light types to named types.
