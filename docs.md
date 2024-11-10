@@ -192,7 +192,7 @@ It will then make the filtered notes white.
 
 ### Lights / Events
 
-Lite-Mapper has several features to assist with lighting your map. Generally, it is recommended to light your map with the same program that you made the notes. However, not all effects are realistic to create in these programs.
+Lite-Mapper has several features to assist with lighting your map. Generally, it is recommended to light your map with a mapping software of your choice. However, not all effects are realistic to create in these programs.
 
 To create a basic lighting event, like most other features of Lite-Mapper, the event will need to be initialised. This can be done like so:
 
