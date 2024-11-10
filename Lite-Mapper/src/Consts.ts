@@ -107,7 +107,7 @@ export const ENV_PARAM = {
 	BILLIE: {
 		DIRECTIONAL_LIGHT: ["Day\\.\\[\\d+\\]\\w+Front$", "Regex"] as [string, LookupMethod],
 		SOLID_LASER: ["\\w+\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+L\\.\\[\\d+\\]\\w+LH$", "Regex"] as [string, LookupMethod],
-		SUN: ["Sun$", "Regex"] as [string, LookupMethod],
+		SUN: ["Sun", "EndsWith"] as [string, LookupMethod],
 		CLOUDS: ["Clouds$", "Regex"] as [string, LookupMethod],
 		SMOKE: ["BigSmokePS$", "Regex"] as [string, LookupMethod],
 		RAIL_LIGHT: ["t\\.\\[\\d+\\]Neon\\w+L$", "Regex"] as [string, LookupMethod],
@@ -139,13 +139,13 @@ export const LightEventTypesMap = new TwoWayMap({
 
 export const LightEventValuesMap = new TwoWayMap({
 	Off: 0,
+	On: 1,
 	OnBlue: 1,
 	FlashBlue: 2,
 	FadeBlue: 3,
 	Transition: 4,
 	In: 4,
 	TransitionBlue: 4,
-	On: 5,
 	OnRed: 5,
 	FlashRed: 6,
 	FadeRed: 7,

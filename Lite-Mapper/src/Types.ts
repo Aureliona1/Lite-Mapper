@@ -1,8 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
-
+import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
-import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./mod.ts";
 import { Note, Bomb, Wall, Arc, Chain, Bookmark } from "./Objects.ts";
 
 // BeatMap types

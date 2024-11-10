@@ -1,5 +1,6 @@
+import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
+import { copyToDir, decimals, jsonPrune, LMLog } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
-import { JSONToCE, LMLog, jsonPrune, CEToJSON, decimals, copyToDir } from "./mod.ts";
 import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
 import { V3MapJSON, classMap, DiffNames, HeckSettings, infoJSON } from "./Types.ts";

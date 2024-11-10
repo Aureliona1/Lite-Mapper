@@ -1,6 +1,7 @@
 import { NumArr } from "./ArrayProcess.ts";
+import { AnimateComponent } from "./CustomEvents.ts";
+import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { copy, jsonPrune, repeat, rotateVector, AnimateComponent } from "./mod.ts";
 import {
 	LookupMethod,
 	GeometryObjectTypes,

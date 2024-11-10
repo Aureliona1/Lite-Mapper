@@ -1,4 +1,5 @@
-import { Easing, Vec2, copy, lerp, mapRange, random, repeat } from "./mod.ts";
+import { copy, lerp, mapRange, random, repeat } from "./Functions.ts";
+import { Easing, Vec2 } from "./Types.ts";
 
 export class NumArr<T extends number[]> {
 	/**

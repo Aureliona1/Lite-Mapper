@@ -7,9 +7,10 @@ import { NumArr } from "./ArrayProcess.ts";
 import { ye3 } from "./Consts.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
-import { currentDiff, AnimateTrack, AnimateComponent, AssignPathAnimation, start, AssignPlayerToTrack, AssignTrackParent } from "./mod.ts";
 import { Note, Bomb, Arc, Chain, Wall } from "./Objects.ts";
 import { Vec3, LookupMethod, Easing, Vec2, Vec4 } from "./Types.ts";
+import { AnimateTrack, AnimateComponent, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
+import { currentDiff, start } from "./Map.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -365,7 +366,7 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
  * @param noteTrack The name of the track to assign the notes.
  * @returns Track animation for the player.
  */
-export class PlayerAnim {
+export class PlayerAnim extends AnimateTrack {
 	constructor(time = 0, duration = 1, playerTrack = "player", noteTrack = "notes") {
 		new AssignPlayerToTrack(playerTrack, time).push();
 		new AssignTrackParent([noteTrack], playerTrack, time).push();
@@ -396,7 +397,7 @@ export class PlayerAnim {
 				x.track = noteTrack;
 			}
 		);
-		return new AnimateTrack(playerTrack, time, duration);
+		super(playerTrack, time, duration);
 	}
 }
 

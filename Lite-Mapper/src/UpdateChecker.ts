@@ -1,5 +1,5 @@
 const ver = "beta-0.2.0";
-import { LMLog } from "./mod.ts";
+import { LMLog } from "./Functions.ts";
 
 export async function LMUpdateCheck() {
 	try {

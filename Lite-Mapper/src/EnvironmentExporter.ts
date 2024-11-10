@@ -1,6 +1,6 @@
 import { Environment } from "./Environment.ts";
+import { copy, LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { copy, LMLog } from "./mod.ts";
 import { LightEventType } from "./Types.ts";
 
 export type USESettings = {
