@@ -1,9 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
 import { ye3 } from "./Consts.ts";
+import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { repeat, filterEnvironments, arrRem } from "./Functions.ts";
+import { repeat, filterEnvironments, arrRem, mapRange } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { GeometryMaterialJSON, Vec2 } from "./Types.ts";
+import { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
 
 const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
 
@@ -118,7 +119,7 @@ export function optimizeMaterials() {
 }
 
 export class GeoTrackStack {
-	internalStack: [number, Vec2[]][] = [];
+	readonly internalStack: [number, Vec2[]][] = [];
 	private maxCounter = 0; // For naming new tracks
 
 	/**
@@ -176,7 +177,7 @@ export class GeoTrackStack {
 		});
 
 		// Remove the available indices from the internal stack, we will add them back later.
-		this.internalStack = arrRem(this.internalStack, availableIndices);
+		arrRem(this.internalStack, availableIndices);
 
 		// Add any available tracks to the output, and add the time to the tracks (they are now unavailable at this time for future calls).
 		for (let i = 0; i < available.length && i < count; i++) {
@@ -204,12 +205,136 @@ export class GeoTrackStack {
 
 	/**
 	 * Create the geometry objects for each track, and add them to the map.
+	 * @param mergeAnims Whether to also search the map for track animations on the stack objects and merge duplicate ones (Default - false).
+	 *
+	 * #### Important: If you used modifier animations in your track animations, do not set this property to true, it will not work as intended and will cause animation overlap.
 	 */
-	push() {
+	push(mergeAnims = false) {
 		this.object.position = ye3;
 		this.internalStack.forEach(x => {
 			this.object.track = this.track + x[0];
 			this.object.push();
 		});
+
+		if (mergeAnims) {
+			this.internalStack.forEach(trackID => {
+				// Assign values for this geo object
+				const removeIndices: number[] = [];
+				const track = this.track + trackID[0];
+				const geoStartTime = Math.min(...trackID[1].map(x => Math.min(...x)));
+				const geoEndTime = Math.max(...trackID[1].map(x => Math.max(...x)));
+				const newAnim = new AnimateTrack(track, geoStartTime, geoEndTime - geoStartTime);
+				const posAnims: KFVec3[] = [],
+					rotAnims: KFVec3[] = [],
+					scaleAnims: KFVec3[] = [];
+
+				// Check for animate tracks that use this object
+				currentDiff.customEvents.forEach((anim, i) => {
+					if (anim.type == "AnimateTrack") {
+						anim = anim as AnimateTrack;
+
+						if (anim.track == track) {
+							removeIndices.push(i);
+							const animDuration = anim.duration ?? 0;
+
+							// Check for animation here
+							if (anim.animate.position) {
+								// Check for Vec3 animation
+								if (anim.animate.position.length == 3 && typeof anim.animate.position[0] == "number") {
+									posAnims.push([...anim.animate.position, mapRange(anim.time, [geoStartTime, geoEndTime], [0, 1]), "easeStep"]);
+								} else {
+									// Assume KFVec3 since modifiers are busted
+									anim.animate.position = anim.animate.position as KFVec3[];
+
+									// Rescale time
+									anim.animate.position.forEach(x => {
+										x[3] = mapRange(
+											x[3] * animDuration + anim.time, // Get the absolute time
+											[geoStartTime, geoEndTime], // The absolute time will (should) be somewhere between the total time
+											[0, 1] // Just scale it to 0-1
+										);
+									});
+
+									// Make the first kf a step
+									if (anim.animate.position[0][4] && posAnims.length) {
+										anim.animate.position[0][4] = "easeStep"; // Idk why they would already have an easing here, but just incase
+									} else if (posAnims.length) {
+										anim.animate.position[0].push("easeStep");
+									}
+
+									posAnims.push(...anim.animate.position);
+								}
+							}
+
+							if (anim.animate.rotation) {
+								// Check for Vec3 animation
+								if (anim.animate.rotation.length == 3 && typeof anim.animate.rotation[0] == "number") {
+									rotAnims.push([...anim.animate.rotation, mapRange(anim.time, [geoStartTime, geoEndTime], [0, 1]), "easeStep"]);
+								} else {
+									// Assume KFVec3 since modifiers are busted
+									anim.animate.rotation = anim.animate.rotation as KFVec3[];
+
+									// Rescale time
+									anim.animate.rotation.forEach(x => {
+										x[3] = mapRange(
+											x[3] * animDuration + anim.time, // Get the absolute time
+											[geoStartTime, geoEndTime], // The absolute time will (should) be somewhere between the total time
+											[0, 1] // Just scale it to 0-1
+										);
+									});
+
+									// Make the first kf a step
+									if (anim.animate.rotation[0][4] && rotAnims.length) {
+										anim.animate.rotation[0][4] = "easeStep"; // Idk why they would already have an easing here, but just incase
+									} else if (rotAnims.length) {
+										anim.animate.rotation[0].push("easeStep");
+									}
+
+									rotAnims.push(...anim.animate.rotation);
+								}
+							}
+
+							if (anim.animate.scale) {
+								// Check for Vec3 animation
+								if (anim.animate.scale.length == 3 && typeof anim.animate.scale[0] == "number") {
+									scaleAnims.push([...anim.animate.scale, mapRange(anim.time, [geoStartTime, geoEndTime], [0, 1]), "easeStep"]);
+								} else {
+									// Assume KFVec3 since modifiers are busted
+									anim.animate.scale = anim.animate.scale as KFVec3[];
+
+									// Rescale time
+									anim.animate.scale.forEach(x => {
+										x[3] = mapRange(
+											x[3] * animDuration + anim.time, // Get the absolute time
+											[geoStartTime, geoEndTime], // The absolute time will (should) be somewhere between the total time
+											[0, 1] // Just scale it to 0-1
+										);
+									});
+
+									// Make the first kf a step
+									if (anim.animate.scale[0][4] && scaleAnims.length) {
+										anim.animate.scale[0][4] = "easeStep"; // Idk why they would already have an easing here, but just incase
+									} else if (scaleAnims.length) {
+										anim.animate.scale[0].push("easeStep");
+									}
+
+									scaleAnims.push(...anim.animate.scale);
+								}
+							}
+						}
+					}
+				});
+
+				// This means there were animations
+				if (removeIndices.length) {
+					arrRem(currentDiff.customEvents, removeIndices);
+
+					newAnim.animate.position = posAnims;
+					newAnim.animate.rotation = rotAnims;
+					newAnim.animate.scale = scaleAnims;
+					newAnim.push();
+				}
+			});
+		}
 	}
 }
