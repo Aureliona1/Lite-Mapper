@@ -420,13 +420,13 @@ export function distance(vec1: Vec3, vec2: Vec3) {
  * @param precision The number of decimal points to round to (can be nagative to round to tens, hundreds etc.).
  * @param easing Optional easing to apply to the range.
  */
-export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5, easing?: Easing) {
+export function mapRange<T extends number | string | any[] | Record<string, any>>(val: T, from: Vec2, to: Vec2, precision = 5, easing?: Easing): T {
 	if (typeof val == "number") {
-		return Math.floor(Math.pow(10, precision) * lerp(to[0], to[1], (val - from[0]) / (from[1] - from[0]), easing)) / Math.pow(10, precision);
+		return (Math.floor(Math.pow(10, precision) * lerp(to[0], to[1], (val - from[0]) / (from[1] - from[0]), easing)) / Math.pow(10, precision)) as T;
 	} else if (!(typeof val == "number" || typeof val == "object")) {
 		return val;
 	} else if (Array.isArray(val)) {
-		val = val.map(x => mapRange(x, from, to, precision));
+		(val as any[]) = val.map(x => mapRange(x, from, to, precision));
 	} else {
 		Object.keys(val).forEach(key => {
 			val[key] = mapRange(val[key], from, to, precision);
@@ -440,14 +440,14 @@ export function mapRange(val: any, from: Vec2, to: Vec2, precision = 5, easing?:
  * @param val The value, array, or object of values to clamp.
  * @param range The range (inclusive) to clamp the value within.
  */
-export function clamp(val: any, range: Vec2) {
+export function clamp<T extends number | string | any[] | Record<string, any>>(val: T, range: Vec2): T {
 	range = range[0] > range[1] ? [range[1], range[0]] : range;
 	if (typeof val == "number") {
-		return Math.max(Math.min(...range), Math.min(Math.max(...range), val));
+		return Math.max(Math.min(...range), Math.min(Math.max(...range), val)) as T;
 	} else if (!(typeof val == "number" || typeof val == "object")) {
 		return val;
 	} else if (Array.isArray(val)) {
-		val = val.map(x => clamp(x, range));
+		(val as any[]) = val.map(x => clamp(x, range));
 	} else {
 		Object.keys(val).forEach(key => {
 			val[key] = clamp(val[key], range);
@@ -486,13 +486,13 @@ export function rgb2hsv(color: Vec4) {
  * @param o The object, or number to set the precision of.
  * @param precision The number of decimals.
  */
-export function decimals(o: any, precision = 5) {
+export function decimals<T extends string | number | any[] | Record<string, any>>(o: T, precision = 5): T {
 	if (typeof o == "number") {
-		return Math.round(o * Math.pow(10, precision)) / Math.pow(10, precision);
+		return (Math.round(o * Math.pow(10, precision)) / Math.pow(10, precision)) as T;
 	} else if (!(typeof o == "number" || typeof o == "object")) {
 		return o;
 	} else if (Array.isArray(o)) {
-		o = o.map(x => decimals(x, precision));
+		(o as any[]) = o.map(x => decimals(x, precision));
 	} else {
 		Object.keys(o).forEach(key => {
 			o[key] = decimals(o[key], precision);
