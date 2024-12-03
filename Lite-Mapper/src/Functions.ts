@@ -329,7 +329,6 @@ export function lerp(start: number, end: number, fraction: number, easing: Easin
  * @param name The name of the entry in the cache to access.
  * @param data The data to write (if write process is specified), if left undefined the property will be removed from the cache.
  */
-
 export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = "", data?: any) {
 	const fileName = "LM_Cache.json";
 	ensureFileSync(fileName);
