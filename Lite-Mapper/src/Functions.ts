@@ -3,7 +3,6 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import * as ease from "./Easings.ts";
-import { NumArr } from "./ArrayProcess.ts";
 import { ye3 } from "./Consts.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
@@ -11,6 +10,7 @@ import { Note, Bomb, Arc, Chain, Wall } from "./Objects.ts";
 import { Vec3, LookupMethod, Easing, Vec2, Vec4 } from "./Types.ts";
 import { AnimateTrack, AnimateComponent, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { currentDiff, start } from "./Map.ts";
+import { ArrOp } from "./ArrayProcess.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -231,7 +231,7 @@ export function random(min: number, max: number, seed: number | string = Math.ra
  * @returns Vec3 - The rotation for the object at point1.
  */
 export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
-	const vector = new NumArr(point2).subtract(point1),
+	const vector = ArrOp.subtract(point2, point1),
 		angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0],
 		pitchPoint = rotateVector([0, 0, 0], vector, [0, -angle[1], 0]);
 	angle[0] = (-180 * Math.atan2(pitchPoint[1], pitchPoint[2])) / Math.PI;
@@ -408,7 +408,7 @@ export class PlayerAnim extends AnimateTrack {
  * @param vec2 The second vector.
  */
 export function distance(vec1: Vec3, vec2: Vec3) {
-	return Math.hypot(...new NumArr(vec2).subtract(vec1));
+	return Math.hypot(...ArrOp.subtract(vec2, vec1));
 }
 
 /**

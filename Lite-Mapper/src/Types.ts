@@ -563,3 +563,5 @@ export type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "
 // Function and class prop types
 
 export type MaterialPresetNames = "FixedConcrete" | "Dirt" | "BlurryMetal" | "ShinyMetal" | "ShinyMetal2D" | "Glass" | "Grid" | "FogLight" | "Invisible" | "SlightReflection" | "SlightReflectionNoColor" | "BlurryMirror" | "BlurryMirror2D" | "ShinyMirror" | "ShinyMirror2D";
+
+export type NumberArrLike = Uint16Array | Uint32Array | Uint8Array | Int16Array | Int32Array | Int8Array | Float16Array | Float32Array | Float64Array | Array<number>;

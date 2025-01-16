@@ -1,155 +1,147 @@
-import { copy, lerp, mapRange, random, repeat } from "./Functions.ts";
-import { Easing, Vec2 } from "./Types.ts";
+import { lerp, random, repeat } from "./Functions.ts";
+import { Easing, NumberArrLike } from "./Types.ts";
 
-export class NumArr<T extends number[]> {
+export class ArrOp<T extends NumberArrLike> {
 	/**
-	 * Run several mathematical operations on an array.
-	 * @param array The source array.
+	 * Add an array or a number to an array.
+	 * @param arr1 The base array.
+	 * @param arr2 The array or number to add.
 	 */
-	constructor(public array: T) {}
-	/**
-	 * Add another array or a single number to the original array. Does not modify the original array.
-	 * @param arr The array or number to add to original array.
-	 */
-	add(arr: T | number) {
-		const temp = copy(this.array);
-		if (typeof arr == "number") {
-			return temp.map(x => x + arr) as T;
+	static add<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+		if (typeof arr2 == "number") {
+			arr1 = arr1.map(x => x + arr2) as T;
 		} else {
-			repeat(temp.length, i => {
-				temp[i] += arr[i];
-			});
-			return temp as T;
+			arr1 = arr1.map((x, i) => x + arr2[i]) as T;
 		}
+		return arr1;
 	}
+
 	/**
-	 * Subtract another array or a single number from the original array. Does not modify the original array.
-	 * @param arr The array or number to add to original array.
+	 * Subtract the entries of an array from a base array. Or subtract a single number form the base array.
+	 * @param arr1 The base array.
+	 * @param arr2 The array or number to subtract from the base array.
 	 */
-	subtract(arr: T | number) {
-		const temp = copy(this.array);
-		if (typeof arr == "number") {
-			return temp.map(x => x - arr) as T;
+	static subtract<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+		if (typeof arr2 == "number") {
+			arr1 = arr1.map(x => x - arr2) as T;
 		} else {
-			repeat(temp.length, i => {
-				temp[i] -= arr[i];
-			});
-			return temp as T;
+			arr1 = arr1.map((x, i) => x - arr2[i]) as T;
 		}
+		return arr1;
 	}
+
 	/**
-	 * Multiply original array by another array or a number. Does not modify the original array.
-	 * @param arr The array or number to multiply to original array.
+	 * Divide an array by the elements of another array, or by a number.
+	 * @param arr1 The base array.
+	 * @param arr2 The array or number to divide by.
 	 */
-	multiply(arr: T | number) {
-		const temp = copy(this.array);
-		if (typeof arr == "number") {
-			return temp.map(x => x * arr) as T;
+	static divide<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+		if (typeof arr2 == "number") {
+			arr1 = arr1.map(x => x / arr2) as T;
 		} else {
-			repeat(temp.length, i => {
-				temp[i] *= arr[i];
-			});
-			return temp as T;
+			arr1 = arr1.map((x, i) => x / arr2[i]) as T;
 		}
+		return arr1;
 	}
+
 	/**
-	 * Divide original array by another array or a number. Does not modify the original array.
-	 * @param arr The array or number to divide original array by.
+	 * Multiply an array by the elements of another array, or by a number.
+	 * @param arr1 The base array.
+	 * @param arr2 The array or number to mulitply by.
 	 */
-	divide(arr: T | number) {
-		const temp = copy(this.array);
-		if (typeof arr == "number") {
-			return temp.map(x => x / arr) as T;
+	static multiply<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+		if (typeof arr2 == "number") {
+			arr1 = arr1.map(x => x * arr2) as T;
 		} else {
-			repeat(temp.length, i => {
-				temp[i] /= arr[i];
-			});
-			return temp as T;
+			arr1 = arr1.map((x, i) => x * arr2[i]) as T;
 		}
+		return arr1;
 	}
+
 	/**
-	 * Interpolate array to another array or a number by a certain fraction. Does not modify the original array.
-	 * @param arr The ending arr or number of the interpolation.
-	 * @param fraction The fraction, or array of fractions to interpolate by.
-	 * @param ease Optional easing.
+	 * Linearly interpolate from the values of one array to another array, or a number. If you need to lerp from a number to an array, then reverse the time value (1 - 0 instead of  0 - 1).
+	 * @param from The array to lerp "from" (i.e., at fraction = 0).
+	 * @param to The array or number ot lerp "to" (i.e., at fraction = 1).
+	 * @param fraction The fraction of interpolation (0 - 1).
+	 * @param ease Optional easing to add to the lerp.
 	 */
-	lerp(arr: T | number, fraction: T | number = 0.5, ease: Easing = "easeLinear") {
-		const end: T = typeof arr == "number" ? (new Array(this.array.length).fill(arr) as T) : arr,
-			factor: T = typeof fraction == "number" ? (new Array(this.array.length).fill(fraction) as T) : fraction,
-			temp = copy(this.array);
-		repeat(temp.length, i => {
-			temp[i] = lerp(temp[i], end[i], factor[i], ease);
+	static lerp<T extends NumberArrLike, T2 extends NumberArrLike>(from: T, to: number | T2, fraction: number, ease?: Easing) {
+		if (typeof to == "number") {
+			from = from.map(x => lerp(x, to, fraction, ease)) as T;
+		} else {
+			from = from.map((x, i) => lerp(x, to[i], fraction, ease)) as T;
+		}
+		return from;
+	}
+
+	/**
+	 * Shuffle the elements of an array.
+	 * @param arr The array to shuffle.
+	 * @param seed The seed for the shuffle (leave blank for random).
+	 */
+	static shuffle<T extends NumberArrLike>(arr: T, seed = Math.random()) {
+		const swap = (a: number, b: number) => {
+			[arr[a], arr[b]] = [arr[b], arr[a]];
+		};
+		repeat(arr.length, i => {
+			swap(random(0, arr.length, seed + i * 26436 + 1, 0), random(0, arr.length, seed + i * 2636 + 134, 0));
 		});
-		return temp as T;
+		return arr;
 	}
-	/**
-	 * Randomly reorder elements in the array. Does not modify the original array.
-	 * @param seed The seed for the random shuffling.
-	 */
-	shuffle(seed: number = Math.random()) {
-		const temp = copy(this.array);
-		for (let i = temp.length - 1; i > 0; i--) {
-			const j = random(0, 1, seed * Math.PI * (i + 1), 0) * (i + 1);
-			[temp[i], temp[j]] = [temp[j], temp[i]];
-		}
-		return temp as T;
-	}
-	/**
-	 * Sorts the array from lowest to highest. Does not modify the original array.
-	 */
-	sortNumeric = () => copy(this.array).sort((a, b) => a - b) as T;
 
 	/**
-	 * Maps the array from one range to another. Does not modify the original array.
+	 * Sort an array in ascending order according to each element's numerical value.
+	 * @param arr The array to sort.
 	 */
-	mapRange = (from: Vec2, to: Vec2) => copy(this.array).map(x => mapRange(x, from, to)) as T;
-
-	/**
-	 * Clamps the range of the array to within a set min and max. This does modify the original array.
-	 */
-	clampRange(min: number, max: number) {
-		[min, max] = min > max ? [max, min] : [min, max];
-		this.min = min;
-		this.max = max;
-		return this.array as T;
+	static sortNumeric<T extends NumberArrLike>(arr: T) {
+		return arr.sort((a, b) => a - b);
 	}
+
+	constructor(public arr: T) {}
 
 	get max() {
-		return Math.max(...this.array);
+		return Math.max(...this.arr);
 	}
+
 	set max(x) {
-		this.array.forEach(a => {
+		this.arr.forEach(a => {
 			a = a > x ? x : a;
 		});
 	}
+
 	set min(x) {
-		this.array.forEach(a => {
+		this.arr.forEach(a => {
 			a = a < x ? x : a;
 		});
 	}
+
 	get min() {
-		return Math.min(...this.array);
+		return Math.min(...this.arr);
 	}
+
 	get range() {
 		return this.max - this.min;
 	}
+
 	get mean() {
 		let out = 0;
-		repeat(this.array.length, i => {
-			out += this.array[i];
+		repeat(this.arr.length, i => {
+			out += this.arr[i];
 		});
-		return out / this.array.length;
+		return out / this.arr.length;
 	}
+
 	get median() {
-		return this.sortNumeric()[Math.floor(this.array.length / 2)];
+		return this.arr.sort((a, b) => a - b)[Math.floor(this.arr.length / 2)];
 	}
+
 	get mode() {
-		let arr: number[][] = [];
-		const set = [...new Set(this.array)];
+		let arr: NumberArrLike[] = [];
+		const set = [...new Set(this.arr)];
 		repeat(set.length, i => {
 			let instances = 0;
-			repeat(this.array.length, j => {
-				if (set[i] == this.array[j]) {
+			repeat(this.arr.length, j => {
+				if (set[i] == this.arr[j]) {
 					instances++;
 				}
 			});
@@ -158,16 +150,18 @@ export class NumArr<T extends number[]> {
 		arr = arr.sort((a, b) => a[1] - b[1]);
 		return arr[arr.length - 1][0];
 	}
+
 	/**
-	 * Return the product of all the elements in the array.
+	 * Get the product of all the elements of the array.
 	 */
 	get product() {
-		return this.array.reduce((a, b) => a * b);
+		return Array.from(this.arr).reduce((a, b) => a * b);
 	}
+
 	/**
-	 * Return the sum of all the elements in the array.
+	 * Get the sum of all the elements of the array.
 	 */
 	get sum() {
-		return this.array.reduce((a, b) => a + b);
+		return Array.from(this.arr).reduce((a, b) => a + b);
 	}
 }
