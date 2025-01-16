@@ -1,5 +1,5 @@
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
-import { copyToDir, decimals, jsonPrune, LMLog } from "./Functions.ts";
+import { copyToDir, decimals, jsonPrune, LMCache, LMLog } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
@@ -54,7 +54,7 @@ export class BeatMap {
 	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
-	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", checkForUpdate = true) {
+	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
 		start = Date.now();
 		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 
@@ -161,8 +161,13 @@ export class BeatMap {
 		if (!outExists) {
 			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
 		}
-		if (checkForUpdate) {
-			LMUpdateCheck();
+		if (updateCheckFrequency !== "Never") {
+			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
+			if (Date.now() > timeout) {
+				LMUpdateCheck();
+				const timeOffset = updateCheckFrequency == "Daily" ? 1000 * 3600 * 24 : 1000 * 3600 * 24 * 7;
+				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
+			}
 		}
 	}
 

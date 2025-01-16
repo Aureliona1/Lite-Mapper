@@ -1,4 +1,4 @@
-const ver = "beta-0.2.0";
+const ver = "beta-0.2.2";
 import { LMLog } from "./Functions.ts";
 
 export async function LMUpdateCheck() {
