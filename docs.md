@@ -245,21 +245,16 @@ Lite-Mapper also has a bunch of minor features to assist in the creation of maps
 
 Lite-Mapper has a class to help with operations on arrays of numbers. The class has methods to automate large processes on arrays.
 
-To begin working on an array the class needs to be initialised. Like so:
+For example, you can add two vectors like so:
 
 ```js
-const arr = new ArrayProcess([1, 2, 3, 4, 5]);
+const sum = ArrOp.add([1, 2, 3], [4, 5, 6]);
 ```
 
-Then several processes can be run on the array.
-
-Example: adding another array to the source array:
+Or find the average of all the numbers in an array.
 
 ```js
-const arr = [1, 2, 3, 4, 5];
-const arr2 = [6, 7, 8, 9, 0];
-
-const added = new ArrayProcess(arr).add(arr2); // [7, 9, 11, 13, 5]
+const avg = new ArrOp([1, 2, 3, 4, 3, 2, 1]).mean;
 ```
 
 ### Constants
