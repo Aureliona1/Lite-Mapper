@@ -10,7 +10,7 @@ import { Note, Bomb, Arc, Chain, Wall } from "./Objects.ts";
 import { Vec3, LookupMethod, Easing, Vec2, Vec4 } from "./Types.ts";
 import { AnimateTrack, AnimateComponent, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { currentDiff, start } from "./Map.ts";
-import { ArrOp } from "./ArrayProcess.ts";
+import { ArrOp } from "./Arrays.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

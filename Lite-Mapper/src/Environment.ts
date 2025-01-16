@@ -1,4 +1,4 @@
-import { ArrOp } from "./ArrayProcess.ts";
+import { ArrOp } from "./Arrays.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
 import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";

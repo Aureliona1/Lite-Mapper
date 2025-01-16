@@ -1,4 +1,4 @@
-export * from "./ArrayProcess.ts";
+export * from "./Arrays.ts";
 export * from "./Consts.ts";
 export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
