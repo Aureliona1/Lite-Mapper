@@ -1,6 +1,9 @@
 const ver = "1.0.0";
 import { LMLog } from "./Functions.ts";
 
+/**
+ * This is an internal LM function, you should never need to run this. All it will do is check for updates on GitHub.
+ */
 export async function LMUpdateCheck() {
 	try {
 		const raw = (await fetch("https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/main/Lite-Mapper/src/UpdateChecker.ts")).text(),
