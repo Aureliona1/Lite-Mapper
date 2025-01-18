@@ -496,6 +496,11 @@ export class BeatMap {
 			lightTranslationEventBoxGroups: [],
 			basicEventTypesWithKeywords: {},
 			useNormalEventsAsCompatibleEvents: false,
+			vfxEventBoxGroups: [],
+			_fxEventsCollection: {
+				_fl: [],
+				_il: []
+			},
 			customData: {}
 		};
 		if (this.optimize.materials) {
