@@ -10,25 +10,6 @@ export let currentDiff: BeatMap,
 	start = 0;
 
 export class BeatMap {
-	private rawMap: V3MapJSON = {
-		version: "3.2.0",
-		bpmEvents: [],
-		rotationEvents: [],
-		colorNotes: [],
-		bombNotes: [],
-		obstacles: [],
-		sliders: [],
-		burstSliders: [],
-		waypoints: [],
-		basicBeatmapEvents: [],
-		colorBoostBeatmapEvents: [],
-		lightColorEventBoxGroups: [],
-		lightRotationEventBoxGroups: [],
-		lightTranslationEventBoxGroups: [],
-		basicEventTypesWithKeywords: {},
-		useNormalEventsAsCompatibleEvents: false,
-		customData: {}
-	};
 	map: classMap = {
 		version: "3.2.0",
 		bpmEvents: [],
@@ -57,86 +38,86 @@ export class BeatMap {
 	 */
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
 		start = Date.now();
-		this.rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 
 		// Set current diff
 		currentDiff = this;
 
 		// Classify vanilla items
-		this.rawMap.basicBeatmapEvents.forEach(e => {
+		rawMap.basicBeatmapEvents.forEach(e => {
 			new LightEvent().JSONToClass(e).push();
 		});
-		this.rawMap.bombNotes.forEach(n => {
+		rawMap.bombNotes.forEach(n => {
 			new Bomb().JSONToClass(n).push();
 		});
-		this.rawMap.burstSliders.forEach(n => {
+		rawMap.burstSliders.forEach(n => {
 			new Chain().JSONToClass(n).push();
 		});
-		this.rawMap.colorNotes.forEach(n => {
+		rawMap.colorNotes.forEach(n => {
 			new Note().JSONToClass(n).push();
 		});
-		this.rawMap.obstacles.forEach(n => {
+		rawMap.obstacles.forEach(n => {
 			new Wall().JSONToClass(n).push();
 		});
-		this.rawMap.sliders.forEach(n => {
+		rawMap.sliders.forEach(n => {
 			new Arc().JSONToClass(n).push();
 		});
 
 		// Check for custom data
-		if (this.rawMap.customData) {
-			if (this.rawMap.customData.customEvents) {
+		if (rawMap.customData) {
+			if (rawMap.customData.customEvents) {
 				this.customEvents = [];
-				this.rawMap.customData.customEvents.forEach(n => {
+				rawMap.customData.customEvents.forEach(n => {
 					this.customEvents?.push(JSONToCE(n));
 				});
 			}
-			if (this.rawMap.customData.environment) {
-				this.environments = this.rawMap.customData.environment;
+			if (rawMap.customData.environment) {
+				this.environments = rawMap.customData.environment;
 			}
-			if (this.rawMap.customData.fakeBombNotes) {
-				this.rawMap.customData.fakeBombNotes.forEach(n => {
+			if (rawMap.customData.fakeBombNotes) {
+				rawMap.customData.fakeBombNotes.forEach(n => {
 					new Bomb().JSONToClass(n).push(true);
 				});
 			}
-			if (this.rawMap.customData.fakeBurstSliders) {
-				this.rawMap.customData.fakeBurstSliders.forEach(n => {
+			if (rawMap.customData.fakeBurstSliders) {
+				rawMap.customData.fakeBurstSliders.forEach(n => {
 					new Chain().JSONToClass(n).push(true);
 				});
 			}
-			if (this.rawMap.customData.fakeColorNotes) {
-				this.rawMap.customData.fakeColorNotes.forEach(n => {
+			if (rawMap.customData.fakeColorNotes) {
+				rawMap.customData.fakeColorNotes.forEach(n => {
 					new Note().JSONToClass(n).push(true);
 				});
 			}
-			if (this.rawMap.customData.fakeObstacles) {
-				this.rawMap.customData.fakeObstacles.forEach(n => {
+			if (rawMap.customData.fakeObstacles) {
+				rawMap.customData.fakeObstacles.forEach(n => {
 					new Wall().JSONToClass(n).push(true);
 				});
 			}
-			if (this.rawMap.customData.bookmarks) {
-				this.rawMap.customData.bookmarks.forEach(b => {
+			if (rawMap.customData.bookmarks) {
+				rawMap.customData.bookmarks.forEach(b => {
 					new Bookmark().JSONToClass(b).push(true);
 				});
 			}
-			if (this.rawMap.customData.time) {
-				this.chromapperValues.mappingTime = this.rawMap.customData.time;
+			if (rawMap.customData.time) {
+				this.chromapperValues.mappingTime = rawMap.customData.time;
 			}
-			if (this.rawMap.customData.bookmarksUseOfficialBpmEvents) {
-				this.chromapperValues.bookmarksUseOfficialBPMEvents = this.rawMap.customData.bookmarksUseOfficialBpmEvents;
+			if (rawMap.customData.bookmarksUseOfficialBpmEvents) {
+				this.chromapperValues.bookmarksUseOfficialBPMEvents = rawMap.customData.bookmarksUseOfficialBpmEvents;
 			}
 		}
 
 		// Pass over direct values
-		this.map.version = this.rawMap.version;
-		this.map.bpmEvents = this.rawMap.bpmEvents;
-		this.map.basicEventTypesWithKeywords = this.rawMap.basicEventTypesWithKeywords;
-		this.map.colorBoostBeatmapEvents = this.rawMap.colorBoostBeatmapEvents;
-		this.map.lightColorEventBoxGroups = this.rawMap.lightColorEventBoxGroups;
-		this.map.lightRotationEventBoxGroups = this.rawMap.lightRotationEventBoxGroups;
-		this.map.lightTranslationEventBoxGroups = this.rawMap.lightTranslationEventBoxGroups;
-		this.map.rotationEvents = this.rawMap.rotationEvents;
-		this.map.useNormalEventsAsCompatibleEvents = this.rawMap.useNormalEventsAsCompatibleEvents;
-		this.map.waypoints = this.rawMap.waypoints;
+		this.map.version = rawMap.version;
+		this.map.bpmEvents = rawMap.bpmEvents;
+		this.map.basicEventTypesWithKeywords = rawMap.basicEventTypesWithKeywords;
+		this.map.colorBoostBeatmapEvents = rawMap.colorBoostBeatmapEvents;
+		this.map.lightColorEventBoxGroups = rawMap.lightColorEventBoxGroups;
+		this.map.lightRotationEventBoxGroups = rawMap.lightRotationEventBoxGroups;
+		this.map.lightTranslationEventBoxGroups = rawMap.lightTranslationEventBoxGroups;
+		this.map.rotationEvents = rawMap.rotationEvents;
+		this.map.useNormalEventsAsCompatibleEvents = rawMap.useNormalEventsAsCompatibleEvents;
+		this.map.waypoints = rawMap.waypoints;
 
 		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
 		if (/[^3]\.\d\.\d/.test(this.version)) {
@@ -498,78 +479,96 @@ export class BeatMap {
 	 * @param copyMapTo Optional directory to copy map contents to (useful when working outside of beat saber directory).
 	 */
 	save(formatJSON?: boolean, copyMapTo?: string) {
+		const rawMap: V3MapJSON = {
+			version: "3.2.0",
+			bpmEvents: [],
+			rotationEvents: [],
+			colorNotes: [],
+			bombNotes: [],
+			obstacles: [],
+			sliders: [],
+			burstSliders: [],
+			waypoints: [],
+			basicBeatmapEvents: [],
+			colorBoostBeatmapEvents: [],
+			lightColorEventBoxGroups: [],
+			lightRotationEventBoxGroups: [],
+			lightTranslationEventBoxGroups: [],
+			basicEventTypesWithKeywords: {},
+			useNormalEventsAsCompatibleEvents: false,
+			customData: {}
+		};
 		if (this.optimize.materials) {
 			optimizeMaterials();
 		}
-		this.rawMap.customData ??= {};
-		this.rawMap.customData.fakeBombNotes ??= [];
-		this.rawMap.customData.fakeBurstSliders ??= [];
-		this.rawMap.customData.fakeColorNotes ??= [];
-		this.rawMap.customData.fakeObstacles ??= [];
-		this.rawMap.customData.customEvents ??= [];
-		this.rawMap.customData.bookmarks ??= [];
+		rawMap.customData!.fakeBombNotes ??= [];
+		rawMap.customData!.fakeBurstSliders ??= [];
+		rawMap.customData!.fakeColorNotes ??= [];
+		rawMap.customData!.fakeObstacles ??= [];
+		rawMap.customData!.customEvents ??= [];
+		rawMap.customData!.bookmarks ??= [];
 		this.notes.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.colorNotes.push(n.return());
+			rawMap.colorNotes.push(n.return());
 		});
 		this.bombs.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.bombNotes.push(n.return());
+			rawMap.bombNotes.push(n.return());
 		});
 		this.walls.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.obstacles.push(n.return());
+			rawMap.obstacles.push(n.return());
 		});
 		this.arcs.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.sliders.push(n.return());
+			rawMap.sliders.push(n.return());
 		});
 		this.chains.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.burstSliders.push(n.return());
+			rawMap.burstSliders.push(n.return());
 		});
 		this.fakeNotes.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.customData?.fakeColorNotes?.push(n.return());
+			rawMap.customData?.fakeColorNotes?.push(n.return());
 		});
 		this.fakeBombs.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.customData?.fakeBombNotes?.push(n.return());
+			rawMap.customData?.fakeBombNotes?.push(n.return());
 		});
 		this.fakeWalls.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.customData?.fakeObstacles?.push(n.return());
+			rawMap.customData?.fakeObstacles?.push(n.return());
 		});
 		this.fakeChains.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.customData?.fakeBurstSliders?.push(n.return());
+			rawMap.customData?.fakeBurstSliders?.push(n.return());
 		});
 		this.events.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.basicBeatmapEvents.push(n.return());
+			rawMap.basicBeatmapEvents.push(n.return());
 		});
 		this.customEvents?.forEach(n => {
 			jsonPrune(n);
-			this.rawMap.customData?.customEvents?.push(CEToJSON(n));
+			rawMap.customData?.customEvents?.push(CEToJSON(n));
 		});
 		this.bookmarks.forEach(b => {
 			jsonPrune(b);
-			this.rawMap.customData?.bookmarks?.push(b.return());
+			rawMap.customData?.bookmarks?.push(b.return());
 		});
 
-		this.rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
-		this.rawMap.bpmEvents = this.bpmEvents;
-		this.rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
-		this.rawMap.customData.environment = this.environments;
-		this.rawMap.customData.materials = this.materials;
-		this.rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;
-		this.rawMap.lightRotationEventBoxGroups = this.lightRotationEventBoxGroups;
-		this.rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
-		this.rawMap.rotationEvents = this.rotationEvents;
-		this.rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
-		jsonPrune(this.rawMap.customData);
+		rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
+		rawMap.bpmEvents = this.bpmEvents;
+		rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
+		rawMap.customData!.environment = this.environments;
+		rawMap.customData!.materials = this.materials;
+		rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;
+		rawMap.lightRotationEventBoxGroups = this.lightRotationEventBoxGroups;
+		rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
+		rawMap.rotationEvents = this.rotationEvents;
+		rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
+		jsonPrune(rawMap.customData!);
 
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(this.rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
+		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		if (this.info.isModified) {
 			this.info.save();
 		}

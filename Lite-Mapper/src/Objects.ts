@@ -754,7 +754,7 @@ export class Bookmark {
 		jsonPrune(temp);
 		return {
 			b: this.time,
-			n: name,
+			n: this.name,
 			c: this.color
 		};
 	}
