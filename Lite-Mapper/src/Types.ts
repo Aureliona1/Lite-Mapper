@@ -11,6 +11,7 @@ export type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | 
 export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
+type RGBAObject = { r: number; b: number; g: number; a: number };
 
 export type infoJSON = {
 	_version: "2.1.0" | "2.0.0";
@@ -33,48 +34,13 @@ export type infoJSON = {
 		useOverride: boolean;
 		colorScheme: {
 			colorSchemeId: string;
-			saberAColor: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			saberBColor: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			obstaclesColor: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			environmentColor0: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			environmentColor1: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			environmentColor0Boost: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
-			environmentColor1Boost: {
-				r: number;
-				g: number;
-				b: number;
-				a: number;
-			};
+			saberAColor: RGBAObject;
+			saberBColor: RGBAObject;
+			obstaclesColor: RGBAObject;
+			environmentColor0: RGBAObject;
+			environmentColor1: RGBAObject;
+			environmentColor0Boost: RGBAObject;
+			environmentColor1Boost: RGBAObject;
 		};
 	}[];
 	_customData?: Record<string, any>;
@@ -146,7 +112,7 @@ export type V3MapJSON = {
 	obstacles: ObstacleType[];
 	sliders: SliderType[];
 	burstSliders: BurstSliderType[];
-	waypoints: unknown[];
+	waypoints: { b: number; x: number; y: number; d: number }[];
 	basicBeatmapEvents: LightEventType[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
 	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
