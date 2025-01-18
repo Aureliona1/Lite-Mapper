@@ -12,6 +12,7 @@ export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "Ex
 
 type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
 type RGBAObject = { r: number; b: number; g: number; a: number };
+type fxEvent = { b: number; p: number; i: number; v: number };
 
 export type infoJSON = {
 	_version: "2.1.0" | "2.0.0";
@@ -120,6 +121,24 @@ export type V3MapJSON = {
 	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
+	vfxEventBoxGroups: {
+		b: number;
+		g: number;
+		e: {
+			f: FilterObject;
+			w: number;
+			d: number;
+			s: number;
+			t: number;
+			b: number;
+			i: number;
+			l: number[];
+		}[];
+	}[];
+	_fxEventsCollection: {
+		_fl: fxEvent[];
+		_il: fxEvent[];
+	};
 	customData?: {
 		customEvents?: CustomEventType[];
 		environment?: Environment[];
