@@ -1,5 +1,5 @@
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
-import { copyToDir, decimals, jsonPrune, LMCache, LMLog } from "./Functions.ts";
+import { copyToDir, decimals, jsonPrune, LMCache, LMLog, universalComparison } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
@@ -48,6 +48,7 @@ export class BeatMap {
 		useNormalEventsAsCompatibleEvents: false,
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
 	};
+	info = new Info();
 	/**
 	 * Initialise a new map.
 	 * @param inputDiff The input difficulty, this will be unmodified.
@@ -169,16 +170,6 @@ export class BeatMap {
 				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
 			}
 		}
-	}
-
-	// Hidden info that only initialises if it gets used, to prevent git file changes.
-	private trueInfo: Info | undefined = undefined;
-
-	get info() {
-		return this.trueInfo ?? new Info();
-	}
-	set info(x: Info) {
-		this.trueInfo = x;
 	}
 
 	/**
@@ -579,7 +570,7 @@ export class BeatMap {
 		jsonPrune(this.rawMap.customData);
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(this.rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
-		if (this.trueInfo) {
+		if (this.info.isModified) {
 			this.info.save();
 		}
 		LMLog("Map saved...");
@@ -641,6 +632,9 @@ class Info {
 			this.save();
 			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load ingame until you do this!\x1b[0m");
 		}
+	}
+	get isModified() {
+		return !universalComparison(JSON.parse(Deno.readTextFileSync("info.dat")), this.raw);
 	}
 	/**
 	 * Write to the info file.

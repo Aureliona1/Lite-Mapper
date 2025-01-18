@@ -567,3 +567,27 @@ export function arrRem<T extends any[]>(arr: T, indexes: number[]) {
 	}
 	return arr as T;
 }
+
+export function universalComparison<Tr extends T, T extends number | string | undefined | Array<Tr> | Record<string, Tr>>(a: T, b: T) {
+	if (typeof a !== "object") {
+		return a === b;
+	} else {
+		if (Array.isArray(a) && Array.isArray(b)) {
+			if (a.length == b.length) {
+				let eq = true;
+				a.forEach((x, i) => {
+					if (!universalComparison(x, b[i])) {
+						eq = false;
+					}
+				});
+				return eq;
+			} else {
+				return false;
+			}
+		} else {
+			const a2arr = Object.entries(a);
+			const b2arr = Object.entries(b as Record<string, Tr>);
+			return universalComparison(a2arr, b2arr);
+		}
+	}
+}
