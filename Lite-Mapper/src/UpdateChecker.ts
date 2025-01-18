@@ -1,4 +1,4 @@
-const ver = "1.0.0";
+const ver = "1.1.0";
 import { LMLog } from "./Functions.ts";
 
 /**
