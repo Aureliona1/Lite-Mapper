@@ -170,6 +170,24 @@ export type classMap = {
 	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
+	vfxEventBoxGroups: {
+		b: number;
+		g: number;
+		e: {
+			f: FilterObject;
+			w: number;
+			d: number;
+			s: number;
+			t: number;
+			b: number;
+			i: number;
+			l: number[];
+		}[];
+	}[];
+	_fxEventsCollection: {
+		_fl: fxEvent[];
+		_il: fxEvent[];
+	};
 	customData?: {
 		customEvents?: Array<AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent>;
 		environment?: Environment[];

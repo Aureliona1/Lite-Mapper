@@ -11,7 +11,7 @@ export let currentDiff: BeatMap,
 
 export class BeatMap {
 	map: classMap = {
-		version: "3.2.0",
+		version: "3.3.0",
 		bpmEvents: [],
 		rotationEvents: [],
 		colorNotes: [],
@@ -27,6 +27,11 @@ export class BeatMap {
 		lightTranslationEventBoxGroups: [],
 		basicEventTypesWithKeywords: {},
 		useNormalEventsAsCompatibleEvents: false,
+		vfxEventBoxGroups: [],
+		_fxEventsCollection: {
+			_fl: [],
+			_il: []
+		},
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
 	};
 	info = new Info();
@@ -117,6 +122,8 @@ export class BeatMap {
 		this.map.lightTranslationEventBoxGroups = rawMap.lightTranslationEventBoxGroups;
 		this.map.rotationEvents = rawMap.rotationEvents;
 		this.map.useNormalEventsAsCompatibleEvents = rawMap.useNormalEventsAsCompatibleEvents;
+		this.map._fxEventsCollection = rawMap._fxEventsCollection;
+		this.map.vfxEventBoxGroups = rawMap.vfxEventBoxGroups;
 		this.map.waypoints = rawMap.waypoints;
 
 		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
@@ -291,6 +298,27 @@ export class BeatMap {
 	}
 	get lightTranslationEventBoxGroups() {
 		return this.map.lightTranslationEventBoxGroups;
+	}
+
+	set vfxEventBoxGroups(x) {
+		this.map.vfxEventBoxGroups = x;
+	}
+	get vfxEventBoxGroups() {
+		return this.map.vfxEventBoxGroups;
+	}
+
+	set floatFxEvents(x) {
+		this.map._fxEventsCollection._fl = x;
+	}
+	get floatFxEvents() {
+		return this.map._fxEventsCollection._fl;
+	}
+
+	set integerFxEvents(x) {
+		this.map._fxEventsCollection._il = x;
+	}
+	get integerFxEvents() {
+		return this.map._fxEventsCollection._il;
 	}
 
 	set customData(x) {
@@ -480,7 +508,7 @@ export class BeatMap {
 	 */
 	save(formatJSON?: boolean, copyMapTo?: string) {
 		const rawMap: V3MapJSON = {
-			version: "3.2.0",
+			version: "3.3.0",
 			bpmEvents: [],
 			rotationEvents: [],
 			colorNotes: [],
@@ -571,6 +599,11 @@ export class BeatMap {
 		rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
 		rawMap.rotationEvents = this.rotationEvents;
 		rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
+		rawMap._fxEventsCollection = {
+			_fl: this.floatFxEvents,
+			_il: this.integerFxEvents
+		};
+		rawMap.vfxEventBoxGroups = this.vfxEventBoxGroups;
 		jsonPrune(rawMap.customData!);
 
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
@@ -634,7 +667,7 @@ class Info {
 				]
 			};
 			this.save();
-			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load ingame until you do this!\x1b[0m");
+			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load in-game until you do this!\x1b[0m");
 		}
 	}
 	get isModified() {
