@@ -282,6 +282,7 @@ export class Bomb {
 		if (x.customData) {
 			this.customData = x.customData;
 		}
+		jsonPrune(this);
 		return this;
 	}
 	/**
@@ -414,6 +415,7 @@ export class Wall {
 		if (x.customData) {
 			this.customData = x.customData;
 		}
+		jsonPrune(this);
 		return this;
 	}
 	/**
@@ -577,6 +579,7 @@ export class Arc {
 		if (x.customData) {
 			this.customData = x.customData;
 		}
+		jsonPrune(this);
 		return this;
 	}
 	/**
@@ -729,6 +732,7 @@ export class Chain {
 		if (x.customData) {
 			this.customData = x.customData;
 		}
+		jsonPrune(this);
 		return this;
 	}
 	/**
@@ -762,6 +766,7 @@ export class Bookmark {
 		this.time = x.b;
 		this.name = x.n;
 		this.color = x.c;
+		jsonPrune(this);
 		return this;
 	}
 	push(dupe = true) {
