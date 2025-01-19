@@ -201,10 +201,13 @@ export class AssignTrackParent {
 	 * @param parentTrack The parent track.
 	 * @param time The time of the assignment (leave blank for 0).
 	 */
-	constructor(childTracks: string[] = [], parentTrack: string = "", time = 0) {
+	constructor(childTracks: string[] = [], parentTrack: string = "", time = 0, worldPositionStays?: boolean) {
 		this.childTracks = childTracks;
 		this.parentTrack = parentTrack;
 		this.time = time;
+		if (worldPositionStays) {
+			this.worldPositionStays = worldPositionStays;
+		}
 	}
 	private b = 0;
 	private t: CustomEventNames = "AssignTrackParent";
