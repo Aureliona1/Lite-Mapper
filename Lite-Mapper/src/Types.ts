@@ -390,7 +390,7 @@ export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 |
 export type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
 export type BookmarkType = { b: number; n: string; c: Vec4 };
 
-export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed";
+export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed" | "BillieLeft" | "BillieRight";
 export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
 
 // CE props

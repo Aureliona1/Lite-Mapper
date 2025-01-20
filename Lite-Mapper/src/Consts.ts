@@ -133,7 +133,7 @@ class TwoWayMap<S extends string | number | symbol, T extends string | number | 
 /**
  * Internal type for mapping numerical light types to named types.
  */
-export type LightTypesNumericalValues = 0 | 1 | 2 | 3 | 4 | 5 | 8 | 9 | 12 | 13;
+export type LightTypesNumericalValues = 0 | 1 | 2 | 3 | 4 | 5 | 8 | 9 | 10 | 11 | 12 | 13;
 /**
  * Internal type for mapping numerical light values to named values.
  */
@@ -148,6 +148,8 @@ export const LightEventTypesMap = new TwoWayMap({
 	BoostColors: 5,
 	RingSpin: 8,
 	RingZoom: 9,
+	BillieLeft: 10,
+	BillieRight: 11,
 	LeftLaserSpeed: 12,
 	RightLaserSpeed: 13
 });
