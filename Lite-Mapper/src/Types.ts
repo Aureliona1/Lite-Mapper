@@ -14,7 +14,7 @@ type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: 
 type RGBAObject = { r: number; b: number; g: number; a: number };
 type fxEvent = { b: number; p: number; i: number; v: number };
 
-export type infoJSON = {
+export type InfoJSON = {
 	_version: "2.1.0" | "2.0.0";
 	_songName: string;
 	_songSubName: string;
@@ -153,7 +153,7 @@ export type V3MapJSON = {
 	};
 };
 
-export type classMap = {
+export type ClassMap = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
 	rotationEvents: { b: number; e: number; r: number }[];
@@ -197,6 +197,8 @@ export type classMap = {
 		fakeObstacles?: Wall[];
 		fakeBurstSliders?: Chain[];
 		bookmarks?: Bookmark[];
+		bookmarksUseOfficialBpmEvents?: boolean;
+		time?: number;
 	};
 };
 

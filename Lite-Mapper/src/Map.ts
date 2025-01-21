@@ -1,16 +1,17 @@
+// deno-lint-ignore-file no-explicit-any
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
-import { copyToDir, decimals, jsonPrune, LMCache, LMLog, universalComparison } from "./Functions.ts";
+import { copy, copyToDir, decimals, jsonPrune, LMCache, LMLog, universalComparison } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
-import { V3MapJSON, classMap, DiffNames, HeckSettings, infoJSON } from "./Types.ts";
+import { V3MapJSON, ClassMap, DiffNames, HeckSettings, InfoJSON } from "./Types.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
 	start = 0;
 
 export class BeatMap {
-	map: classMap = {
+	private internalMap: ClassMap = {
 		version: "3.3.0",
 		bpmEvents: [],
 		rotationEvents: [],
@@ -45,86 +46,13 @@ export class BeatMap {
 		start = Date.now();
 		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 
+		this.internalMap = this.classify(rawMap);
+
 		// Set current diff
 		currentDiff = this;
 
-		// Classify vanilla items
-		rawMap.basicBeatmapEvents.forEach(e => {
-			new LightEvent().JSONToClass(e).push();
-		});
-		rawMap.bombNotes.forEach(n => {
-			new Bomb().JSONToClass(n).push();
-		});
-		rawMap.burstSliders.forEach(n => {
-			new Chain().JSONToClass(n).push();
-		});
-		rawMap.colorNotes.forEach(n => {
-			new Note().JSONToClass(n).push();
-		});
-		rawMap.obstacles.forEach(n => {
-			new Wall().JSONToClass(n).push();
-		});
-		rawMap.sliders.forEach(n => {
-			new Arc().JSONToClass(n).push();
-		});
-
-		// Check for custom data
-		if (rawMap.customData) {
-			if (rawMap.customData.customEvents) {
-				this.customEvents = [];
-				rawMap.customData.customEvents.forEach(n => {
-					this.customEvents?.push(JSONToCE(n));
-				});
-			}
-			if (rawMap.customData.environment) {
-				this.environments = rawMap.customData.environment;
-			}
-			if (rawMap.customData.fakeBombNotes) {
-				rawMap.customData.fakeBombNotes.forEach(n => {
-					new Bomb().JSONToClass(n).push(true);
-				});
-			}
-			if (rawMap.customData.fakeBurstSliders) {
-				rawMap.customData.fakeBurstSliders.forEach(n => {
-					new Chain().JSONToClass(n).push(true);
-				});
-			}
-			if (rawMap.customData.fakeColorNotes) {
-				rawMap.customData.fakeColorNotes.forEach(n => {
-					new Note().JSONToClass(n).push(true);
-				});
-			}
-			if (rawMap.customData.fakeObstacles) {
-				rawMap.customData.fakeObstacles.forEach(n => {
-					new Wall().JSONToClass(n).push(true);
-				});
-			}
-			if (rawMap.customData.bookmarks) {
-				rawMap.customData.bookmarks.forEach(b => {
-					new Bookmark().JSONToClass(b).push(true);
-				});
-			}
-			if (rawMap.customData.time) {
-				this.chromapperValues.mappingTime = rawMap.customData.time;
-			}
-			if (rawMap.customData.bookmarksUseOfficialBpmEvents) {
-				this.chromapperValues.bookmarksUseOfficialBPMEvents = rawMap.customData.bookmarksUseOfficialBpmEvents;
-			}
-		}
-
-		// Pass over direct values
-		this.map.version = rawMap.version;
-		this.map.bpmEvents = rawMap.bpmEvents;
-		this.map.basicEventTypesWithKeywords = rawMap.basicEventTypesWithKeywords;
-		this.map.colorBoostBeatmapEvents = rawMap.colorBoostBeatmapEvents;
-		this.map.lightColorEventBoxGroups = rawMap.lightColorEventBoxGroups;
-		this.map.lightRotationEventBoxGroups = rawMap.lightRotationEventBoxGroups;
-		this.map.lightTranslationEventBoxGroups = rawMap.lightTranslationEventBoxGroups;
-		this.map.rotationEvents = rawMap.rotationEvents;
-		this.map.useNormalEventsAsCompatibleEvents = rawMap.useNormalEventsAsCompatibleEvents;
-		this.map._fxEventsCollection = rawMap._fxEventsCollection;
-		this.map.vfxEventBoxGroups = rawMap.vfxEventBoxGroups;
-		this.map.waypoints = rawMap.waypoints;
+		this.chromapperValues.bookmarksUseOfficialBPMEvents = this.internalMap.customData?.bookmarksUseOfficialBpmEvents ?? true;
+		this.chromapperValues.mappingTime = this.internalMap.customData?.time ?? 0;
 
 		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
 		if (/[^3]\.\d\.\d/.test(this.version)) {
@@ -158,6 +86,121 @@ export class BeatMap {
 				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
 			}
 		}
+	}
+
+	private classify(raw: V3MapJSON) {
+		const classMap: ClassMap = {
+			version: "3.3.0",
+			bpmEvents: [],
+			rotationEvents: [],
+			colorNotes: [],
+			bombNotes: [],
+			obstacles: [],
+			sliders: [],
+			burstSliders: [],
+			waypoints: [],
+			basicBeatmapEvents: [],
+			colorBoostBeatmapEvents: [],
+			lightColorEventBoxGroups: [],
+			lightRotationEventBoxGroups: [],
+			lightTranslationEventBoxGroups: [],
+			basicEventTypesWithKeywords: {},
+			useNormalEventsAsCompatibleEvents: false,
+			vfxEventBoxGroups: [],
+			_fxEventsCollection: {
+				_fl: [],
+				_il: []
+			},
+			customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
+		};
+
+		function deepPush<T extends Record<string, any>>(obj: T, arr: T[]) {
+			const temp = copy(obj);
+			jsonPrune(temp);
+			arr.push(temp);
+		}
+
+		// Classify vanilla items
+		raw.basicBeatmapEvents.forEach(e => {
+			deepPush(new LightEvent().JSONToClass(e), classMap.basicBeatmapEvents);
+		});
+		raw.bombNotes.forEach(n => {
+			deepPush(new Bomb().JSONToClass(n), classMap.bombNotes);
+		});
+		raw.burstSliders.forEach(n => {
+			deepPush(new Chain().JSONToClass(n), classMap.burstSliders);
+		});
+		raw.colorNotes.forEach(n => {
+			deepPush(new Note().JSONToClass(n), classMap.colorNotes);
+		});
+		raw.obstacles.forEach(n => {
+			deepPush(new Wall().JSONToClass(n), classMap.obstacles);
+		});
+		raw.sliders.forEach(n => {
+			deepPush(new Arc().JSONToClass(n), classMap.sliders);
+		});
+
+		// Check for custom data
+		if (raw.customData) {
+			if (raw.customData.customEvents) {
+				raw.customData.customEvents.forEach(n => {
+					deepPush(JSONToCE(n), classMap.customData!.customEvents!);
+				});
+			}
+			if (raw.customData.environment) {
+				classMap.customData!.environment! = raw.customData.environment;
+			}
+			if (raw.customData.fakeBombNotes) {
+				raw.customData.fakeBombNotes.forEach(n => {
+					deepPush(new Bomb().JSONToClass(n), classMap.customData!.fakeBombNotes!);
+				});
+			}
+			if (raw.customData.fakeBurstSliders) {
+				raw.customData.fakeBurstSliders.forEach(n => {
+					deepPush(new Chain().JSONToClass(n), classMap.customData!.fakeBurstSliders!);
+				});
+			}
+			if (raw.customData.fakeColorNotes) {
+				raw.customData.fakeColorNotes.forEach(n => {
+					deepPush(new Note().JSONToClass(n), classMap.customData!.fakeColorNotes!);
+				});
+			}
+			if (raw.customData.fakeObstacles) {
+				raw.customData.fakeObstacles.forEach(n => {
+					deepPush(new Wall().JSONToClass(n), classMap.customData!.fakeObstacles!);
+				});
+			}
+			if (raw.customData.bookmarks) {
+				raw.customData.bookmarks.forEach(b => {
+					deepPush(new Bookmark().JSONToClass(b), classMap.customData!.bookmarks!);
+				});
+			}
+			if (raw.customData.time) {
+				classMap.customData!.time = raw.customData.time;
+			}
+			if (raw.customData.bookmarksUseOfficialBpmEvents) {
+				classMap.customData!.bookmarksUseOfficialBpmEvents = raw.customData.bookmarksUseOfficialBpmEvents;
+			}
+			if (raw.customData.materials) {
+				classMap.customData!.materials = raw.customData.materials;
+			}
+		}
+
+		// Pass over direct values
+		classMap.version = raw.version;
+		classMap.bpmEvents = raw.bpmEvents;
+		classMap.basicEventTypesWithKeywords = raw.basicEventTypesWithKeywords;
+		classMap.colorBoostBeatmapEvents = raw.colorBoostBeatmapEvents;
+		classMap.lightColorEventBoxGroups = raw.lightColorEventBoxGroups;
+		classMap.lightRotationEventBoxGroups = raw.lightRotationEventBoxGroups;
+		classMap.lightTranslationEventBoxGroups = raw.lightTranslationEventBoxGroups;
+		classMap.rotationEvents = raw.rotationEvents;
+		classMap.useNormalEventsAsCompatibleEvents = raw.useNormalEventsAsCompatibleEvents;
+		classMap._fxEventsCollection = raw._fxEventsCollection;
+		classMap.vfxEventBoxGroups = raw.vfxEventBoxGroups;
+		classMap.waypoints = raw.waypoints;
+
+		return classMap;
 	}
 
 	/**
@@ -206,126 +249,126 @@ export class BeatMap {
 	}
 
 	get version() {
-		return this.map.version;
+		return this.internalMap.version;
 	}
 
 	set basicEventTypesWithKeywords(x) {
-		this.map.basicEventTypesWithKeywords = x;
+		this.internalMap.basicEventTypesWithKeywords = x;
 	}
 	get basicEventTypesWithKeywords() {
-		return this.map.basicEventTypesWithKeywords;
+		return this.internalMap.basicEventTypesWithKeywords;
 	}
 
 	set bpmEvents(x) {
-		this.map.bpmEvents = x;
+		this.internalMap.bpmEvents = x;
 	}
 	get bpmEvents() {
-		return this.map.bpmEvents;
+		return this.internalMap.bpmEvents;
 	}
 
 	set rotationEvents(x) {
-		this.map.rotationEvents = x;
+		this.internalMap.rotationEvents = x;
 	}
 	get rotationEvents() {
-		return this.map.rotationEvents;
+		return this.internalMap.rotationEvents;
 	}
 
 	set notes(x) {
-		this.map.colorNotes = x;
+		this.internalMap.colorNotes = x;
 	}
 	get notes() {
-		return this.map.colorNotes;
+		return this.internalMap.colorNotes;
 	}
 
 	set bombs(x) {
-		this.map.bombNotes = x;
+		this.internalMap.bombNotes = x;
 	}
 	get bombs() {
-		return this.map.bombNotes;
+		return this.internalMap.bombNotes;
 	}
 
 	set walls(x) {
-		this.map.obstacles = x;
+		this.internalMap.obstacles = x;
 	}
 	get walls() {
-		return this.map.obstacles;
+		return this.internalMap.obstacles;
 	}
 
 	set arcs(x) {
-		this.map.sliders = x;
+		this.internalMap.sliders = x;
 	}
 	get arcs() {
-		return this.map.sliders;
+		return this.internalMap.sliders;
 	}
 
 	set chains(x) {
-		this.map.burstSliders = x;
+		this.internalMap.burstSliders = x;
 	}
 	get chains() {
-		return this.map.burstSliders;
+		return this.internalMap.burstSliders;
 	}
 
 	set events(x) {
-		this.map.basicBeatmapEvents = x;
+		this.internalMap.basicBeatmapEvents = x;
 	}
 	get events() {
-		return this.map.basicBeatmapEvents;
+		return this.internalMap.basicBeatmapEvents;
 	}
 
 	set colorBoostBeatmapEvents(x) {
-		this.map.colorBoostBeatmapEvents = x;
+		this.internalMap.colorBoostBeatmapEvents = x;
 	}
 	get colorBoostBeatmapEvents() {
-		return this.map.colorBoostBeatmapEvents;
+		return this.internalMap.colorBoostBeatmapEvents;
 	}
 
 	set lightColorEventBoxGroups(x) {
-		this.map.lightColorEventBoxGroups = x;
+		this.internalMap.lightColorEventBoxGroups = x;
 	}
 	get lightColorEventBoxGroups() {
-		return this.map.lightColorEventBoxGroups;
+		return this.internalMap.lightColorEventBoxGroups;
 	}
 
 	set lightRotationEventBoxGroups(x) {
-		this.map.lightRotationEventBoxGroups = x;
+		this.internalMap.lightRotationEventBoxGroups = x;
 	}
 	get lightRotationEventBoxGroups() {
-		return this.map.lightRotationEventBoxGroups;
+		return this.internalMap.lightRotationEventBoxGroups;
 	}
 
 	set lightTranslationEventBoxGroups(x) {
-		this.map.lightTranslationEventBoxGroups = x;
+		this.internalMap.lightTranslationEventBoxGroups = x;
 	}
 	get lightTranslationEventBoxGroups() {
-		return this.map.lightTranslationEventBoxGroups;
+		return this.internalMap.lightTranslationEventBoxGroups;
 	}
 
 	set vfxEventBoxGroups(x) {
-		this.map.vfxEventBoxGroups = x;
+		this.internalMap.vfxEventBoxGroups = x;
 	}
 	get vfxEventBoxGroups() {
-		return this.map.vfxEventBoxGroups;
+		return this.internalMap.vfxEventBoxGroups;
 	}
 
 	set floatFxEvents(x) {
-		this.map._fxEventsCollection._fl = x;
+		this.internalMap._fxEventsCollection._fl = x;
 	}
 	get floatFxEvents() {
-		return this.map._fxEventsCollection._fl;
+		return this.internalMap._fxEventsCollection._fl;
 	}
 
 	set integerFxEvents(x) {
-		this.map._fxEventsCollection._il = x;
+		this.internalMap._fxEventsCollection._il = x;
 	}
 	get integerFxEvents() {
-		return this.map._fxEventsCollection._il;
+		return this.internalMap._fxEventsCollection._il;
 	}
 
 	set customData(x) {
-		this.map.customData = x;
+		this.internalMap.customData = x;
 	}
 	get customData() {
-		return this.map.customData ?? {};
+		return this.internalMap.customData ?? {};
 	}
 
 	set customEvents(x) {
@@ -390,10 +433,10 @@ export class BeatMap {
 	};
 
 	set useNormalEventsAsCompatibleEvents(x) {
-		this.map.useNormalEventsAsCompatibleEvents = x;
+		this.internalMap.useNormalEventsAsCompatibleEvents = x;
 	}
 	get useNormalEventsAsCompatibleEvents() {
-		return this.map.useNormalEventsAsCompatibleEvents;
+		return this.internalMap.useNormalEventsAsCompatibleEvents;
 	}
 
 	/**
@@ -439,64 +482,58 @@ export class BeatMap {
 	 */
 	addInputDiff(diff: DiffNames) {
 		const input: V3MapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
-		input.basicBeatmapEvents.forEach(e => {
-			new LightEvent().JSONToClass(e).push();
-		});
-		input.bombNotes.forEach(n => {
-			new Bomb().JSONToClass(n).push();
-		});
-		input.burstSliders.forEach(n => {
-			new Chain().JSONToClass(n).push();
-		});
-		input.colorNotes.forEach(n => {
-			new Note().JSONToClass(n).push();
-		});
-		input.obstacles.forEach(n => {
-			new Wall().JSONToClass(n).push();
-		});
-		input.sliders.forEach(n => {
-			new Arc().JSONToClass(n).push();
-		});
-		if (input.customData) {
-			if (input.customData.customEvents) {
-				this.customEvents ??= [];
-				input.customData.customEvents.forEach(n => {
-					this.customEvents.push(JSONToCE(n));
+		const classMap = this.classify(input);
+
+		this.bpmEvents.push(...classMap.bpmEvents);
+		this.events.push(...classMap.basicBeatmapEvents);
+		this.floatFxEvents.push(...classMap._fxEventsCollection._fl);
+		this.integerFxEvents.push(...classMap._fxEventsCollection._il);
+		this.bombs.push(...classMap.bombNotes);
+		this.chains.push(...classMap.burstSliders);
+		this.colorBoostBeatmapEvents.push(...classMap.colorBoostBeatmapEvents);
+		this.notes.push(...classMap.colorNotes);
+		this.lightColorEventBoxGroups.push(...classMap.lightColorEventBoxGroups);
+		this.lightRotationEventBoxGroups.push(...classMap.lightRotationEventBoxGroups);
+		this.lightTranslationEventBoxGroups.push(...classMap.lightTranslationEventBoxGroups);
+		this.walls.push(...classMap.obstacles);
+		this.rotationEvents.push(...classMap.rotationEvents);
+		this.arcs.push(...classMap.sliders);
+		this.useNormalEventsAsCompatibleEvents = classMap.useNormalEventsAsCompatibleEvents;
+		this.vfxEventBoxGroups.push(...classMap.vfxEventBoxGroups);
+		this.internalMap.waypoints.push(...classMap.waypoints);
+
+		if (classMap.customData) {
+			if (classMap.customData.bookmarks) {
+				this.bookmarks.push(...classMap.customData.bookmarks);
+			}
+			if (classMap.customData.bookmarksUseOfficialBpmEvents !== undefined) {
+				this.chromapperValues.bookmarksUseOfficialBPMEvents = classMap.customData.bookmarksUseOfficialBpmEvents;
+			}
+			if (classMap.customData.time !== undefined) {
+				this.chromapperValues.mappingTime += classMap.customData.time;
+			}
+			if (classMap.customData.customEvents) {
+				this.customEvents.push(...classMap.customData.customEvents);
+			}
+			if (classMap.customData.environment) {
+				this.environments.push(...classMap.customData.environment);
+			}
+			if (classMap.customData.fakeBombNotes) {
+				this.fakeBombs.push(...classMap.customData.fakeBombNotes);
+			}
+			if (classMap.customData.fakeBurstSliders) {
+				this.fakeChains.push(...classMap.customData.fakeBurstSliders);
+			}
+			if (classMap.customData.fakeColorNotes) {
+				this.fakeNotes.push(...classMap.customData.fakeColorNotes);
+			}
+			if (classMap.customData.fakeObstacles) {
+				this.fakeWalls.push(...classMap.customData.fakeObstacles);
+			}
+			if (classMap.customData.materials) {
+				Object.keys(classMap.customData.materials).forEach(m => {
+					this.materials[m] = classMap.customData!.materials![m];
 				});
-			}
-			if (input.customData.environment) {
-				this.environments = [...this.environments, ...input.customData.environment];
-			}
-			if (input.customData.fakeBombNotes) {
-				input.customData.fakeBombNotes.forEach(n => {
-					new Bomb().JSONToClass(n).push(true);
-				});
-			}
-			if (input.customData.fakeBurstSliders) {
-				input.customData.fakeBurstSliders.forEach(n => {
-					new Chain().JSONToClass(n).push(true);
-				});
-			}
-			if (input.customData.fakeColorNotes) {
-				input.customData.fakeColorNotes.forEach(n => {
-					new Note().JSONToClass(n).push(true);
-				});
-			}
-			if (input.customData.fakeObstacles) {
-				input.customData.fakeObstacles.forEach(n => {
-					new Wall().JSONToClass(n).push(true);
-				});
-			}
-			if (input.customData.bookmarks) {
-				input.customData.bookmarks.forEach(b => {
-					new Bookmark().JSONToClass(b).push(true);
-				});
-			}
-			if (input.customData.time) {
-				this.chromapperValues.mappingTime += input.customData.time;
-			}
-			if (input.customData.bookmarksUseOfficialBpmEvents) {
-				this.chromapperValues.bookmarksUseOfficialBPMEvents = input.customData.bookmarksUseOfficialBpmEvents;
 			}
 		}
 	}
@@ -618,7 +655,7 @@ export class BeatMap {
 }
 
 class Info {
-	raw: infoJSON;
+	raw: InfoJSON;
 	/**
 	 * Initialise the info file reader.
 	 */
