@@ -10,85 +10,12 @@ import { LMUpdateCheck } from "./UpdateChecker.ts";
 export let currentDiff: BeatMap,
 	start = 0;
 
-export class BeatMap {
-	private internalMap: ClassMap = {
-		version: "3.3.0",
-		bpmEvents: [],
-		rotationEvents: [],
-		colorNotes: [],
-		bombNotes: [],
-		obstacles: [],
-		sliders: [],
-		burstSliders: [],
-		waypoints: [],
-		basicBeatmapEvents: [],
-		colorBoostBeatmapEvents: [],
-		lightColorEventBoxGroups: [],
-		lightRotationEventBoxGroups: [],
-		lightTranslationEventBoxGroups: [],
-		basicEventTypesWithKeywords: {},
-		useNormalEventsAsCompatibleEvents: false,
-		vfxEventBoxGroups: [],
-		_fxEventsCollection: {
-			_fl: [],
-			_il: []
-		},
-		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
-	};
-	info = new Info();
+export class BeatMapParser {
 	/**
-	 * Initialise a new map.
-	 * @param inputDiff The input difficulty, this will be unmodified.
-	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
-	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
+	 * Convert raw V3JSON to a classmap.
+	 * @param raw The json to import.
 	 */
-	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
-		start = Date.now();
-		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
-
-		this.internalMap = this.classify(rawMap);
-
-		// Set current diff
-		currentDiff = this;
-
-		this.chromapperValues.bookmarksUseOfficialBPMEvents = this.internalMap.customData?.bookmarksUseOfficialBpmEvents ?? true;
-		this.chromapperValues.mappingTime = this.internalMap.customData?.time ?? 0;
-
-		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
-		if (/[^3]\.\d\.\d/.test(this.version)) {
-			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
-		}
-
-		// Make sure the input and outputs actually exist
-		let inExists = false,
-			outExists = false;
-		this.info.raw._difficultyBeatmapSets.forEach(x => {
-			x._difficultyBeatmaps.forEach(y => {
-				if (y._beatmapFilename == inputDiff + ".dat") {
-					inExists = true;
-				}
-				if (y._beatmapFilename == outputDiff + ".dat") {
-					outExists = true;
-				}
-			});
-		});
-		if (!inExists) {
-			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
-		}
-		if (!outExists) {
-			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
-		}
-		if (updateCheckFrequency !== "Never") {
-			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
-			if (Date.now() > timeout) {
-				LMUpdateCheck();
-				const timeOffset = updateCheckFrequency == "Daily" ? 1000 * 3600 * 24 : 1000 * 3600 * 24 * 7;
-				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
-			}
-		}
-	}
-
-	private classify(raw: V3MapJSON) {
+	static classify(raw: V3MapJSON) {
 		const classMap: ClassMap = {
 			version: "3.3.0",
 			bpmEvents: [],
@@ -201,6 +128,206 @@ export class BeatMap {
 		classMap.waypoints = raw.waypoints;
 
 		return classMap;
+	}
+
+	/**
+	 * Convert a classified map into valid BeatMapV3 json.
+	 * @param classMap The map object.
+	 */
+	static JSONify(classMap: ClassMap) {
+		const rawMap: V3MapJSON = {
+			version: "3.3.0",
+			bpmEvents: [],
+			rotationEvents: [],
+			colorNotes: [],
+			bombNotes: [],
+			obstacles: [],
+			sliders: [],
+			burstSliders: [],
+			waypoints: [],
+			basicBeatmapEvents: [],
+			colorBoostBeatmapEvents: [],
+			lightColorEventBoxGroups: [],
+			lightRotationEventBoxGroups: [],
+			lightTranslationEventBoxGroups: [],
+			basicEventTypesWithKeywords: {},
+			useNormalEventsAsCompatibleEvents: false,
+			vfxEventBoxGroups: [],
+			_fxEventsCollection: {
+				_fl: [],
+				_il: []
+			}
+		};
+
+		classMap.colorNotes.forEach(n => {
+			jsonPrune(n);
+			rawMap.colorNotes.push(n.return());
+		});
+		classMap.bombNotes.forEach(n => {
+			jsonPrune(n);
+			rawMap.bombNotes.push(n.return());
+		});
+		classMap.obstacles.forEach(n => {
+			jsonPrune(n);
+			rawMap.obstacles.push(n.return());
+		});
+		classMap.sliders.forEach(n => {
+			jsonPrune(n);
+			rawMap.sliders.push(n.return());
+		});
+		classMap.burstSliders.forEach(n => {
+			jsonPrune(n);
+			rawMap.burstSliders.push(n.return());
+		});
+		classMap.basicBeatmapEvents.forEach(n => {
+			jsonPrune(n);
+			rawMap.basicBeatmapEvents.push(n.return());
+		});
+
+		if (classMap.customData) {
+			rawMap.customData = { fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [], customEvents: [], environment: [], materials: {} };
+			if (classMap.customData.fakeColorNotes) {
+				classMap.customData.fakeColorNotes.forEach(n => {
+					jsonPrune(n);
+					rawMap.customData!.fakeColorNotes!.push(n.return());
+				});
+			}
+			if (classMap.customData.fakeBombNotes) {
+				classMap.customData.fakeBombNotes.forEach(n => {
+					jsonPrune(n);
+					rawMap.customData!.fakeBombNotes!.push(n.return());
+				});
+			}
+			if (classMap.customData.fakeObstacles) {
+				classMap.customData.fakeObstacles.forEach(n => {
+					jsonPrune(n);
+					rawMap.customData!.fakeObstacles!.push(n.return());
+				});
+			}
+			if (classMap.customData.fakeBurstSliders) {
+				classMap.customData.fakeBurstSliders.forEach(n => {
+					jsonPrune(n);
+					rawMap.customData!.fakeBurstSliders!.push(n.return());
+				});
+			}
+			if (classMap.customData.customEvents) {
+				classMap.customData.customEvents.forEach(n => {
+					jsonPrune(n);
+					rawMap.customData!.customEvents!.push(CEToJSON(n));
+				});
+			}
+			if (classMap.customData.bookmarks) {
+				classMap.customData.bookmarks.forEach(b => {
+					jsonPrune(b);
+					rawMap.customData!.bookmarks!.push(b.return());
+				});
+			}
+			if (classMap.customData.environment) {
+				rawMap.customData.environment = classMap.customData.environment;
+			}
+			if (classMap.customData.materials) {
+				rawMap.customData.materials = classMap.customData.materials;
+			}
+			if (classMap.customData.bookmarksUseOfficialBpmEvents !== undefined) {
+				rawMap.customData.bookmarksUseOfficialBpmEvents = classMap.customData.bookmarksUseOfficialBpmEvents;
+			}
+			if (classMap.customData.time) {
+				rawMap.customData.time = classMap.customData.time;
+			}
+		}
+
+		rawMap.basicEventTypesWithKeywords = classMap.basicEventTypesWithKeywords;
+		rawMap.bpmEvents = classMap.bpmEvents;
+		rawMap.colorBoostBeatmapEvents = classMap.colorBoostBeatmapEvents;
+		rawMap.lightColorEventBoxGroups = classMap.lightColorEventBoxGroups;
+		rawMap.lightRotationEventBoxGroups = classMap.lightRotationEventBoxGroups;
+		rawMap.lightTranslationEventBoxGroups = classMap.lightTranslationEventBoxGroups;
+		rawMap.rotationEvents = classMap.rotationEvents;
+		rawMap.useNormalEventsAsCompatibleEvents = classMap.useNormalEventsAsCompatibleEvents;
+		rawMap._fxEventsCollection = classMap._fxEventsCollection;
+		rawMap.vfxEventBoxGroups = classMap.vfxEventBoxGroups;
+		jsonPrune(rawMap.customData!);
+
+		return rawMap;
+	}
+}
+
+export class BeatMap {
+	private internalMap: ClassMap = {
+		version: "3.3.0",
+		bpmEvents: [],
+		rotationEvents: [],
+		colorNotes: [],
+		bombNotes: [],
+		obstacles: [],
+		sliders: [],
+		burstSliders: [],
+		waypoints: [],
+		basicBeatmapEvents: [],
+		colorBoostBeatmapEvents: [],
+		lightColorEventBoxGroups: [],
+		lightRotationEventBoxGroups: [],
+		lightTranslationEventBoxGroups: [],
+		basicEventTypesWithKeywords: {},
+		useNormalEventsAsCompatibleEvents: false,
+		vfxEventBoxGroups: [],
+		_fxEventsCollection: {
+			_fl: [],
+			_il: []
+		},
+		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
+	};
+	info = new Info();
+	/**
+	 * Initialise a new map.
+	 * @param inputDiff The input difficulty, this will be unmodified.
+	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
+	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
+	 */
+	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
+		start = Date.now();
+		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+
+		this.internalMap = BeatMapParser.classify(rawMap);
+
+		// Set current diff
+		currentDiff = this;
+
+		this.chromapperValues.bookmarksUseOfficialBPMEvents = this.internalMap.customData?.bookmarksUseOfficialBpmEvents ?? true;
+		this.chromapperValues.mappingTime = this.internalMap.customData?.time ?? 0;
+
+		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
+		if (/[^3]\.\d\.\d/.test(this.version)) {
+			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
+		}
+
+		// Make sure the input and outputs actually exist
+		let inExists = false,
+			outExists = false;
+		this.info.raw._difficultyBeatmapSets.forEach(x => {
+			x._difficultyBeatmaps.forEach(y => {
+				if (y._beatmapFilename == inputDiff + ".dat") {
+					inExists = true;
+				}
+				if (y._beatmapFilename == outputDiff + ".dat") {
+					outExists = true;
+				}
+			});
+		});
+		if (!inExists) {
+			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
+		}
+		if (!outExists) {
+			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
+		}
+		if (updateCheckFrequency !== "Never") {
+			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
+			if (Date.now() > timeout) {
+				LMUpdateCheck();
+				const timeOffset = updateCheckFrequency == "Daily" ? 1000 * 3600 * 24 : 1000 * 3600 * 24 * 7;
+				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
+			}
+		}
 	}
 
 	/**
@@ -482,7 +609,7 @@ export class BeatMap {
 	 */
 	addInputDiff(diff: DiffNames) {
 		const input: V3MapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
-		const classMap = this.classify(input);
+		const classMap = BeatMapParser.classify(input);
 
 		this.bpmEvents.push(...classMap.bpmEvents);
 		this.events.push(...classMap.basicBeatmapEvents);
@@ -544,105 +671,10 @@ export class BeatMap {
 	 * @param copyMapTo Optional directory to copy map contents to (useful when working outside of beat saber directory).
 	 */
 	save(formatJSON?: boolean, copyMapTo?: string) {
-		const rawMap: V3MapJSON = {
-			version: "3.3.0",
-			bpmEvents: [],
-			rotationEvents: [],
-			colorNotes: [],
-			bombNotes: [],
-			obstacles: [],
-			sliders: [],
-			burstSliders: [],
-			waypoints: [],
-			basicBeatmapEvents: [],
-			colorBoostBeatmapEvents: [],
-			lightColorEventBoxGroups: [],
-			lightRotationEventBoxGroups: [],
-			lightTranslationEventBoxGroups: [],
-			basicEventTypesWithKeywords: {},
-			useNormalEventsAsCompatibleEvents: false,
-			vfxEventBoxGroups: [],
-			_fxEventsCollection: {
-				_fl: [],
-				_il: []
-			},
-			customData: {}
-		};
 		if (this.optimize.materials) {
 			optimizeMaterials();
 		}
-		rawMap.customData!.fakeBombNotes ??= [];
-		rawMap.customData!.fakeBurstSliders ??= [];
-		rawMap.customData!.fakeColorNotes ??= [];
-		rawMap.customData!.fakeObstacles ??= [];
-		rawMap.customData!.customEvents ??= [];
-		rawMap.customData!.bookmarks ??= [];
-		this.notes.forEach(n => {
-			jsonPrune(n);
-			rawMap.colorNotes.push(n.return());
-		});
-		this.bombs.forEach(n => {
-			jsonPrune(n);
-			rawMap.bombNotes.push(n.return());
-		});
-		this.walls.forEach(n => {
-			jsonPrune(n);
-			rawMap.obstacles.push(n.return());
-		});
-		this.arcs.forEach(n => {
-			jsonPrune(n);
-			rawMap.sliders.push(n.return());
-		});
-		this.chains.forEach(n => {
-			jsonPrune(n);
-			rawMap.burstSliders.push(n.return());
-		});
-		this.fakeNotes.forEach(n => {
-			jsonPrune(n);
-			rawMap.customData?.fakeColorNotes?.push(n.return());
-		});
-		this.fakeBombs.forEach(n => {
-			jsonPrune(n);
-			rawMap.customData?.fakeBombNotes?.push(n.return());
-		});
-		this.fakeWalls.forEach(n => {
-			jsonPrune(n);
-			rawMap.customData?.fakeObstacles?.push(n.return());
-		});
-		this.fakeChains.forEach(n => {
-			jsonPrune(n);
-			rawMap.customData?.fakeBurstSliders?.push(n.return());
-		});
-		this.events.forEach(n => {
-			jsonPrune(n);
-			rawMap.basicBeatmapEvents.push(n.return());
-		});
-		this.customEvents?.forEach(n => {
-			jsonPrune(n);
-			rawMap.customData?.customEvents?.push(CEToJSON(n));
-		});
-		this.bookmarks.forEach(b => {
-			jsonPrune(b);
-			rawMap.customData?.bookmarks?.push(b.return());
-		});
-
-		rawMap.basicEventTypesWithKeywords = this.basicEventTypesWithKeywords;
-		rawMap.bpmEvents = this.bpmEvents;
-		rawMap.colorBoostBeatmapEvents = this.colorBoostBeatmapEvents;
-		rawMap.customData!.environment = this.environments;
-		rawMap.customData!.materials = this.materials;
-		rawMap.lightColorEventBoxGroups = this.lightColorEventBoxGroups;
-		rawMap.lightRotationEventBoxGroups = this.lightRotationEventBoxGroups;
-		rawMap.lightTranslationEventBoxGroups = this.lightTranslationEventBoxGroups;
-		rawMap.rotationEvents = this.rotationEvents;
-		rawMap.useNormalEventsAsCompatibleEvents = this.useNormalEventsAsCompatibleEvents;
-		rawMap._fxEventsCollection = {
-			_fl: this.floatFxEvents,
-			_il: this.integerFxEvents
-		};
-		rawMap.vfxEventBoxGroups = this.vfxEventBoxGroups;
-		jsonPrune(rawMap.customData!);
-
+		const rawMap = BeatMapParser.JSONify(this.internalMap);
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		if (this.info.isModified) {
 			this.info.save();
