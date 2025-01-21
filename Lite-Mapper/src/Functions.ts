@@ -1,16 +1,17 @@
 // deno-lint-ignore-file no-explicit-any
 import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
 import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
+import { makeNoise2D, makeNoise3D, makeNoise4D } from "https://deno.land/x/open_simplex_noise@v2.5.0/mod.ts";
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
-import * as ease from "./Easings.ts";
+import { ArrOp } from "./Arrays.ts";
 import { ye3 } from "./Consts.ts";
+import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
+import * as ease from "./Easings.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
-import { Note, Bomb, Arc, Chain, Wall } from "./Objects.ts";
-import { Vec3, LookupMethod, Easing, Vec2, Vec4 } from "./Types.ts";
-import { AnimateTrack, AnimateComponent, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { currentDiff, start } from "./Map.ts";
-import { ArrOp } from "./Arrays.ts";
+import { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
+import { Easing, LookupMethod, Vec2, Vec3, Vec4 } from "./Types.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -589,5 +590,28 @@ export function universalComparison<Tr extends T, T extends number | string | un
 			const b2arr = Object.entries(b as Record<string, Tr>);
 			return universalComparison(a2arr, b2arr);
 		}
+	}
+}
+
+export class Noise {
+	public readonly seed = Math.random();
+	private n2d = makeNoise2D(this.seed);
+	private n3d = makeNoise3D(this.seed);
+	private n4d = makeNoise4D(this.seed);
+	constructor(seed = Math.random()) {
+		this.seed = seed;
+	}
+
+	point1D(x: number, range: Vec2 = [-1, 1]) {
+		return mapRange(this.n2d(x, 0), [-0.9, 0.9], range);
+	}
+	point2D(x: number, y: number, range: Vec2 = [-1, 1]) {
+		return mapRange(this.n2d(x, y), [-0.9, 0.9], range);
+	}
+	point3D(x: number, y: number, z: number, range: Vec2 = [-1, 1]) {
+		return mapRange(this.n3d(x, y, z), [-0.9, 0.9], range);
+	}
+	point4D(x: number, y: number, z: number, w: number, range: Vec2 = [-1, 1]) {
+		return mapRange(this.n4d(x, y, z, w), [-0.9, 0.9], range);
 	}
 }
