@@ -1,4 +1,4 @@
-import { Vec3, MaterialPresetNames, GeometryMaterialJSON, LookupMethod } from "./Types.ts";
+import { GeometryMaterialJSON, LookupMethod, Vec3 } from "./Types.ts";
 
 export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];
@@ -6,7 +6,7 @@ export const ye3: Vec3 = [ye, ye, ye];
 /**
  * Ported from https://github.com/Shonshyn/BS-Tools-for-Mappers
  */
-export const MaterialPresets: Record<MaterialPresetNames, GeometryMaterialJSON> = {
+export const MaterialPresets = {
 	FixedConcrete: {
 		shader: "InterscopeConcrete",
 		shaderKeywords: [
@@ -86,7 +86,7 @@ export const MaterialPresets: Record<MaterialPresetNames, GeometryMaterialJSON> 
 		shader: "InterscopeCar",
 		shaderKeywords: ["DIFFUSE", "FOG", "REFLECTION_PROBE"]
 	}
-};
+} satisfies Record<string, GeometryMaterialJSON>;
 
 /**
  * Useful environment constants. Use in your map as such:
@@ -115,7 +115,7 @@ export const ENV_PARAM = {
 };
 
 class TwoWayMap<S extends string | number | symbol, T extends string | number | symbol> {
-	private reverseMap: Record<T, S>;
+	reverseMap: Record<T, S>;
 	/**
 	 * This is an internal class used by Lite-Mapper, most mapping cases will not require this class.
 	 */
@@ -129,15 +129,6 @@ class TwoWayMap<S extends string | number | symbol, T extends string | number | 
 		return this.reverseMap[key];
 	}
 }
-
-/**
- * Internal type for mapping numerical light types to named types.
- */
-export type LightTypesNumericalValues = 0 | 1 | 2 | 3 | 4 | 5 | 8 | 9 | 10 | 11 | 12 | 13;
-/**
- * Internal type for mapping numerical light values to named values.
- */
-export type LightValueNumericalValues = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export const LightEventTypesMap = new TwoWayMap({
 	BackLasers: 0,
@@ -174,14 +165,8 @@ export const LightEventValuesMap = new TwoWayMap({
 });
 
 /**
- * Internal type for mapping nunerical object directions to named directions.
+ * Internal map for mapping object directions to named directions. DO NOT EDIT!
  */
-export type ObjectDirectionsNumericalValues = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-/**
- * Internal type for mapping numerical object colors to named colors.
- */
-export type ObjectColorsNumericalValues = 0 | 1;
-
 export const ObjectDirectionsMap = new TwoWayMap({
 	Up: 0,
 	Down: 1,
@@ -194,6 +179,9 @@ export const ObjectDirectionsMap = new TwoWayMap({
 	Dot: 8
 });
 
+/**
+ * Internal map for mapping numerical object colors to named colors.
+ */
 export const ObjectColorsMap = new TwoWayMap({
 	Left: 0,
 	Right: 1

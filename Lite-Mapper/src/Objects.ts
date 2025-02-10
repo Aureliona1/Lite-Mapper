@@ -1,7 +1,7 @@
-import { ObjectColorsMap, ObjectDirectionsMap, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Consts.ts";
+import { ObjectColorsMap, ObjectDirectionsMap } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON } from "./Types.ts";
+import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Types.ts";
 
 export class Note {
 	/**
@@ -137,10 +137,10 @@ export class Note {
 	}
 	JSONToClass(x: NoteJSON) {
 		this.time = x.b;
-		this.x = x.x;
-		this.y = x.y;
-		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
-		this.direction = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
+		this.x = x.x ?? 0;
+		this.y = x.y ?? 0;
+		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.direction = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
 		this.angleOffset = x.a;
 		if (x.customData) {
 			this.customData = x.customData;
@@ -280,8 +280,8 @@ export class Bomb {
 	}
 	JSONToClass(x: BombJSON) {
 		this.time = x.b;
-		this.x = x.x;
-		this.y = x.y;
+		this.x = x.x ?? 0;
+		this.y = x.y ?? 0;
 		if (x.customData) {
 			this.customData = x.customData;
 		}
@@ -411,11 +411,11 @@ export class Wall {
 	}
 	JSONToClass(x: ObstacleJSON) {
 		this.time = x.b;
-		this.x = x.x;
-		this.y = x.y;
-		this.duration = x.d;
-		this.width = x.w;
-		this.height = x.h;
+		this.x = x.x ?? 0;
+		this.y = x.y ?? 0;
+		this.duration = x.d ?? 0;
+		this.width = x.w ?? 0;
+		this.height = x.h ?? 0;
 		if (x.customData) {
 			this.customData = x.customData;
 		}
@@ -570,17 +570,17 @@ export class Arc {
 	}
 	JSONToClass(x: SliderJSON) {
 		this.time = x.b;
-		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
-		this.x = x.x;
-		this.y = x.y;
-		this.headDirection = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
-		this.headMultiplier = x.mu;
-		this.tailBeat = x.tb;
-		this.tx = x.tx;
-		this.ty = x.ty;
-		this.tailDirection = ObjectDirectionsMap.revGet(x.tc as ObjectDirectionsNumericalValues);
-		this.tailMultiplier = x.tmu;
-		this.anchorMode = x.m;
+		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.x = x.x ?? 0;
+		this.y = x.y ?? 0;
+		this.headDirection = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		this.headMultiplier = x.mu ?? 0;
+		this.tailBeat = x.tb ?? 0;
+		this.tx = x.tx ?? 0;
+		this.ty = x.ty ?? 0;
+		this.tailDirection = ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
+		this.tailMultiplier = x.tmu ?? 0;
+		this.anchorMode = x.m ?? 0;
 		if (x.customData) {
 			this.customData = x.customData;
 		}
@@ -726,15 +726,15 @@ export class Chain {
 	}
 	JSONToClass(x: BurstSliderJSON) {
 		this.time = x.b;
-		this.x = x.x;
-		this.y = x.y;
-		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
-		this.direction = ObjectDirectionsMap.revGet(x.d as ObjectDirectionsNumericalValues);
-		this.tailBeat = x.tb;
-		this.tx = x.tx;
-		this.ty = x.ty;
-		this.segments = x.sc;
-		this.squishFactor = x.s;
+		this.x = x.x ?? 0;
+		this.y = x.y ?? 0;
+		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.direction = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		this.tailBeat = x.tb ?? 0;
+		this.tx = x.tx ?? 0;
+		this.ty = x.ty ?? 0;
+		this.segments = x.sc ?? 0;
+		this.squishFactor = x.s ?? 1;
 		if (x.customData) {
 			this.customData = x.customData;
 		}

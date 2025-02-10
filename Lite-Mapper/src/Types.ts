@@ -1,8 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
+import { LightEventTypesMap, LightEventValuesMap, ObjectColorsMap, ObjectDirectionsMap } from "./Consts.ts";
 import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
-import { Note, Bomb, Wall, Arc, Chain, Bookmark } from "./Objects.ts";
+import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 
 // BeatMap types
 
@@ -381,6 +382,8 @@ export type SliderCustomProps = {
 
 export type ObjectDirections = "Up" | "Down" | "Left" | "Right" | "Up Left" | "Up Right" | "Down Left" | "Down Right" | "Dot";
 export type ObjectColors = "Left" | "Right";
+export type ObjectDirectionsNumericalValues = keyof typeof ObjectDirectionsMap.reverseMap;
+export type ObjectColorsNumericalValues = keyof typeof ObjectColorsMap.reverseMap;
 
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
@@ -394,6 +397,8 @@ export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
 export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed" | "BillieLeft" | "BillieRight";
 export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
+export type LightTypesNumericalValues = keyof typeof LightEventTypesMap.reverseMap;
+export type LightValueNumericalValues = keyof typeof LightEventValuesMap.reverseMap;
 
 // CE props
 
@@ -566,7 +571,5 @@ export type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "E
 export type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
 
 // Function and class prop types
-
-export type MaterialPresetNames = "FixedConcrete" | "Dirt" | "BlurryMetal" | "ShinyMetal" | "ShinyMetal2D" | "Glass" | "Grid" | "FogLight" | "Invisible" | "SlightReflection" | "SlightReflectionNoColor" | "BlurryMirror" | "BlurryMirror2D" | "ShinyMirror" | "ShinyMirror2D";
 
 export type NumberArrLike = Uint16Array | Uint32Array | Uint8Array | Int16Array | Int32Array | Int8Array | Float16Array | Float32Array | Float64Array | Array<number>;
