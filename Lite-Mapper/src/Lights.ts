@@ -1,7 +1,7 @@
 import { LightEventTypesMap, LightEventValuesMap, LightTypesNumericalValues, LightValueNumericalValues } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { LightEventTypes, LightEventValues, LightEventCustomData, Easing, Vec3, Vec4, LightEventType, LightKeyframeFrameType } from "./Types.ts";
+import { Easing, LightEventCustomData, LightEventJSON, LightEventTypes, LightEventValues, LightKeyframeFrameType, Vec3, Vec4 } from "./Types.ts";
 
 export class LightEvent {
 	/**
@@ -93,18 +93,19 @@ export class LightEvent {
 	 * Return the raw Json of the event.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): LightEventType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: LightEventJSON = {
 			b: temp.time,
 			et: LightEventTypesMap.get(temp.type),
 			i: LightEventValuesMap.get(temp.value),
 			f: temp.floatValue,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: LightEventType) {
+	JSONToClass(x: LightEventJSON) {
 		this.time = x.b;
 		this.type = LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
 		this.value = LightEventValuesMap.revGet(x.i as LightValueNumericalValues);

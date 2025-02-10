@@ -1,7 +1,7 @@
 import { ObjectColorsMap, ObjectDirectionsMap, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteType, BombType, WallCustomProps, ObstacleType, SliderCustomProps, SliderType, BurstSliderType, Vec4, BookmarkType } from "./Types.ts";
+import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON } from "./Types.ts";
 
 export class Note {
 	/**
@@ -121,10 +121,9 @@ export class Note {
 	 * Return the raw json of the note.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): NoteType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: NoteJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
@@ -133,8 +132,10 @@ export class Note {
 			a: temp.angleOffset,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: NoteType) {
+	JSONToClass(x: NoteJSON) {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
@@ -266,17 +267,18 @@ export class Bomb {
 	 * Return the raw Json of the bomb.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): BombType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: BombJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: BombType) {
+	JSONToClass(x: BombJSON) {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
@@ -393,10 +395,9 @@ export class Wall {
 	 * Return the raw Json of the wall.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): ObstacleType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: ObstacleJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
@@ -405,8 +406,10 @@ export class Wall {
 			h: temp.height,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: ObstacleType) {
+	JSONToClass(x: ObstacleJSON) {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
@@ -545,10 +548,9 @@ export class Arc {
 	 * Return the raw Json of the arc.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): SliderType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: SliderJSON = {
 			b: temp.time,
 			c: ObjectColorsMap.get(temp.type),
 			x: temp.x,
@@ -563,8 +565,10 @@ export class Arc {
 			m: temp.anchorMode,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: SliderType) {
+	JSONToClass(x: SliderJSON) {
 		this.time = x.b;
 		this.type = ObjectColorsMap.revGet(x.c as ObjectColorsNumericalValues);
 		this.x = x.x;
@@ -702,10 +706,9 @@ export class Chain {
 	 * Return the raw Json of the chain.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true): BurstSliderType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out: BurstSliderJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
@@ -718,8 +721,10 @@ export class Chain {
 			s: temp.squishFactor,
 			customData: temp.customData
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: BurstSliderType) {
+	JSONToClass(x: BurstSliderJSON) {
 		this.time = x.b;
 		this.x = x.x;
 		this.y = x.y;
@@ -753,20 +758,20 @@ export class Chain {
 
 export class Bookmark {
 	constructor(public time = 0, public name = "", public color: Vec4 = [1, 1, 1, 1]) {}
-	return(dupe = true): BookmarkType {
+	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
-			b: this.time,
-			n: this.name,
-			c: this.color
+		const out: BookmarkJSON = {
+			b: temp.time,
+			n: temp.name,
+			c: temp.color
 		};
+		jsonPrune(out);
+		return out;
 	}
-	JSONToClass(x: BookmarkType) {
+	JSONToClass(x: BookmarkJSON) {
 		this.time = x.b;
 		this.name = x.n;
 		this.color = x.c;
-		jsonPrune(this);
 		return this;
 	}
 	push(dupe = true) {

@@ -108,13 +108,13 @@ export type V3MapJSON = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
 	rotationEvents: { b: number; e: number; r: number }[];
-	colorNotes: NoteType[];
-	bombNotes: BombType[];
-	obstacles: ObstacleType[];
-	sliders: SliderType[];
-	burstSliders: BurstSliderType[];
+	colorNotes: NoteJSON[];
+	bombNotes: BombJSON[];
+	obstacles: ObstacleJSON[];
+	sliders: SliderJSON[];
+	burstSliders: BurstSliderJSON[];
 	waypoints: { b: number; x: number; y: number; d: number }[];
-	basicBeatmapEvents: LightEventType[];
+	basicBeatmapEvents: LightEventJSON[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
 	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
 	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
@@ -140,14 +140,14 @@ export type V3MapJSON = {
 		_il: fxEvent[];
 	};
 	customData?: {
-		customEvents?: CustomEventType[];
+		customEvents?: CustomEventJSON[];
 		environment?: Environment[];
 		materials?: Record<string, GeometryMaterialJSON>;
-		fakeColorNotes?: NoteType[];
-		fakeBombNotes?: BombType[];
-		fakeObstacles?: ObstacleType[];
-		fakeBurstSliders?: BurstSliderType[];
-		bookmarks?: BookmarkType[];
+		fakeColorNotes?: NoteJSON[];
+		fakeBombNotes?: BombJSON[];
+		fakeObstacles?: ObstacleJSON[];
+		fakeBurstSliders?: BurstSliderJSON[];
+		bookmarks?: BookmarkJSON[];
 		bookmarksUseOfficialBpmEvents?: boolean;
 		time?: number;
 	};
@@ -383,21 +383,21 @@ export type ObjectDirections = "Up" | "Down" | "Left" | "Right" | "Up Left" | "U
 export type ObjectColors = "Left" | "Right";
 
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
-export type NoteType = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
-export type BombType = { b: number; x: number; y: number; customData?: NoteCustomProps };
-export type ObstacleType = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
-export type BurstSliderType = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
-export type SliderType = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
+export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
+export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
+export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+export type BurstSliderJSON = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
+export type SliderJSON = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
-export type LightEventType = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
-export type BookmarkType = { b: number; n: string; c: Vec4 };
+export type LightEventJSON = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
 export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed" | "BillieLeft" | "BillieRight";
 export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
 
 // CE props
 
-export type CustomEventType = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
+export type CustomEventJSON = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
 
 export type PathAnimAllProps = {
 	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;

@@ -1,12 +1,12 @@
 import { jsonPrune, copy } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { CustomEventType, CustomEventNames, TrackAnimAllProps, TrackAnimProps, PathAnimAllProps, PathAnimProps, TrackParentProps, PlayerObjectControllers, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
+import { CustomEventJSON, CustomEventNames, TrackAnimAllProps, TrackAnimProps, PathAnimAllProps, PathAnimProps, TrackParentProps, PlayerObjectControllers, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
 
 /**
  * Convert custom event json into respective class.
  * @param x Input Json.
  */
-export function JSONToCE(x: CustomEventType) {
+export function JSONToCE(x: CustomEventJSON) {
 	if (x.t == "AnimateComponent") {
 		return new AnimateComponent().JSONToClass(x);
 	} else if (x.t == "AssignPathAnimation") {
@@ -90,12 +90,13 @@ export class AnimateTrack {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out = {
 			b: temp.b,
 			t: temp.t,
 			d: temp.d
 		};
+		jsonPrune(out);
+		return out;
 	}
 	/**
 	 * Push the animation to the current difficulty.
@@ -108,7 +109,7 @@ export class AnimateTrack {
 	 * Convert raw custom event json into a track animation.
 	 * @param x Input Json.
 	 */
-	JSONToClass(x: CustomEventType) {
+	JSONToClass(x: CustomEventJSON) {
 		if (x.t == "AnimateTrack") {
 			this.d = x.d as TrackAnimAllProps;
 			this.b = x.b;
@@ -166,12 +167,13 @@ export class AssignPathAnimation {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out = {
 			b: temp.b,
 			t: temp.t,
 			d: temp.d
 		};
+		jsonPrune(out);
+		return out;
 	}
 	/**
 	 * Push the animation to the current difficulty.
@@ -184,7 +186,7 @@ export class AssignPathAnimation {
 	 * Converts raw custom event json into a path animation.
 	 * @param x Input Json.
 	 */
-	JSONToClass(x: CustomEventType) {
+	JSONToClass(x: CustomEventJSON) {
 		if (x.t == "AssignPathAnimation") {
 			this.d = x.d as PathAnimAllProps;
 			this.b = x.b;
@@ -246,12 +248,13 @@ export class AssignTrackParent {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out = {
 			b: temp.b,
 			t: temp.t,
 			d: temp.d
 		};
+		jsonPrune(out);
+		return out;
 	}
 	/**
 	 * Push the assignment to the current difficulty.
@@ -264,7 +267,7 @@ export class AssignTrackParent {
 	 * Convert raw custom event json into a parent track.
 	 * @param x Input Json.
 	 */
-	JSONToClass(x: CustomEventType) {
+	JSONToClass(x: CustomEventJSON) {
 		if (x.t == "AssignTrackParent") {
 			this.d = x.d as TrackParentProps;
 			this.b = x.b;
@@ -317,12 +320,13 @@ export class AssignPlayerToTrack {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out = {
 			b: temp.b,
 			t: temp.t,
 			d: temp.d
 		};
+		jsonPrune(out);
+		return out;
 	}
 	/**
 	 * Push track assignment to current difficulty.
@@ -335,7 +339,7 @@ export class AssignPlayerToTrack {
 	 * Convert custom event json into player track assignment.
 	 * @param x Input Json.
 	 */
-	JSONToClass(x: CustomEventType) {
+	JSONToClass(x: CustomEventJSON) {
 		if (x.t == "AssignPlayerToTrack") {
 			this.d = x.d as PlayerToTrackProps;
 			this.b = x.b;
@@ -406,12 +410,13 @@ export class AnimateComponent {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return {
+		const out = {
 			b: temp.b,
 			t: temp.t,
 			d: temp.d
 		};
+		jsonPrune(out);
+		return out;
 	}
 	/**
 	 * Push the animation to the current difficulty.
@@ -424,7 +429,7 @@ export class AnimateComponent {
 	 * Convert custom event json into a component animation.
 	 * @param x Input Json.
 	 */
-	JSONToClass(x: CustomEventType) {
+	JSONToClass(x: CustomEventJSON) {
 		if (x.t == "AnimateComponent") {
 			this.d = x.d as ComponentAnimProps;
 			this.b = x.b;

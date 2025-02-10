@@ -1,7 +1,7 @@
 import { Environment } from "./Environment.ts";
 import { copy, LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { LightEventType } from "./Types.ts";
+import { LightEventJSON } from "./Types.ts";
 
 export type USESettings = {
 	name?: string;
@@ -12,7 +12,7 @@ export type USESettings = {
 	features?: {
 		forceEffectsFilter?: "AllEffects" | "StrobeFilter" | "NoEffects";
 		useChromaEvents?: boolean;
-		basicBeatMapEvents?: LightEventType[];
+		basicBeatMapEvents?: LightEventJSON[];
 	};
 };
 
