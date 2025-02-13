@@ -757,7 +757,6 @@ class Info {
 		return v2;
 	}
 
-	private V4Raw: V4InfoJSON = copy(LM_CONST.V4_INFO_FALLBACK);
 	private infoVersion: number = 0;
 	raw: V2InfoJSON = copy(LM_CONST.V2_INFO_FALLBACK);
 	/**
@@ -777,8 +776,7 @@ class Info {
 		if (inputRaw.version) {
 			if (/4\.\d\.\d/.test(inputRaw.version)) {
 				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning");
-				inputRaw = Info.v4ToV2(inputRaw as V4InfoJSON);
-				this.V4Raw = inputRaw as V4InfoJSON;
+				this.raw = Info.v4ToV2(inputRaw as V4InfoJSON);
 				this.infoVersion = 4;
 			} else {
 				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error");
