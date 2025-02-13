@@ -11,7 +11,7 @@ import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
 import { currentDiff, start } from "./Map.ts";
 import { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
-import { Easing, LookupMethod, Vec2, Vec3, Vec4 } from "./Types.ts";
+import { Easing, LookupMethod, RGBAObject, Vec2, Vec3, Vec4 } from "./Types.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -479,6 +479,52 @@ export function rgb2hsv(color: Vec4) {
 	const h = delta === 0 ? 0 : max === color[0] ? (color[1] - color[2]) / delta + (color[1] < color[2] ? 6 : 0) : max === color[1] ? (color[2] - color[0]) / delta + 2 : (color[0] - color[1]) / delta + 4;
 	const s = max === 0 ? 0 : delta / max;
 	return [h / 6, s, max, color[3]] as Vec4;
+}
+
+const HEX_MAP = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+
+/**
+ * Convert linear (0-1) rgb into its corresponding hex value. Since linear rgb is continuous and hex codes are discreet, some rounding errors may occur.
+ * @param color The color to convert.
+ * @returns Hex string.
+ */
+export function rgba2Hex(color: Vec4) {
+	color = color.map(x => Math.round(clamp(x, [0, 1]) * 255)) as Vec4;
+	const digits: string[] = [];
+	color.forEach(x => {
+		digits.push(HEX_MAP[Math.floor(x / 16)]);
+		digits.push(HEX_MAP[x % 16]);
+	});
+	return digits.join("");
+}
+
+/**
+ * Convert a valid hex code to linear rgba (0-1).
+ * @param hex The hex code.
+ */
+export function hex2Rgba(hex: string): Vec4 {
+	if (hex.length !== 8 || !/[0-9A-F]/.test(hex)) {
+		return [0, 0, 0, 0];
+	} else {
+		const digits = new Array(8).fill("").map((_, i) => HEX_MAP.indexOf(hex[i]));
+		const rgb = new Array(4).fill(0).map((_, i) => digits[i * 2] * 16 + digits[i * 2 + 1]);
+		return rgb.map(x => x / 255) as Vec4;
+	}
+}
+
+/**
+ * Convert vector RGBA to an object with named keys.
+ * @param color The Vec4 color.
+ */
+export function rgba2Obj(color: Vec4): RGBAObject {
+	return { r: color[0], g: color[1], b: color[2], a: color[3] };
+}
+
+/**
+ * Convert parametric RGBA object into vector form.
+ */
+export function objToRGBA(obj: RGBAObject): Vec4 {
+	return [obj.r, obj.g, obj.b, obj.a];
 }
 
 /**

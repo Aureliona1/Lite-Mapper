@@ -1,4 +1,4 @@
-import { ObjectColorsMap, ObjectDirectionsMap } from "./Consts.ts";
+import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Types.ts";
@@ -127,8 +127,8 @@ export class Note {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: ObjectColorsMap.get(temp.type),
-			d: ObjectDirectionsMap.get(temp.direction),
+			c: LM_CONST.ObjectColorsMap.get(temp.type),
+			d: LM_CONST.ObjectDirectionsMap.get(temp.direction),
 			a: temp.angleOffset,
 			customData: temp.customData
 		};
@@ -139,8 +139,8 @@ export class Note {
 		this.time = x.b;
 		this.x = x.x ?? 0;
 		this.y = x.y ?? 0;
-		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		this.direction = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
 		this.angleOffset = x.a;
 		if (x.customData) {
 			this.customData = x.customData;
@@ -552,15 +552,15 @@ export class Arc {
 		const temp = dupe ? copy(this) : this;
 		const out: SliderJSON = {
 			b: temp.time,
-			c: ObjectColorsMap.get(temp.type),
+			c: LM_CONST.ObjectColorsMap.get(temp.type),
 			x: temp.x,
 			y: temp.y,
-			d: ObjectDirectionsMap.get(temp.headDirection),
+			d: LM_CONST.ObjectDirectionsMap.get(temp.headDirection),
 			mu: temp.headMultiplier,
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
-			tc: ObjectDirectionsMap.get(temp.tailDirection),
+			tc: LM_CONST.ObjectDirectionsMap.get(temp.tailDirection),
 			tmu: temp.tailMultiplier,
 			m: temp.anchorMode,
 			customData: temp.customData
@@ -570,15 +570,15 @@ export class Arc {
 	}
 	JSONToClass(x: SliderJSON) {
 		this.time = x.b;
-		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
 		this.x = x.x ?? 0;
 		this.y = x.y ?? 0;
-		this.headDirection = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		this.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
 		this.headMultiplier = x.mu ?? 0;
 		this.tailBeat = x.tb ?? 0;
 		this.tx = x.tx ?? 0;
 		this.ty = x.ty ?? 0;
-		this.tailDirection = ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
+		this.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
 		this.tailMultiplier = x.tmu ?? 0;
 		this.anchorMode = x.m ?? 0;
 		if (x.customData) {
@@ -712,8 +712,8 @@ export class Chain {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: ObjectColorsMap.get(temp.type),
-			d: ObjectDirectionsMap.get(temp.direction),
+			c: LM_CONST.ObjectColorsMap.get(temp.type),
+			d: LM_CONST.ObjectDirectionsMap.get(temp.direction),
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
@@ -728,8 +728,8 @@ export class Chain {
 		this.time = x.b;
 		this.x = x.x ?? 0;
 		this.y = x.y ?? 0;
-		this.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		this.direction = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		this.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
 		this.tailBeat = x.tb ?? 0;
 		this.tx = x.tx ?? 0;
 		this.ty = x.ty ?? 0;

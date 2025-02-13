@@ -1,10 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
+import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
-import { copy, copyToDir, decimals, jsonPrune, LMCache, LMLog, universalComparison } from "./Functions.ts";
+import { copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj, universalComparison } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
-import { Bomb, Chain, Note, Wall, Arc, Bookmark } from "./Objects.ts";
+import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
-import { V3MapJSON, ClassMap, DiffNames, HeckSettings, InfoJSON } from "./Types.ts";
+import { ClassMap, DiffNames, HeckSettings, V2InfoBeatmap, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -687,56 +688,123 @@ export class BeatMap {
 }
 
 class Info {
-	raw: InfoJSON;
+	static v4ToV2(v4: V4InfoJSON): V2InfoJSON {
+		const v2: V2InfoJSON = copy(LM_CONST.V2_INFO_FALLBACK);
+		v2._songName = v4.song.title;
+		v2._songSubName = v4.song.subTitle;
+		v2._songAuthorName = v4.song.author;
+		v2._beatsPerMinute = v4.audio.bpm;
+		v2._previewDuration = v4.audio.previewDuration;
+		v2._previewStartTime = v4.audio.previewStartTime;
+		v2._songFilename = v4.audio.audioDataFilename;
+		v2._coverImageFilename = v4.coverImageFilename;
+		v2._environmentName = v4.environmentNames[0];
+		v2._environmentNames = copy(v4.environmentNames);
+		v2._colorSchemes = v4.colorSchemes.map(x => {
+			return {
+				useOverride: x.useOverride,
+				colorScheme: {
+					colorSchemeId: x.colorSchemeName,
+					saberAColor: rgba2Obj(hex2Rgba(x.saberAColor)),
+					saberBColor: rgba2Obj(hex2Rgba(x.saberBColor)),
+					obstaclesColor: rgba2Obj(hex2Rgba(x.obstaclesColor)),
+					environmentColor0: rgba2Obj(hex2Rgba(x.environmentColor0)),
+					environmentColor1: rgba2Obj(hex2Rgba(x.environmentColor1)),
+					environmentColor0Boost: rgba2Obj(hex2Rgba(x.environmentColor0Boost)),
+					environmentColor1Boost: rgba2Obj(hex2Rgba(x.environmentColor1Boost))
+				}
+			};
+		});
+		if (v4.customData) {
+			v2._customData = copy(v4.customData);
+		}
+
+		// Get authors from beatmaps
+		const authors: string[] = [];
+
+		// Add beatmaps
+		v4.difficultyBeatmaps.forEach(bm => {
+			authors.push(...bm.beatmapAuthors.lighters, ...bm.beatmapAuthors.mappers);
+			const translatedDiff: V2InfoBeatmap = {
+				_difficulty: bm.difficulty,
+				_difficultyRank: LM_CONST.difficultyRankMap.get(bm.difficulty),
+				_beatmapFilename: bm.beatmapDataFilename,
+				_noteJumpMovementSpeed: bm.noteJumpMovementSpeed,
+				_noteJumpStartBeatOffset: bm.noteJumpStartBeatOffset,
+				_environmentNameIdx: bm.environmentNameIdx
+			};
+			if (bm.beatmapColorSchemeIdx) {
+				translatedDiff._beatmapColorSchemeIdx = bm.beatmapColorSchemeIdx;
+			}
+			if (bm.customData) {
+				translatedDiff._customData = bm.customData;
+			}
+			// Check if we already have this characteristic
+			let i = 0;
+			for (; i < v2._difficultyBeatmapSets.length && bm.characteristic !== v2._difficultyBeatmapSets[i]._beatmapCharacteristicName; i++);
+			if (v2._difficultyBeatmapSets[i]._beatmapCharacteristicName !== bm.characteristic) {
+				// Add it if we don't
+				v2._difficultyBeatmapSets.push({ _beatmapCharacteristicName: bm.characteristic, _difficultyBeatmaps: [translatedDiff] });
+			} else {
+				// Add to the char if we do
+				v2._difficultyBeatmapSets[i]._difficultyBeatmaps.push(translatedDiff);
+			}
+		});
+
+		// Add the authors
+		v2._levelAuthorName = [...new Set(authors)].join(", ");
+
+		return v2;
+	}
+
+	private V4Raw: V4InfoJSON = copy(LM_CONST.V4_INFO_FALLBACK);
+	private infoVersion: number = 0;
+	raw: V2InfoJSON = copy(LM_CONST.V2_INFO_FALLBACK);
 	/**
 	 * Initialise the info file reader.
 	 */
 	constructor() {
+		let inputRaw: Record<string, any>;
 		try {
-			this.raw = JSON.parse(Deno.readTextFileSync("info.dat"));
+			inputRaw = JSON.parse(Deno.readTextFileSync("info.dat"));
 		} catch (e) {
 			LMLog("Error reading info file:\n" + e, "Error");
 			LMLog("Writing temporary fallback info file...");
-			this.raw = {
-				_version: "2.0.0",
-				_songName: "",
-				_songSubName: "",
-				_songAuthorName: "",
-				_levelAuthorName: "",
-				_beatsPerMinute: 100,
-				_shuffle: 0,
-				_shufflePeriod: 0.5,
-				_previewStartTime: 0,
-				_previewDuration: 10,
-				_songFilename: "song.ogg",
-				_coverImageFilename: "cover.jpg",
-				_environmentName: "DefaultEnvironment",
-				_allDirectionsEnvironmentName: "GlassDesertEnvironment",
-				_songTimeOffset: 0,
-				_difficultyBeatmapSets: [
-					{
-						_beatmapCharacteristicName: "Standard",
-						_difficultyBeatmaps: [
-							{
-								_difficulty: "Expert",
-								_difficultyRank: 7,
-								_beatmapFilename: "ExpertStandard.dat",
-								_noteJumpMovementSpeed: 16,
-								_noteJumpStartBeatOffset: 0
-							},
-							{
-								_difficulty: "ExpertPlus",
-								_difficultyRank: 9,
-								_beatmapFilename: "ExpertPlusStandard.dat",
-								_noteJumpMovementSpeed: 16,
-								_noteJumpStartBeatOffset: 0
-							}
-						]
-					}
-				]
-			};
+			inputRaw = copy(LM_CONST.V2_INFO_FALLBACK);
 			this.save();
 			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load in-game until you do this!\x1b[0m");
+		}
+		if (inputRaw.version) {
+			if (/4\.\d\.\d/.test(inputRaw.version)) {
+				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning");
+				inputRaw = Info.v4ToV2(inputRaw as V4InfoJSON);
+				this.V4Raw = inputRaw as V4InfoJSON;
+				this.infoVersion = 4;
+			} else {
+				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error");
+			}
+		} else if (inputRaw._version) {
+			if (/2\.\d\.\d/.test(inputRaw._version)) {
+				this.raw = inputRaw as V2InfoJSON;
+				this.infoVersion = 2;
+
+				// Make sure we are using the templated format
+				if (!this.raw._environmentNames) {
+					this.raw._environmentNames = [this.raw._environmentName];
+					this.raw._difficultyBeatmapSets.forEach(set => {
+						set._difficultyBeatmaps.forEach(bm => {
+							bm._environmentNameIdx = 0;
+						});
+					});
+				}
+
+				// Enforce newer version
+				this.raw._version = "2.1.0";
+			} else {
+				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error");
+			}
+		} else {
+			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error");
 		}
 	}
 	get isModified() {
@@ -756,6 +824,10 @@ class Info {
 				}
 			});
 		});
-		Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw, null, 4));
+		if (this.infoVersion == 2) {
+			if (this.isModified) {
+				Deno.writeTextFileSync("info.dat", JSON.stringify(this.raw, null, 4));
+			}
+		}
 	}
 }

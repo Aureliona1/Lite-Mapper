@@ -1,4 +1,4 @@
-import { GeometryMaterialJSON, LookupMethod, Vec3 } from "./Types.ts";
+import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V4InfoJSON, Vec3 } from "./Types.ts";
 
 export const ye = -69420;
 export const ye3: Vec3 = [ye, ye, ye];
@@ -116,9 +116,6 @@ export const ENV_PARAM = {
 
 class TwoWayMap<S extends string | number | symbol, T extends string | number | symbol> {
 	reverseMap: Record<T, S>;
-	/**
-	 * This is an internal class used by Lite-Mapper, most mapping cases will not require this class.
-	 */
 	constructor(private map: Record<S, T>) {
 		this.reverseMap = Object.fromEntries(Object.entries(map).map(x => [x[1], x[0]]));
 	}
@@ -130,59 +127,102 @@ class TwoWayMap<S extends string | number | symbol, T extends string | number | 
 	}
 }
 
-export const LightEventTypesMap = new TwoWayMap({
-	BackLasers: 0,
-	RingLights: 1,
-	LeftLasers: 2,
-	RightLasers: 3,
-	CenterLights: 4,
-	BoostColors: 5,
-	RingSpin: 8,
-	RingZoom: 9,
-	BillieLeft: 10,
-	BillieRight: 11,
-	LeftLaserSpeed: 12,
-	RightLaserSpeed: 13
-});
-
-export const LightEventValuesMap = new TwoWayMap({
-	Off: 0,
-	On: 1,
-	OnBlue: 1,
-	FlashBlue: 2,
-	FadeBlue: 3,
-	Transition: 4,
-	In: 4,
-	TransitionBlue: 4,
-	OnRed: 5,
-	FlashRed: 6,
-	FadeRed: 7,
-	TransitionRed: 8,
-	OnWhite: 9,
-	FlashWhite: 10,
-	FadeWhite: 11,
-	TransitionWhite: 12
-});
-
 /**
- * Internal map for mapping object directions to named directions. DO NOT EDIT!
+ * A collection of constants used internally by Lite-Mapper. Do not edit these as this will break Lite-Mapper's functionality.
  */
-export const ObjectDirectionsMap = new TwoWayMap({
-	Up: 0,
-	Down: 1,
-	Left: 2,
-	Right: 3,
-	"Up Left": 4,
-	"Up Right": 5,
-	"Down Left": 6,
-	"Down Right": 7,
-	Dot: 8
-});
-
-/**
- * Internal map for mapping numerical object colors to named colors.
- */
-export const ObjectColorsMap = new TwoWayMap({
-	Left: 0,
-	Right: 1
-});
+export const LM_CONST = {
+	V2_INFO_FALLBACK: {
+		_version: "2.1.0",
+		_songName: "",
+		_songSubName: "",
+		_songAuthorName: "",
+		_levelAuthorName: "",
+		_beatsPerMinute: 100,
+		_shuffle: 0,
+		_shufflePeriod: 0.5,
+		_previewStartTime: 0,
+		_previewDuration: 10,
+		_songFilename: "",
+		_coverImageFilename: "",
+		_environmentName: "DefaultEnvironment",
+		_allDirectionsEnvironmentName: "GlassDesertEnvironment",
+		_songTimeOffset: 0,
+		_difficultyBeatmapSets: []
+	} satisfies V2InfoJSON,
+	V4_INFO_FALLBACK: {
+		version: "4.0.0",
+		song: {
+			title: "",
+			author: "",
+			subTitle: ""
+		},
+		audio: {
+			songFilename: "",
+			songDuration: 0,
+			audioDataFilename: ".dat",
+			bpm: 0,
+			lufs: 0,
+			previewStartTime: 0,
+			previewDuration: 0
+		},
+		songPreviewFilename: "",
+		coverImageFilename: "",
+		environmentNames: [],
+		colorSchemes: [],
+		difficultyBeatmaps: []
+	} satisfies V4InfoJSON,
+	/**
+	 * Internal map for mapping numerical object colors to named colors.
+	 */
+	ObjectColorsMap: new TwoWayMap({
+		Left: 0,
+		Right: 1
+	}),
+	/**
+	 * Internal map for mapping object directions to named directions. DO NOT EDIT!
+	 */
+	ObjectDirectionsMap: new TwoWayMap({
+		Up: 0,
+		Down: 1,
+		Left: 2,
+		Right: 3,
+		"Up Left": 4,
+		"Up Right": 5,
+		"Down Left": 6,
+		"Down Right": 7,
+		Dot: 8
+	}),
+	LightEventValuesMap: new TwoWayMap({
+		Off: 0,
+		On: 1,
+		OnBlue: 1,
+		FlashBlue: 2,
+		FadeBlue: 3,
+		Transition: 4,
+		In: 4,
+		TransitionBlue: 4,
+		OnRed: 5,
+		FlashRed: 6,
+		FadeRed: 7,
+		TransitionRed: 8,
+		OnWhite: 9,
+		FlashWhite: 10,
+		FadeWhite: 11,
+		TransitionWhite: 12
+	}),
+	LightEventTypesMap: new TwoWayMap({
+		BackLasers: 0,
+		RingLights: 1,
+		LeftLasers: 2,
+		RightLasers: 3,
+		CenterLights: 4,
+		BoostColors: 5,
+		RingSpin: 8,
+		RingZoom: 9,
+		BillieLeft: 10,
+		BillieRight: 11,
+		LeftLaserSpeed: 12,
+		RightLaserSpeed: 13
+	}),
+	difficultyRankMap: new TwoWayMap({ Easy: 1, Normal: 3, Hard: 5, Expert: 7, ExpertPlus: 9 })
+};

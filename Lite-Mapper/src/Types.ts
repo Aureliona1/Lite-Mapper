@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { LightEventTypesMap, LightEventValuesMap, ObjectColorsMap, ObjectDirectionsMap } from "./Consts.ts";
+import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
@@ -11,12 +11,42 @@ export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`
 export type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
 export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
-type FilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
-type RGBAObject = { r: number; b: number; g: number; a: number };
-type fxEvent = { b: number; p: number; i: number; v: number };
+export type BeatmapFilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
+export type RGBAObject = { r: number; b: number; g: number; a: number };
+export type BeatmapfxEvent = { b: number; p: number; i: number; v: number };
 
-export type InfoJSON = {
-	_version: "2.1.0" | "2.0.0";
+export type V2ColorScheme = {
+	useOverride: boolean;
+	colorScheme: {
+		colorSchemeId: string;
+		saberAColor: RGBAObject;
+		saberBColor: RGBAObject;
+		obstaclesColor: RGBAObject;
+		environmentColor0: RGBAObject;
+		environmentColor1: RGBAObject;
+		environmentColor0Boost: RGBAObject;
+		environmentColor1Boost: RGBAObject;
+	};
+};
+
+export type V2InfoBeatmap = {
+	_difficulty: BeatMapDifficultyNames;
+	_difficultyRank: number;
+	_beatmapFilename: DatFilename;
+	_noteJumpMovementSpeed: number;
+	_noteJumpStartBeatOffset: number;
+	_beatmapColorSchemeIdx?: number;
+	_environmentNameIdx?: number;
+	_customData?: Record<string, any>;
+};
+
+export type V2InfoBeatmapSet = {
+	_beatmapCharacteristicName: BeatMapCharacteristicNames;
+	_difficultyBeatmaps: V2InfoBeatmap[];
+};
+
+export type V2InfoJSON = {
+	_version: "2.1.0";
 	_songName: string;
 	_songSubName: string;
 	_songAuthorName: string;
@@ -28,37 +58,76 @@ export type InfoJSON = {
 	_previewDuration: number;
 	_songFilename: string;
 	_coverImageFilename: string;
-	_environmentName: EnvironmentNames;
+	_environmentName: EnvironmentName;
 	_allDirectionsEnvironmentName: string;
 	_songTimeOffset: number;
-	_environmentNames?: [];
-	_colorSchemes?: {
-		useOverride: boolean;
-		colorScheme: {
-			colorSchemeId: string;
-			saberAColor: RGBAObject;
-			saberBColor: RGBAObject;
-			obstaclesColor: RGBAObject;
-			environmentColor0: RGBAObject;
-			environmentColor1: RGBAObject;
-			environmentColor0Boost: RGBAObject;
-			environmentColor1Boost: RGBAObject;
-		};
-	}[];
+	_environmentNames?: EnvironmentName[];
+	_colorSchemes?: V2ColorScheme[];
 	_customData?: Record<string, any>;
-	_difficultyBeatmapSets: {
-		_beatmapCharacteristicName: BeatMapCharacteristicNames;
-		_difficultyBeatmaps: {
-			_difficulty: BeatMapDifficultyNames;
-			_difficultyRank: number;
-			_beatmapFilename: string;
-			_noteJumpMovementSpeed: number;
-			_noteJumpStartBeatOffset: number;
-			_beatmapColorSchemeIdx?: number;
-			_environmentNameIdx?: number;
-			_customData?: Record<string, any>;
-		}[];
-	}[];
+	_difficultyBeatmapSets: V2InfoBeatmapSet[];
+};
+
+export type V4SongInfo = {
+	title: string;
+	subTitle: string;
+	author: string;
+};
+
+export type V4AudioInfo = {
+	songFilename: string;
+	songDuration?: number;
+	audioDataFilename: DatFilename;
+	bpm: number;
+	lufs: number;
+	previewStartTime: number;
+	previewDuration: number;
+};
+
+export type V4InfoColorScheme = {
+	useOverride: boolean;
+	colorSchemeName: string;
+	saberAColor: string;
+	saberBColor: string;
+	obstaclesColor: string;
+	environmentColor0: string;
+	environmentColor1: string;
+	environmentColor0Boost: string;
+	environmentColor1Boost: string;
+};
+
+export type V4InfoBeatmap = {
+	characteristic: BeatMapCharacteristicNames;
+	difficulty: BeatMapDifficultyNames;
+	beatmapAuthors: {
+		mappers: string[];
+		lighters: string[];
+	};
+	environmentNameIdx: number;
+	beatmapColorSchemeIdx?: number;
+	noteJumpMovementSpeed: number;
+	noteJumpStartBeatOffset: number;
+	beatmapDataFilename: DatFilename;
+	lightshowDataFilename: DatFilename;
+	customData?: Record<string, any>;
+};
+
+export type V4InfoJSON = {
+	version: "4.0.0";
+	song: V4SongInfo;
+	audio: V4AudioInfo;
+	songPreviewFilename: string;
+	coverImageFilename: string;
+	environmentNames: EnvironmentName[];
+	colorSchemes: V4InfoColorScheme[];
+	difficultyBeatmaps: V4InfoBeatmap[];
+	customData?: Record<string, any>;
+};
+
+export type V2AudioDataJSON = {
+	_version: "2.0.0";
+	_songSampleCount: number;
+	_songFrequency: number;
+	_regions: { _startSampleIndex: number; _endSampleIndex: number; _startBeat: number; _endBeat: number }[];
 };
 
 export type V2MapJSON = {
@@ -117,16 +186,16 @@ export type V3MapJSON = {
 	waypoints: { b: number; x: number; y: number; d: number }[];
 	basicBeatmapEvents: LightEventJSON[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
-	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
-	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
-	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
+	lightColorEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
+	lightRotationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
+	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: {
 		b: number;
 		g: number;
 		e: {
-			f: FilterObject;
+			f: BeatmapFilterObject;
 			w: number;
 			d: number;
 			s: number;
@@ -137,8 +206,8 @@ export type V3MapJSON = {
 		}[];
 	}[];
 	_fxEventsCollection: {
-		_fl: fxEvent[];
-		_il: fxEvent[];
+		_fl: BeatmapfxEvent[];
+		_il: BeatmapfxEvent[];
 	};
 	customData?: {
 		customEvents?: CustomEventJSON[];
@@ -166,16 +235,16 @@ export type ClassMap = {
 	waypoints: unknown[];
 	basicBeatmapEvents: LightEvent[];
 	colorBoostBeatmapEvents: { b: number; o: boolean }[];
-	lightColorEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
-	lightRotationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
-	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: FilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
+	lightColorEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
+	lightRotationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
+	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: {
 		b: number;
 		g: number;
 		e: {
-			f: FilterObject;
+			f: BeatmapFilterObject;
 			w: number;
 			d: number;
 			s: number;
@@ -186,8 +255,8 @@ export type ClassMap = {
 		}[];
 	}[];
 	_fxEventsCollection: {
-		_fl: fxEvent[];
-		_il: fxEvent[];
+		_fl: BeatmapfxEvent[];
+		_il: BeatmapfxEvent[];
 	};
 	customData?: {
 		customEvents?: Array<AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent>;
@@ -203,7 +272,7 @@ export type ClassMap = {
 	};
 };
 
-export type EnvironmentNames =
+export type EnvironmentName =
 	| "BTSEnvironment"
 	| "BigMirrorEnvironment"
 	| "BillieEnvironment"
@@ -382,8 +451,8 @@ export type SliderCustomProps = {
 
 export type ObjectDirections = "Up" | "Down" | "Left" | "Right" | "Up Left" | "Up Right" | "Down Left" | "Down Right" | "Dot";
 export type ObjectColors = "Left" | "Right";
-export type ObjectDirectionsNumericalValues = keyof typeof ObjectDirectionsMap.reverseMap;
-export type ObjectColorsNumericalValues = keyof typeof ObjectColorsMap.reverseMap;
+export type ObjectDirectionsNumericalValues = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
+export type ObjectColorsNumericalValues = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
 
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
@@ -397,8 +466,8 @@ export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
 export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed" | "BillieLeft" | "BillieRight";
 export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
-export type LightTypesNumericalValues = keyof typeof LightEventTypesMap.reverseMap;
-export type LightValueNumericalValues = keyof typeof LightEventValuesMap.reverseMap;
+export type LightTypesNumericalValues = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
+export type LightValueNumericalValues = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
 
 // CE props
 
@@ -570,6 +639,8 @@ export type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "E
 
 export type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
 
-// Function and class prop types
+// Helper types
 
 export type NumberArrLike = Uint16Array | Uint32Array | Uint8Array | Int16Array | Int32Array | Int8Array | Float16Array | Float32Array | Float64Array | Array<number>;
+
+export type DatFilename = `${string}.dat`;

@@ -1,4 +1,4 @@
-import { LightEventTypesMap, LightEventValuesMap } from "./Consts.ts";
+import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import { Easing, LightEventCustomData, LightEventJSON, LightEventTypes, LightEventValues, LightKeyframeFrameType, LightTypesNumericalValues, LightValueNumericalValues, Vec3, Vec4 } from "./Types.ts";
@@ -97,8 +97,8 @@ export class LightEvent {
 		const temp = dupe ? copy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
-			et: LightEventTypesMap.get(temp.type),
-			i: LightEventValuesMap.get(temp.value),
+			et: LM_CONST.LightEventTypesMap.get(temp.type),
+			i: LM_CONST.LightEventValuesMap.get(temp.value),
 			f: temp.floatValue,
 			customData: temp.customData
 		};
@@ -107,8 +107,8 @@ export class LightEvent {
 	}
 	JSONToClass(x: LightEventJSON) {
 		this.time = x.b;
-		this.type = LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
-		this.value = LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
+		this.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
+		this.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
 		if (x.customData) {
 			this.customData = x.customData;
 		}
