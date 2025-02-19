@@ -17,7 +17,7 @@ export class ArrOp<T extends NumberArrLike> {
 	}
 
 	/**
-	 * Subtract the entries of an array from a base array. Or subtract a single number form the base array.
+	 * Subtract the entries of an array from a base array. Or subtract a single number from the base array.
 	 * @param arr1 The base array.
 	 * @param arr2 The array or number to subtract from the base array.
 	 */
