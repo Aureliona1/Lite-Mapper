@@ -1,6 +1,12 @@
 import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V4InfoJSON, Vec3 } from "./Types.ts";
 
+/**
+ * Constant value to send objects to so that they are out of view of the player.
+ */
 export const ye = -69420;
+/**
+ * Vec3 position to send objects to so that they are out of view of the player.
+ */
 export const ye3: Vec3 = [ye, ye, ye];
 
 /**

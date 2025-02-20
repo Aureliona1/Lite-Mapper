@@ -375,22 +375,41 @@ class staticFog {
 		this.fog.components.fog ??= {};
 		this.fog.components.fog = x;
 	}
+	/**
+	 * Set the attenuation of the fog. This controls how "thick" the overall fog is.
+	 * @param x The attenuation value from -1 to 1 (negative values are not supported by quest).
+	 */
 	attenuation(x: number) {
 		this.components.attenuation = x;
 		return this;
 	}
+	/**
+	 * Set the height value of the fog. This controls how gradually objects fade to nothing as they approach teh fog Y level.
+	 * @param x The height of the fog (can be negative to create a fog "ceiling" rather than a "floor").
+	 */
 	height(x: number) {
 		this.components.height = x;
 		return this;
 	}
+	/**
+	 * The y value of the height fog. This controles the vertical position at which objects completely fade out.
+	 * @param x The Y value.
+	 */
 	startY(x: number) {
 		this.components.startY = x;
 		return this;
 	}
+	/**
+	 * The offset of the fog. This controls the distance from the camera at which objects begin to fade out. It acts as a hard clamp to attenuation, so objects that would normally be 0.5x opacity become fully solid when crossing the offset threshold.
+	 * @param x The offset value of the fog.
+	 */
 	offset(x: number) {
 		this.components.offset = x;
 		return this;
 	}
+	/**
+	 * Push the static fog to the active difficulty.
+	 */
 	push() {
 		this.fog.push();
 	}
@@ -452,6 +471,9 @@ class AnimatedFog {
 }
 
 export class Fog {
+	/**
+	 * Set up fog to be set statically.
+	 */
 	static() {
 		return new staticFog();
 	}
@@ -460,6 +482,12 @@ export class Fog {
 		fog.track = track;
 		fog.push();
 	}
+	/**
+	 * Create an animateable fog using a track and a component animation.
+	 * @param track The name of the fog track.
+	 * @param time The time of the animation.
+	 * @param duration The duration of the animation.
+	 */
 	animated(track = "fog", time = 0, duration = 1) {
 		this.assignFogTrack(track);
 		return new AnimatedFog(track, time, duration);

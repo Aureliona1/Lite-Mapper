@@ -9,7 +9,7 @@ import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrac
 import * as ease from "./Easings.ts";
 import { Environment } from "./Environment.ts";
 import { LightEvent } from "./Lights.ts";
-import { currentDiff, start } from "./Map.ts";
+import { currentDiff, lMInitTime } from "./Map.ts";
 import { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
 import { Easing, LookupMethod, RGBAObject, Vec2, Vec3, Vec4 } from "./Types.ts";
 
@@ -272,7 +272,7 @@ export async function copyToDir(toDir: string, extraFiles?: string[]) {
  * Calculates the time in ms from map init.
  */
 export function runTime() {
-	return Date.now() - start;
+	return Date.now() - lMInitTime;
 }
 
 /**

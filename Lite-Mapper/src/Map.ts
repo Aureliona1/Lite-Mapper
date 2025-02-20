@@ -10,7 +10,7 @@ import { ClassMap, DiffNames, HeckSettings, V2InfoBeatmap, V2InfoJSON, V3MapJSON
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
-	start = 0;
+	lMInitTime = 0;
 
 export class BeatMapParser {
 	/**
@@ -281,7 +281,7 @@ export class BeatMap {
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
-		start = Date.now();
+		lMInitTime = Date.now();
 		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 
 		this.internalMap = BeatMapParser.classify(rawMap);
