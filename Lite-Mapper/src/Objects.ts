@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Vec2, ObjectColors, ObjectDirections, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorsNumericalValues, ObjectDirectionsNumericalValues } from "./Types.ts";
+import { Vec2, ObjectColorNames, ObjectDirectionNames, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorNumbers, ObjectDirectionNumbers } from "./Types.ts";
 
 export class Note {
 	/**
@@ -22,7 +22,7 @@ export class Note {
 	 * @param direction (string) The cut direction of the note (Default - "Dot").
 	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public direction: ObjectDirections = "Dot", public angleOffset = 0) {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorNames = "Left", public direction: ObjectDirectionNames = "Dot", public angleOffset = 0) {}
 	customData: NoteCustomProps = {};
 
 	get offset() {
@@ -144,8 +144,8 @@ export class Note {
 		const n = new Note(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumbers);
+		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumbers);
 		n.angleOffset = x.a;
 		if (x.customData) {
 			n.customData = x.customData;
@@ -460,7 +460,7 @@ export class Arc {
 	 * @param tailPos The final position of the arc (Default - [0, 0]).
 	 * @param tailDirection The direction of the end of the arc (Default - "Down").
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public headDirection: ObjectDirections = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirections = "Down") {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorNames = "Left", public headDirection: ObjectDirectionNames = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirectionNames = "Down") {}
 	headMultiplier = 1;
 	tailMultiplier = 1;
 	anchorMode = 1;
@@ -587,15 +587,15 @@ export class Arc {
 	 */
 	static from(x: SliderJSON) {
 		const n = new Arc(x.b);
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumbers);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumbers);
 		n.headMultiplier = x.mu ?? 0;
 		n.tailBeat = x.tb ?? 0;
 		n.tx = x.tx ?? 0;
 		n.ty = x.ty ?? 0;
-		n.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
+		n.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionNumbers);
 		n.tailMultiplier = x.tmu ?? 0;
 		n.anchorMode = x.m ?? 0;
 		if (x.customData) {
@@ -623,7 +623,7 @@ export class Chain {
 	 * @param tailPos The [x, y] of the end of the chain (Default - [0, 0]).
 	 * @param segments The number of segments in the chain (Default - 5).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColors = "Left", public direction: ObjectDirections = "Down", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
+	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorNames = "Left", public direction: ObjectDirectionNames = "Down", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
 	squishFactor = 1;
 	customData: SliderCustomProps = {};
 
@@ -748,8 +748,8 @@ export class Chain {
 		const n = new Chain(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumbers);
+		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumbers);
 		n.tailBeat = x.tb ?? 0;
 		n.tx = x.tx ?? 0;
 		n.ty = x.ty ?? 0;

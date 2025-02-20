@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Easing, LightEventCustomData, LightEventJSON, LightEventTypes, LightEventValues, LightKeyframeFrameType, LightTypesNumericalValues, LightValueNumericalValues, Vec3, Vec4 } from "./Types.ts";
+import { Easing, LightEventCustomData, LightEventJSON, LightTypeNames, LightValueNames, LightKeyframeFrameType, LightTypeNumbers, LightValueNumbers, Vec3, Vec4 } from "./Types.ts";
 
 export class LightEvent {
 	/**
@@ -25,7 +25,7 @@ export class LightEvent {
 	 * @param customData Custom data to add to the event (you can do this later with methods like `.setColor()`).
 	 * @param floatValue This controls the brightness of the light, avoid using this, use alpha on color.
 	 */
-	constructor(public time = 0, public type: LightEventTypes = "BackLasers", public value: LightEventValues = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
+	constructor(public time = 0, public type: LightTypeNames = "BackLasers", public value: LightValueNames = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
 
 	set lightID(x) {
 		this.customData.lightID = x;
@@ -78,14 +78,14 @@ export class LightEvent {
 	/**
 	 * Set the lightType of the event.
 	 */
-	setType(type: LightEventTypes) {
+	setType(type: LightTypeNames) {
 		this.type = type;
 		return this;
 	}
 	/**
 	 * Set the value of the event.
 	 */
-	setValue(val: LightEventValues) {
+	setValue(val: LightValueNames) {
 		this.value = val;
 		return this;
 	}
@@ -112,8 +112,8 @@ export class LightEvent {
 	 */
 	static from(x: LightEventJSON) {
 		const e = new LightEvent(x.b);
-		e.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
-		e.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
+		e.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypeNumbers);
+		e.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumbers);
 		if (x.customData) {
 			e.customData = x.customData;
 		}
@@ -142,7 +142,7 @@ export class lightGradient {
 	 */
 	constructor(public time = 0, public duration = 1, public colors: (Vec3 | Vec4)[]) {}
 
-	private lightType: LightEventTypes = "BackLasers";
+	private lightType: LightTypeNames = "BackLasers";
 	private lightID?: number | number[];
 	private lerpType?: "HSV" | "RGB";
 	private ease?: Easing;
@@ -151,7 +151,7 @@ export class lightGradient {
 	 * Set the lightType
 	 * @param type The lightType to run the event on.
 	 */
-	type(type: LightEventTypes) {
+	type(type: LightTypeNames) {
 		this.lightType = type;
 		return this;
 	}
@@ -217,7 +217,7 @@ export class lightGradient {
  * @param ids Specific ids to target.
  * @param ease Whether to use an easing on the strobe. Any special easings like bounce, elastic, etc... will yield very weird results.
  */
-export function strobeGenerator(time: number, duration: number, density = 1, type: LightEventTypes, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
+export function strobeGenerator(time: number, duration: number, density = 1, type: LightTypeNames, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
 	repeat(duration * density, i => {
 		let t = 0;
 		if (ease) {
@@ -255,7 +255,7 @@ export class LightKeyframe {
 	 * @param type The light type to target.
 	 * @param ids The light id/s to target.
 	 */
-	constructor(public time = 0, public duration = 1, public type: LightEventTypes = "BackLasers", public ids?: number | number[]) {}
+	constructor(public time = 0, public duration = 1, public type: LightTypeNames = "BackLasers", public ids?: number | number[]) {}
 	private animation: LightKeyframeFrameType[] = [];
 	get keyframes() {
 		return this.animation.sort((a, b) => a[4] - b[4]);

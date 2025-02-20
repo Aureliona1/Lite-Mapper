@@ -114,16 +114,29 @@ export const ENV_PARAM = {
 	}
 };
 
-class TwoWayMap<S extends string | number | symbol, T extends string | number | symbol> {
-	reverseMap: Record<T, S>;
-	constructor(private map: Record<S, T>) {
+export class TwoWayMap<K extends string | number | symbol, V extends string | number | symbol> {
+	readonly reverseMap: Record<V, K>;
+	/**
+	 * A two-way map is a map that can be accessed by it's keys or by it's values. If a value is used as a key, it will return the corresponding key.
+	 * The two-way map cannot be modified, it is intended only for use with readonly maps.
+	 * @param map The initial map. If two keys have the same value, then each instance of the value will overwrite the reverse key.
+	 */
+	constructor(public readonly map: Record<K, V>) {
 		this.reverseMap = Object.fromEntries(Object.entries(map).map(x => [x[1], x[0]]));
 	}
-	get(key: S) {
+	/**
+	 * Get the value at a key in the map.
+	 * @param key The key to get.
+	 */
+	get(key: K) {
 		return this.map[key];
 	}
-	revGet(key: T) {
-		return this.reverseMap[key];
+	/**
+	 * Get the key corresponding to a value. If multiple keys have this value then the last one will be returned.
+	 * @param value The value to get the key of.
+	 */
+	revGet(value: V) {
+		return this.reverseMap[value];
 	}
 }
 
@@ -203,13 +216,13 @@ export const LM_CONST = {
 	 */
 	LightEventValuesMap: new TwoWayMap({
 		Off: 0,
-		On: 1,
 		OnBlue: 1,
+		On: 1,
 		FlashBlue: 2,
 		FadeBlue: 3,
 		Transition: 4,
-		In: 4,
 		TransitionBlue: 4,
+		In: 4,
 		OnRed: 5,
 		FlashRed: 6,
 		FadeRed: 7,

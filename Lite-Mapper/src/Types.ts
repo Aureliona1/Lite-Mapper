@@ -411,7 +411,7 @@ export type ObjectAnimProps = {
 };
 
 export type ComponentStaticProps = {
-	lightIds?: { id?: number; type?: LightEventTypes };
+	lightIds?: { id?: number; type?: LightTypeNames };
 	fog?: { attenuation?: number; offset?: number; startY?: number; height?: number };
 	lightBloom?: { colorMult?: number; bloomMult?: number };
 };
@@ -455,10 +455,10 @@ export type SliderCustomProps = {
 	track?: string | string[];
 };
 
-export type ObjectDirections = "Up" | "Down" | "Left" | "Right" | "Up Left" | "Up Right" | "Down Left" | "Down Right" | "Dot";
-export type ObjectColors = "Left" | "Right";
-export type ObjectDirectionsNumericalValues = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
-export type ObjectColorsNumericalValues = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
+export type ObjectColorNames = keyof typeof LM_CONST.ObjectColorsMap.map;
+export type ObjectColorNumbers = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
+export type ObjectDirectionNames = keyof typeof LM_CONST.ObjectDirectionsMap.map;
+export type ObjectDirectionNumbers = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
 
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
@@ -484,10 +484,10 @@ export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 |
 export type LightEventJSON = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
 export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
-export type LightEventTypes = "BackLasers" | "RingLights" | "LeftLasers" | "RightLasers" | "CenterLights" | "BoostColors" | "RingSpin" | "RingZoom" | "LeftLaserSpeed" | "RightLaserSpeed" | "BillieLeft" | "BillieRight";
-export type LightEventValues = "Off" | "OnBlue" | "FlashBlue" | "FadeBlue" | "Transition" | "In" | "TransitionBlue" | "On" | "OnRed" | "FlashRed" | "FadeRed" | "TransitionRed" | "OnWhite" | "FlashWhite" | "FadeWhite" | "TransitionWhite";
-export type LightTypesNumericalValues = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
-export type LightValueNumericalValues = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
+export type LightTypeNames = keyof typeof LM_CONST.LightEventTypesMap.map;
+export type LightValueNames = keyof typeof LM_CONST.LightEventValuesMap.map;
+export type LightTypeNumbers = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
+export type LightValueNumbers = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
 
 // CE props
 

@@ -16,7 +16,7 @@ import {
 	KeywordsInterscopeConcrete,
 	KeywordsStandard,
 	KeywordsWaterfallMirror,
-	LightTypesNumericalValues,
+	LightTypeNumbers,
 	LookupMethod,
 	MaterialShader,
 	Vec3,
@@ -128,7 +128,7 @@ export class Environment {
 			if (x.components.ILightWithId) {
 				e.components.lightIds = { id: x.components.ILightWithId.lightID };
 				if (x.components.ILightWithId.type) {
-					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypesNumericalValues);
+					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypeNumbers);
 				}
 			}
 			if (x.components.TubeBloomPrePassLight) {
