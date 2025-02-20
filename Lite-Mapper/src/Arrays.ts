@@ -165,42 +165,62 @@ export class ArrOp<T extends NumberArrLike> {
 
 	constructor(public arr: T) {}
 
+	/**
+	 * Get the element with the greatest numerical value.
+	 */
 	get max() {
 		return Math.max(...this.arr);
 	}
 
+	/**
+	 * Clamp the maximum value in the array to this value.
+	 */
 	set max(x) {
 		this.arr.forEach(a => {
 			a = a > x ? x : a;
 		});
 	}
 
+	/**
+	 * Clamp the minimum value in the array to this value.
+	 */
 	set min(x) {
 		this.arr.forEach(a => {
 			a = a < x ? x : a;
 		});
 	}
 
+	/**
+	 * Get the element in the array with the least numerical value.
+	 */
 	get min() {
 		return Math.min(...this.arr);
 	}
 
+	/**
+	 * Get the numerical distance between the least and greatest element in the array.
+	 */
 	get range() {
 		return this.max - this.min;
 	}
 
+	/**
+	 * Get the average (mean) of the values in the array.
+	 */
 	get mean() {
-		let out = 0;
-		repeat(this.arr.length, i => {
-			out += this.arr[i];
-		});
-		return out / this.arr.length;
+		return Array.from(this.arr).reduce((a, b) => a + b) / this.arr.length;
 	}
 
+	/**
+	 * Get the median value of the array.
+	 */
 	get median() {
 		return this.arr.toSorted((a, b) => a - b)[Math.floor(this.arr.length / 2)];
 	}
 
+	/**
+	 * Get the most common value (mode) of the array.
+	 */
 	get mode() {
 		const arr: NumberArrLike[] = [];
 		const set = [...new Set(this.arr)];
