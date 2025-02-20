@@ -27,7 +27,7 @@ To run Lite-Mapper, simply open the `run.bat` file and let it do its thing. `run
 For mac and ChromeBook users, `run.bat` probably won't work. In this case, open a new terminal (for VSCode, go `Terminal > New Terminal`), then type `deno run --allow-all script.ts`.
 
 Many of Lite-Mapper's features are made for the Heck mods for Beat Saber (Noodle Extensions and Chroma).
-For a better understanding of how properties and objects work, read the [Heck](https://github.com/Aeroluna/Heck/wiki) documentation.
+For a better understanding of how properties and objects work, read the [Heck](https://heck.aeroluna.dev/) documentation.
 
 ## Using Lite-Mapper
 
@@ -105,6 +105,12 @@ Ideally, you should create a single material for every object that has the same 
 
 To do this, you can either manually add the JSON to your map.
 Like so:
+
+```js
+new Material().BTSPillar().push("black");
+```
+
+Which is the same as.
 
 ```js
 map.materials["Mat"] = { shader: "BTSPillar" };
@@ -284,3 +290,65 @@ The `ENV_PARAM` constant has several preset ids and lookups for commonly used en
 ```js
 const env = new Environment().env(...ENV_PARAM.BTS.SOLID_LASER);
 ```
+
+### Optimizers
+
+Lite-Mapper has a few built-in functions for optimizing certain aspects of your map. These optimizers can have massive performance improvements for your map ingame. However, they can also affect the runtime of your map script.
+
+#### Material Optimizer
+
+By default, your materials will be optimized by Lite-Mapper, this means that names of materials will change slightly if optimizations can be made. To turn this off, simply change:
+
+```js
+map.optimize.materials = false;
+```
+
+#### Geo Track Stack
+
+A geometry track stack is an optimized way of creating and reusing geometry objects in your map. This is more of an advanced feature, however it can be very powerful for maps that would typically require a lot of geometry objects.
+
+To use a track stack, you must first initialize the stack.
+
+```js
+const stack = new GeoTrackStack(new Environment().geo("Cube", { shader: "BTSPillar" }), "cube");
+```
+
+This will create a stack that uses geometry cubes.
+
+Now, whenever you need some cubes, you can request a certain number of cubes for a certain amount of time and the stack will create the minimum possible amount of cubes.
+
+For example:
+
+```js
+stack.request(10, [0, 8]).forEach((track, i) => {
+	const anim = new AnimateTrack(track, 0, 8);
+	anim.animate.position = [0, 0, i];
+	anim.animate.rotation = [0, 0, i * 36];
+	anim.animate.scale = [1, 1, 1];
+	anim.push();
+});
+```
+
+This will create 10 cubes that will be used from beat 0 to beat 8. You can then animate the cubes that are available during this time. These 10 cubes can then be reused later when they are needed.
+
+For example:
+
+```js
+stack.request(15, [16, 32]).forEach((track, i) => {
+	const anim = new AnimateTrack(track, 16, 16);
+	anim.animate.position = [0, i, i];
+	anim.animate.rotation = [0, 0, 0];
+	anim.animate.scale = [1, 1, 1];
+	anim.push();
+});
+```
+
+This will now create an extra 5 cubes, and reuse the old 10 cubes from before. Keep in mind that rotation and scale need to be reset to `[0, 0, 0]` and `[1, 1, 1]` respectively as the cubes might have different rotations or scales from being used elsewhere.
+
+Finally, once you are done requesting cubes from the stack. You need to run.
+
+```js
+stack.push();
+```
+
+The `push()` method also has an option to merge all the animations from the requests that were made earlier. This will only work if the animations are either a set of keyframes (e.g., [[1,2,3,0],[4,5,6,1]]), or static vectors (e.g., [1,2,3]). This will not work if you used modifier animations.
