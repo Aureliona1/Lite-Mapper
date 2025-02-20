@@ -128,9 +128,12 @@ class TwoWayMap<S extends string | number | symbol, T extends string | number | 
 }
 
 /**
- * A collection of constants used internally by Lite-Mapper. Do not edit these as this will break Lite-Mapper's functionality.
+ * A collection of constants used internally by Lite-Mapper. Do not edit these as this will break Lite-Mapper's functionality, they are intended to remain constant.
  */
 export const LM_CONST = {
+	/**
+	 * Placeholder for valid V2 info JSON if certain values don't exist.
+	 */
 	V2_INFO_FALLBACK: {
 		_version: "2.1.0",
 		_songName: "",
@@ -149,6 +152,9 @@ export const LM_CONST = {
 		_songTimeOffset: 0,
 		_difficultyBeatmapSets: []
 	} satisfies V2InfoJSON,
+	/**
+	 * Placeholder for valid V4 info JSON if values don't exist.
+	 */
 	V4_INFO_FALLBACK: {
 		version: "4.0.0",
 		song: {
@@ -172,7 +178,7 @@ export const LM_CONST = {
 		difficultyBeatmaps: []
 	} satisfies V4InfoJSON,
 	/**
-	 * Internal map for mapping numerical object colors to named colors.
+	 * Internal map for mapping numerical object colors to named colors. DO NOT EDIT!
 	 */
 	ObjectColorsMap: new TwoWayMap({
 		Left: 0,
@@ -192,6 +198,9 @@ export const LM_CONST = {
 		"Down Right": 7,
 		Dot: 8
 	}),
+	/**
+	 * Internal map for mapping light event values to named values. DO NOT EDIT!
+	 */
 	LightEventValuesMap: new TwoWayMap({
 		Off: 0,
 		On: 1,
@@ -210,6 +219,9 @@ export const LM_CONST = {
 		FadeWhite: 11,
 		TransitionWhite: 12
 	}),
+	/**
+	 * Internal map for mapping light event types to named types. DO NOT EDIT!
+	 */
 	LightEventTypesMap: new TwoWayMap({
 		BackLasers: 0,
 		RingLights: 1,
@@ -224,5 +236,8 @@ export const LM_CONST = {
 		LeftLaserSpeed: 12,
 		RightLaserSpeed: 13
 	}),
+	/**
+	 * Internal map for applying difficulty rank numbers to rank names in V2 info files.
+	 */
 	difficultyRankMap: new TwoWayMap({ Easy: 1, Normal: 3, Hard: 5, Expert: 7, ExpertPlus: 9 })
 };

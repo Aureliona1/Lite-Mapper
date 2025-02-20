@@ -1,23 +1,26 @@
 import { ArrOp } from "./Arrays.ts";
+import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
 import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import {
-	LookupMethod,
-	GeometryObjectTypes,
-	GeometryMaterialJSON,
 	ComponentStaticProps,
-	Vec3,
+	EnvironmentJSON,
+	GeometryMaterialJSON,
 	GeometryObjectJSON,
-	Vec4,
-	MaterialShader,
+	GeometryObjectTypes,
 	KeywordsBTSPillar,
 	KeywordsBaseWater,
 	KeywordsBillieWater,
-	KeywordsStandard,
-	KeywordsInterscopeConcrete,
 	KeywordsInterscopeCar,
-	KeywordsWaterfallMirror
+	KeywordsInterscopeConcrete,
+	KeywordsStandard,
+	KeywordsWaterfallMirror,
+	LightTypesNumericalValues,
+	LookupMethod,
+	MaterialShader,
+	Vec3,
+	Vec4
 } from "./Types.ts";
 
 export class Environment {
@@ -63,18 +66,99 @@ export class Environment {
 		}
 		return this;
 	}
+	/**
+	 * The id that chroma will use to lookup your environment object from the environment log.
+	 */
 	id?: string;
+	/**
+	 * The lookup method that chroma will use to search for your environment object.
+	 */
 	lookupMethod?: LookupMethod;
+	/**
+	 * Whether the object should be loaded when the map is played. Setting this to false will prevent all child objects of the object from loading.
+	 */
 	active?: boolean;
-	duplicate?: number;
+	/**
+	 * Whether to duplicate the object. If this is set to true, any changes made will affect the copy of the object and ignore the original.
+	 */
+	duplicate?: boolean;
+	/**
+	 * Any component values or modifications on the object.
+	 */
 	components?: ComponentStaticProps;
+	/**
+	 * The relative scale of the object to it's original scale. This can be treated as absolute scale for geometry.
+	 */
 	scale?: Vec3;
+	/**
+	 * The absolute position of the origin of the object.
+	 */
 	position?: Vec3;
+	/**
+	 * Set the relative position of the object.
+	 */
 	localPosition?: Vec3;
+	/**
+	 * Set the rotation of the object.
+	 */
 	rotation?: Vec3;
+	/**
+	 * Set the relative rotation of the object.
+	 */
 	localRotation?: Vec3;
+	/**
+	 * Set a track (or tracks) on the object to be animated through custom events.
+	 */
 	track?: string | string[];
+	/**
+	 * Modify geometry properies on the object. This will override `id` and `lookupMethod`.
+	 */
 	geometry?: GeometryObjectJSON;
+
+	/**
+	 * Create an instance of an environment from valid environment JSON.
+	 * @param x The JSON.
+	 * @returns An environment (or geometry).
+	 */
+	static from(x: EnvironmentJSON) {
+		const e = new Environment();
+		e.active = x.active ?? e.active;
+		if (x.components) {
+			e.components = { fog: x.components.BloomFogEnvironment };
+			if (x.components.ILightWithId) {
+				e.components.lightIds = { id: x.components.ILightWithId.lightID };
+				if (x.components.ILightWithId.type) {
+					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypesNumericalValues);
+				}
+			}
+			if (x.components.TubeBloomPrePassLight) {
+				e.components.lightBloom = {
+					bloomMult: x.components.TubeBloomPrePassLight.bloomFogIntensityMultiplier,
+					colorMult: x.components.TubeBloomPrePassLight.colorAlphaMultiplier
+				};
+			}
+			jsonPrune(e.components);
+		}
+		if (x.duplicate !== undefined) {
+			e.duplicate = x.duplicate == 1 ? true : false;
+		}
+		e.geometry = x.geometry ?? e.geometry;
+		e.id = x.id ?? e.id;
+		e.localPosition = x.localPosition ?? e.localPosition;
+		e.localRotation = x.localRotation ?? e.localRotation;
+		e.lookupMethod = x.lookupMethod ?? e.lookupMethod;
+		e.position = x.position ?? e.position;
+		e.rotation = x.rotation ?? e.rotation;
+		e.scale = x.scale ?? e.scale;
+		if (x.track !== undefined) {
+			if (typeof x.track == "string") {
+				e.track = x.track;
+			} else {
+				e.track = [...x.track];
+			}
+		}
+		return e;
+	}
 
 	/**
 	 * Return your environment object as an object.
@@ -82,16 +166,43 @@ export class Environment {
 	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		return temp;
+		const out: EnvironmentJSON = {
+			active: temp.active,
+			duplicate: temp.duplicate == undefined ? undefined : temp.duplicate ? 1 : 0,
+			geometry: temp.geometry,
+			id: temp.id,
+			localPosition: temp.localPosition,
+			localRotation: temp.localRotation,
+			lookupMethod: temp.lookupMethod,
+			position: temp.position,
+			rotation: temp.rotation,
+			scale: temp.scale,
+			track: temp.track
+		};
+		if (temp.components) {
+			out.components = { BloomFogEnvironment: temp.components.fog };
+			if (temp.components.lightIds) {
+				out.components.ILightWithId = { lightID: temp.components.lightIds.id };
+				if (temp.components.lightIds.type) {
+					out.components.ILightWithId.type = LM_CONST.LightEventTypesMap.get(temp.components.lightIds.type);
+				}
+			}
+			if (temp.components.lightBloom) {
+				out.components.TubeBloomPrePassLight = {
+					bloomFogIntensityMultiplier: temp.components.lightBloom.bloomMult,
+					colorAlphaMultiplier: temp.components.lightBloom.colorMult
+				};
+			}
+		}
+		jsonPrune(out);
+		return out;
 	}
-
 	/**
 	 * Push the environment to the current diff.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.environments.push(this.return(dupe));
+		currentDiff.environments.push(dupe ? copy(this) : this);
 	}
 }
 
@@ -256,13 +367,13 @@ class staticFog {
 	private fog = new Environment().env("[0]Environment", "EndsWith");
 	private get components() {
 		this.fog.components ??= {};
-		this.fog.components.BloomFogEnvironment ??= {};
-		return this.fog.components.BloomFogEnvironment;
+		this.fog.components.fog ??= {};
+		return this.fog.components.fog;
 	}
 	private set components(x) {
 		this.fog.components ??= {};
-		this.fog.components.BloomFogEnvironment ??= {};
-		this.fog.components.BloomFogEnvironment = x;
+		this.fog.components.fog ??= {};
+		this.fog.components.fog = x;
 	}
 	attenuation(x: number) {
 		this.components.attenuation = x;

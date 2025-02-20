@@ -105,14 +105,19 @@ export class LightEvent {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: LightEventJSON) {
-		this.time = x.b;
-		this.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
-		this.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
+	/**
+	 * Create an instance of a light event from valid light event JSON.
+	 * @param x The JSON.
+	 * @returns An event.
+	 */
+	static from(x: LightEventJSON) {
+		const e = new LightEvent(x.b);
+		e.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypesNumericalValues);
+		e.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumericalValues);
 		if (x.customData) {
-			this.customData = x.customData;
+			e.customData = x.customData;
 		}
-		return this;
+		return e;
 	}
 	/**
 	 * Push the event to the current diff.

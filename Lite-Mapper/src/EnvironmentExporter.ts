@@ -1,7 +1,6 @@
-import { Environment } from "./Environment.ts";
 import { copy, LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { LightEventJSON } from "./Types.ts";
+import { EnvironmentJSON, LightEventJSON } from "./Types.ts";
 
 export type USESettings = {
 	name?: string;
@@ -33,7 +32,7 @@ export function exportShareableEnv(settings: USESettings) {
 		}
 	}
 	// Convert the type and material to their underscored counterparts and remove tracks
-	const envArray: Environment[] = [];
+	const envArray: EnvironmentJSON[] = [];
 	currentDiff.environments.forEach(e => {
 		const nu = copy(e);
 		if (nu.track) {

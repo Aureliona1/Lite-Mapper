@@ -1,6 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
+import { Environment } from "./Environment.ts";
 import { copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj, universalComparison } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
@@ -50,22 +51,22 @@ export class BeatMapParser {
 
 		// Classify vanilla items
 		raw.basicBeatmapEvents.forEach(e => {
-			deepPush(new LightEvent().JSONToClass(e), classMap.basicBeatmapEvents);
+			deepPush(LightEvent.from(e), classMap.basicBeatmapEvents);
 		});
 		raw.bombNotes.forEach(n => {
-			deepPush(new Bomb().JSONToClass(n), classMap.bombNotes);
+			deepPush(Bomb.from(n), classMap.bombNotes);
 		});
 		raw.burstSliders.forEach(n => {
-			deepPush(new Chain().JSONToClass(n), classMap.burstSliders);
+			deepPush(Chain.from(n), classMap.burstSliders);
 		});
 		raw.colorNotes.forEach(n => {
-			deepPush(new Note().JSONToClass(n), classMap.colorNotes);
+			deepPush(Note.from(n), classMap.colorNotes);
 		});
 		raw.obstacles.forEach(n => {
-			deepPush(new Wall().JSONToClass(n), classMap.obstacles);
+			deepPush(Wall.from(n), classMap.obstacles);
 		});
 		raw.sliders.forEach(n => {
-			deepPush(new Arc().JSONToClass(n), classMap.sliders);
+			deepPush(Arc.from(n), classMap.sliders);
 		});
 
 		// Check for custom data
@@ -76,31 +77,34 @@ export class BeatMapParser {
 				});
 			}
 			if (raw.customData.environment) {
-				classMap.customData!.environment! = raw.customData.environment;
+				raw.customData.environment.forEach(e => {
+					deepPush(Environment.from(e), classMap.customData!.environment!);
+				});
+				// classMap.customData!.environment! = raw.customData.environment;
 			}
 			if (raw.customData.fakeBombNotes) {
 				raw.customData.fakeBombNotes.forEach(n => {
-					deepPush(new Bomb().JSONToClass(n), classMap.customData!.fakeBombNotes!);
+					deepPush(Bomb.from(n), classMap.customData!.fakeBombNotes!);
 				});
 			}
 			if (raw.customData.fakeBurstSliders) {
 				raw.customData.fakeBurstSliders.forEach(n => {
-					deepPush(new Chain().JSONToClass(n), classMap.customData!.fakeBurstSliders!);
+					deepPush(Chain.from(n), classMap.customData!.fakeBurstSliders!);
 				});
 			}
 			if (raw.customData.fakeColorNotes) {
 				raw.customData.fakeColorNotes.forEach(n => {
-					deepPush(new Note().JSONToClass(n), classMap.customData!.fakeColorNotes!);
+					deepPush(Note.from(n), classMap.customData!.fakeColorNotes!);
 				});
 			}
 			if (raw.customData.fakeObstacles) {
 				raw.customData.fakeObstacles.forEach(n => {
-					deepPush(new Wall().JSONToClass(n), classMap.customData!.fakeObstacles!);
+					deepPush(Wall.from(n), classMap.customData!.fakeObstacles!);
 				});
 			}
 			if (raw.customData.bookmarks) {
 				raw.customData.bookmarks.forEach(b => {
-					deepPush(new Bookmark().JSONToClass(b), classMap.customData!.bookmarks!);
+					deepPush(Bookmark.from(b), classMap.customData!.bookmarks!);
 				});
 			}
 			if (raw.customData.time) {
@@ -161,27 +165,21 @@ export class BeatMapParser {
 		};
 
 		classMap.colorNotes.forEach(n => {
-			jsonPrune(n);
 			rawMap.colorNotes.push(n.return());
 		});
 		classMap.bombNotes.forEach(n => {
-			jsonPrune(n);
 			rawMap.bombNotes.push(n.return());
 		});
 		classMap.obstacles.forEach(n => {
-			jsonPrune(n);
 			rawMap.obstacles.push(n.return());
 		});
 		classMap.sliders.forEach(n => {
-			jsonPrune(n);
 			rawMap.sliders.push(n.return());
 		});
 		classMap.burstSliders.forEach(n => {
-			jsonPrune(n);
 			rawMap.burstSliders.push(n.return());
 		});
 		classMap.basicBeatmapEvents.forEach(n => {
-			jsonPrune(n);
 			rawMap.basicBeatmapEvents.push(n.return());
 		});
 
@@ -189,42 +187,39 @@ export class BeatMapParser {
 			rawMap.customData = { fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [], customEvents: [], environment: [], materials: {} };
 			if (classMap.customData.fakeColorNotes) {
 				classMap.customData.fakeColorNotes.forEach(n => {
-					jsonPrune(n);
 					rawMap.customData!.fakeColorNotes!.push(n.return());
 				});
 			}
 			if (classMap.customData.fakeBombNotes) {
 				classMap.customData.fakeBombNotes.forEach(n => {
-					jsonPrune(n);
 					rawMap.customData!.fakeBombNotes!.push(n.return());
 				});
 			}
 			if (classMap.customData.fakeObstacles) {
 				classMap.customData.fakeObstacles.forEach(n => {
-					jsonPrune(n);
 					rawMap.customData!.fakeObstacles!.push(n.return());
 				});
 			}
 			if (classMap.customData.fakeBurstSliders) {
 				classMap.customData.fakeBurstSliders.forEach(n => {
-					jsonPrune(n);
 					rawMap.customData!.fakeBurstSliders!.push(n.return());
 				});
 			}
 			if (classMap.customData.customEvents) {
 				classMap.customData.customEvents.forEach(n => {
-					jsonPrune(n);
 					rawMap.customData!.customEvents!.push(CEToJSON(n));
 				});
 			}
 			if (classMap.customData.bookmarks) {
 				classMap.customData.bookmarks.forEach(b => {
-					jsonPrune(b);
 					rawMap.customData!.bookmarks!.push(b.return());
 				});
 			}
 			if (classMap.customData.environment) {
-				rawMap.customData.environment = classMap.customData.environment;
+				classMap.customData.environment.forEach(e => {
+					rawMap.customData!.environment!.push(e.return());
+				});
+				// rawMap.customData.environment = classMap.customData.environment;
 			}
 			if (classMap.customData.materials) {
 				rawMap.customData.materials = classMap.customData.materials;

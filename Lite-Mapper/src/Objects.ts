@@ -135,17 +135,22 @@ export class Note {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: NoteJSON) {
-		this.time = x.b;
-		this.x = x.x ?? 0;
-		this.y = x.y ?? 0;
-		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		this.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
-		this.angleOffset = x.a;
+	/**
+	 * Create an instance of a note from valid note JSON.
+	 * @param x The JSON.
+	 * @returns A note.
+	 */
+	static from(x: NoteJSON) {
+		const n = new Note(x.b);
+		n.x = x.x ?? 0;
+		n.y = x.y ?? 0;
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.angleOffset = x.a;
 		if (x.customData) {
-			this.customData = x.customData;
+			n.customData = x.customData;
 		}
-		return this;
+		return n;
 	}
 	/**
 	 * Push the note to the current diff.
@@ -154,7 +159,6 @@ export class Note {
 	 */
 	push(fake?: boolean, dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
 		if (fake) {
 			currentDiff.fakeNotes?.push(temp);
 		} else {
@@ -278,14 +282,19 @@ export class Bomb {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: BombJSON) {
-		this.time = x.b;
-		this.x = x.x ?? 0;
-		this.y = x.y ?? 0;
+	/**
+	 * Create an instance of a bomb from valid bomb JSON.
+	 * @param x The JSON.
+	 * @returns A bomb.
+	 */
+	static from(x: BombJSON) {
+		const b = new Bomb(x.b);
+		b.x = x.x ?? 0;
+		b.y = x.y ?? 0;
 		if (x.customData) {
-			this.customData = x.customData;
+			b.customData = x.customData;
 		}
-		return this;
+		return b;
 	}
 	/**
 	 * Push the bomb to the current diff.
@@ -294,7 +303,6 @@ export class Bomb {
 	 */
 	push(fake?: boolean, dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
 		if (fake) {
 			currentDiff.fakeBombs?.push(temp);
 		} else {
@@ -409,17 +417,22 @@ export class Wall {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: ObstacleJSON) {
-		this.time = x.b;
-		this.x = x.x ?? 0;
-		this.y = x.y ?? 0;
-		this.duration = x.d ?? 0;
-		this.width = x.w ?? 0;
-		this.height = x.h ?? 0;
+	/**
+	 * Create an instance of a wall from valid obstacle JSON.
+	 * @param x The JSON.
+	 * @returns A wall.
+	 */
+	static from(x: ObstacleJSON) {
+		const w = new Wall(x.b);
+		w.x = x.x ?? 0;
+		w.y = x.y ?? 0;
+		w.duration = x.d ?? 0;
+		w.width = x.w ?? 0;
+		w.height = x.h ?? 0;
 		if (x.customData) {
-			this.customData = x.customData;
+			w.customData = x.customData;
 		}
-		return this;
+		return w;
 	}
 	/**
 	 * Push the wall to the current diff.
@@ -428,7 +441,6 @@ export class Wall {
 	 */
 	push(fake?: boolean, dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
 		if (fake) {
 			currentDiff.fakeWalls?.push(temp);
 		} else {
@@ -568,32 +580,35 @@ export class Arc {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: SliderJSON) {
-		this.time = x.b;
-		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		this.x = x.x ?? 0;
-		this.y = x.y ?? 0;
-		this.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
-		this.headMultiplier = x.mu ?? 0;
-		this.tailBeat = x.tb ?? 0;
-		this.tx = x.tx ?? 0;
-		this.ty = x.ty ?? 0;
-		this.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
-		this.tailMultiplier = x.tmu ?? 0;
-		this.anchorMode = x.m ?? 0;
+	/**
+	 * Create an instance of an arc from valid slider JSON.
+	 * @param x The JSON.
+	 * @returns An arc.
+	 */
+	static from(x: SliderJSON) {
+		const n = new Arc(x.b);
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		n.x = x.x ?? 0;
+		n.y = x.y ?? 0;
+		n.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.headMultiplier = x.mu ?? 0;
+		n.tailBeat = x.tb ?? 0;
+		n.tx = x.tx ?? 0;
+		n.ty = x.ty ?? 0;
+		n.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionsNumericalValues);
+		n.tailMultiplier = x.tmu ?? 0;
+		n.anchorMode = x.m ?? 0;
 		if (x.customData) {
-			this.customData = x.customData;
+			n.customData = x.customData;
 		}
-		return this;
+		return n;
 	}
 	/**
 	 * Push the arc to the current diff.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		currentDiff.arcs.push(temp);
+		currentDiff.arcs.push(dupe ? copy(this) : this);
 	}
 }
 
@@ -724,21 +739,26 @@ export class Chain {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: BurstSliderJSON) {
-		this.time = x.b;
-		this.x = x.x ?? 0;
-		this.y = x.y ?? 0;
-		this.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
-		this.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
-		this.tailBeat = x.tb ?? 0;
-		this.tx = x.tx ?? 0;
-		this.ty = x.ty ?? 0;
-		this.segments = x.sc ?? 0;
-		this.squishFactor = x.s ?? 1;
+	/**
+	 * Create an instance of a chain from valid burst slider JSON.
+	 * @param x The JSON.
+	 * @returns A chain.
+	 */
+	static from(x: BurstSliderJSON) {
+		const n = new Chain(x.b);
+		n.x = x.x ?? 0;
+		n.y = x.y ?? 0;
+		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorsNumericalValues);
+		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionsNumericalValues);
+		n.tailBeat = x.tb ?? 0;
+		n.tx = x.tx ?? 0;
+		n.ty = x.ty ?? 0;
+		n.segments = x.sc ?? 0;
+		n.squishFactor = x.s ?? 1;
 		if (x.customData) {
-			this.customData = x.customData;
+			n.customData = x.customData;
 		}
-		return this;
+		return n;
 	}
 	/**
 	 * Push the chain to the current diff.
@@ -747,7 +767,6 @@ export class Chain {
 	 */
 	push(fake?: boolean, dupe = true) {
 		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
 		if (fake) {
 			currentDiff.fakeChains?.push(temp);
 		} else {
@@ -757,7 +776,17 @@ export class Chain {
 }
 
 export class Bookmark {
+	/**
+	 * Create a new bookmark that is visible in Chromapper (and other mapping software that supports this format).
+	 * @param time The time of the bookmark.
+	 * @param name The name that will appear for the bookmark.
+	 * @param color The in-editor color of the bookmark.
+	 */
 	constructor(public time = 0, public name = "", public color: Vec4 = [1, 1, 1, 1]) {}
+	/**
+	 * Return the bookmark as valid bookmark JSON.
+	 * @param dupe Whether to duplicate the object on return.
+	 */
 	return(dupe = true) {
 		const temp = dupe ? copy(this) : this;
 		const out: BookmarkJSON = {
@@ -768,15 +797,19 @@ export class Bookmark {
 		jsonPrune(out);
 		return out;
 	}
-	JSONToClass(x: BookmarkJSON) {
-		this.time = x.b;
-		this.name = x.n;
-		this.color = x.c;
-		return this;
+	/**
+	 * Create an instance of a bookmark from bookmark JSON.
+	 * @param x The JSON.
+	 * @returns A bookmark.
+	 */
+	static from(x: BookmarkJSON) {
+		return new Bookmark(x.b, x.n, x.c);
 	}
+	/**
+	 * Push the bookmark to the current diff.
+	 * @param dupe Whether to copy the object on push.
+	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
-		jsonPrune(temp);
-		currentDiff.bookmarks?.push(temp);
+		currentDiff.bookmarks?.push(dupe ? copy(this) : this);
 	}
 }

@@ -3,20 +3,20 @@ import { currentDiff } from "./Map.ts";
 import { CustomEventJSON, CustomEventNames, TrackAnimAllProps, TrackAnimProps, PathAnimAllProps, PathAnimProps, TrackParentProps, PlayerObjectControllers, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
 
 /**
- * Convert custom event json into respective class.
+ * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.
  * @param x Input Json.
  */
 export function JSONToCE(x: CustomEventJSON) {
 	if (x.t == "AnimateComponent") {
-		return new AnimateComponent().JSONToClass(x);
+		return AnimateComponent.from(x);
 	} else if (x.t == "AssignPathAnimation") {
-		return new AssignPathAnimation().JSONToClass(x);
+		return AssignPathAnimation.from(x);
 	} else if (x.t == "AssignPlayerToTrack") {
-		return new AssignPlayerToTrack().JSONToClass(x);
+		return AssignPlayerToTrack.from(x);
 	} else if (x.t == "AssignTrackParent") {
-		return new AssignTrackParent().JSONToClass(x);
+		return AssignTrackParent.from(x);
 	} else {
-		return new AnimateTrack().JSONToClass(x);
+		return AnimateTrack.from(x);
 	}
 }
 
@@ -99,23 +99,24 @@ export class AnimateTrack {
 		return out;
 	}
 	/**
+	 * Create a new instance of a track animation from valid CustomEvent JSON.
+	 * @param x The JSON.
+	 * @returns A track animation with converted props from the JSON (or a blank animation if the JSON is invalid).
+	 */
+	static from(x: CustomEventJSON) {
+		const a = new AnimateTrack();
+		if (x.t == "AnimateTrack") {
+			a.d = x.d as TrackAnimAllProps;
+			a.b = x.b;
+		}
+		return a;
+	}
+	/**
 	 * Push the animation to the current difficulty.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
 		currentDiff.customEvents.push(dupe ? copy(this) : this);
-	}
-	/**
-	 * Convert raw custom event json into a track animation.
-	 * @param x Input Json.
-	 */
-	JSONToClass(x: CustomEventJSON) {
-		if (x.t == "AnimateTrack") {
-			this.d = x.d as TrackAnimAllProps;
-			this.b = x.b;
-			jsonPrune(this);
-		}
-		return this;
 	}
 }
 
@@ -176,23 +177,24 @@ export class AssignPathAnimation {
 		return out;
 	}
 	/**
+	 * Create a new instance of a path animation from valid CustomEvent JSON.
+	 * @param x The JSON.
+	 * @returns A path animation, or a blank path animation if the JSON is invalid.
+	 */
+	static from(x: CustomEventJSON) {
+		const a = new AssignPathAnimation();
+		if (x.t == "AssignPathAnimation") {
+			a.d = x.d as PathAnimAllProps;
+			a.b = x.b;
+		}
+		return a;
+	}
+	/**
 	 * Push the animation to the current difficulty.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
 		currentDiff.customEvents.push(dupe ? copy(this) : this);
-	}
-	/**
-	 * Converts raw custom event json into a path animation.
-	 * @param x Input Json.
-	 */
-	JSONToClass(x: CustomEventJSON) {
-		if (x.t == "AssignPathAnimation") {
-			this.d = x.d as PathAnimAllProps;
-			this.b = x.b;
-			jsonPrune(this);
-		}
-		return this;
 	}
 }
 
@@ -257,23 +259,24 @@ export class AssignTrackParent {
 		return out;
 	}
 	/**
+	 * Create a new instance of a track parent from valid CustomEvent JSON.
+	 * @param x The JSON.
+	 * @returns A trrack parent, or a blank track parent if the JSON is invalid.
+	 */
+	static from(x: CustomEventJSON) {
+		const a = new AssignTrackParent();
+		if (x.t == "AssignTrackParent") {
+			a.d = x.d as TrackParentProps;
+			a.b = x.b;
+		}
+		return a;
+	}
+	/**
 	 * Push the assignment to the current difficulty.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
 		currentDiff.customEvents.push(dupe ? copy(this) : this);
-	}
-	/**
-	 * Convert raw custom event json into a parent track.
-	 * @param x Input Json.
-	 */
-	JSONToClass(x: CustomEventJSON) {
-		if (x.t == "AssignTrackParent") {
-			this.d = x.d as TrackParentProps;
-			this.b = x.b;
-			jsonPrune(this);
-		}
-		return this;
 	}
 }
 
@@ -329,23 +332,24 @@ export class AssignPlayerToTrack {
 		return out;
 	}
 	/**
+	 * Create a new instance of a player track from valid CustomEvent JSON.
+	 * @param x The JSON.
+	 * @returns A player track event, or an empty player track event if the JSON is invalid.
+	 */
+	static from(x: CustomEventJSON) {
+		const a = new AssignPlayerToTrack();
+		if (x.t == "AssignPlayerToTrack") {
+			a.d = x.d as PlayerToTrackProps;
+			a.b = x.b;
+		}
+		return a;
+	}
+	/**
 	 * Push track assignment to current difficulty.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
 		currentDiff.customEvents.push(dupe ? copy(this) : this);
-	}
-	/**
-	 * Convert custom event json into player track assignment.
-	 * @param x Input Json.
-	 */
-	JSONToClass(x: CustomEventJSON) {
-		if (x.t == "AssignPlayerToTrack") {
-			this.d = x.d as PlayerToTrackProps;
-			this.b = x.b;
-			jsonPrune(this);
-		}
-		return this;
 	}
 }
 
@@ -419,22 +423,23 @@ export class AnimateComponent {
 		return out;
 	}
 	/**
+	 * Create a new instance of a component animation from valid CustomEvent JSON.
+	 * @param x The JSON.
+	 * @returns A component animation, or a blank component animation if the JSON is invalid.
+	 */
+	static from(x: CustomEventJSON) {
+		const a = new AnimateComponent();
+		if (x.t == "AnimateComponent") {
+			a.d = x.d as ComponentAnimProps;
+			a.b = x.b;
+		}
+		return a;
+	}
+	/**
 	 * Push the animation to the current difficulty.
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
 		currentDiff.customEvents.push(dupe ? copy(this) : this);
-	}
-	/**
-	 * Convert custom event json into a component animation.
-	 * @param x Input Json.
-	 */
-	JSONToClass(x: CustomEventJSON) {
-		if (x.t == "AnimateComponent") {
-			this.d = x.d as ComponentAnimProps;
-			this.b = x.b;
-			jsonPrune(this);
-		}
-		return this;
 	}
 }

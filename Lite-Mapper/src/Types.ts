@@ -211,7 +211,7 @@ export type V3MapJSON = {
 	};
 	customData?: {
 		customEvents?: CustomEventJSON[];
-		environment?: Environment[];
+		environment?: EnvironmentJSON[];
 		materials?: Record<string, GeometryMaterialJSON>;
 		fakeColorNotes?: NoteJSON[];
 		fakeBombNotes?: BombJSON[];
@@ -411,6 +411,12 @@ export type ObjectAnimProps = {
 };
 
 export type ComponentStaticProps = {
+	lightIds?: { id?: number; type?: LightEventTypes };
+	fog?: { attenuation?: number; offset?: number; startY?: number; height?: number };
+	lightBloom?: { colorMult?: number; bloomMult?: number };
+};
+
+export type ComponentStaticJSONProps = {
 	ILightWithId?: { lightID?: number; type?: number };
 	BloomFogEnvironment?: { attenuation?: number; offset?: number; startY?: number; height?: number };
 	TubeBloomPrePassLight?: { colorAlphaMultiplier?: number; bloomFogIntensityMultiplier?: number };
@@ -458,6 +464,20 @@ export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordi
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
 export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+export type EnvironmentJSON = {
+	id?: string;
+	lookupMethod?: LookupMethod;
+	active?: boolean;
+	duplicate?: number;
+	components?: ComponentStaticJSONProps;
+	scale?: Vec3;
+	position?: Vec3;
+	localPosition?: Vec3;
+	rotation?: Vec3;
+	localRotation?: Vec3;
+	track?: string | string[];
+	geometry?: GeometryObjectJSON;
+};
 export type BurstSliderJSON = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
 export type SliderJSON = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
 export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
