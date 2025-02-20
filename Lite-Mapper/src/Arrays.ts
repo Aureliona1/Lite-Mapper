@@ -93,8 +93,74 @@ export class ArrOp<T extends NumberArrLike> {
 	 * Sort an array in ascending order according to each element's numerical value.
 	 * @param arr The array to sort.
 	 */
-	static sortNumeric<T extends NumberArrLike>(arr: T) {
+	static sortNumericAsc<T extends NumberArrLike>(arr: T) {
 		return arr.sort((a, b) => a - b);
+	}
+
+	/**
+	 * Sort an array in descending order according to each element's numerical value.
+	 * @param arr The array to sort.
+	 */
+	static sortNumericDsc<T extends NumberArrLike>(arr: T) {
+		return arr.sort((a, b) => b - a);
+	}
+
+	/**
+	 * Get the total numeric range of the array. i.e., the distance between the greatest and least elements.
+	 * @param arr The array.
+	 */
+	static range(arr: NumberArrLike) {
+		return Math.max(...arr) - Math.min(...arr);
+	}
+
+	/**
+	 * Get the numeric average (mean) of the array.
+	 * @param arr The array to find the mean of.
+	 */
+	static mean(arr: NumberArrLike) {
+		return [...arr].reduce((a, b) => a + b) / arr.length;
+	}
+
+	/**
+	 * Get the numeric median of the array.
+	 * @param arr The array to find the median of.
+	 */
+	static median(arr: NumberArrLike) {
+		return arr.toSorted((a, b) => a - b)[Math.floor(arr.length / 2)];
+	}
+
+	/**
+	 * Get the most common value (mode) in the array.
+	 * @param arr The array to find the mode of.
+	 */
+	static mode(arr: NumberArrLike) {
+		const out: NumberArrLike[] = [];
+		const set = [...new Set(arr)];
+		repeat(set.length, i => {
+			let instances = 0;
+			repeat(arr.length, j => {
+				if (set[i] == arr[j]) {
+					instances++;
+				}
+			});
+			out.push([set[i], instances]);
+		});
+		out.sort((a, b) => a[1] - b[1]);
+		return out[out.length - 1][0];
+	}
+
+	/**
+	 * Get the sum of all the elements in the array.
+	 */
+	static sum(arr: NumberArrLike) {
+		return Array.from(arr).reduce((a, b) => a + b);
+	}
+
+	/**
+	 * Get the product of all the elements in the array.
+	 */
+	static product(arr: NumberArrLike) {
+		return Array.from(arr).reduce((a, b) => a * b);
 	}
 
 	constructor(public arr: T) {}
@@ -132,11 +198,11 @@ export class ArrOp<T extends NumberArrLike> {
 	}
 
 	get median() {
-		return this.arr.sort((a, b) => a - b)[Math.floor(this.arr.length / 2)];
+		return this.arr.toSorted((a, b) => a - b)[Math.floor(this.arr.length / 2)];
 	}
 
 	get mode() {
-		let arr: NumberArrLike[] = [];
+		const arr: NumberArrLike[] = [];
 		const set = [...new Set(this.arr)];
 		repeat(set.length, i => {
 			let instances = 0;
@@ -147,7 +213,7 @@ export class ArrOp<T extends NumberArrLike> {
 			});
 			arr.push([set[i], instances]);
 		});
-		arr = arr.sort((a, b) => a[1] - b[1]);
+		arr.sort((a, b) => a[1] - b[1]);
 		return arr[arr.length - 1][0];
 	}
 
