@@ -1,3 +1,4 @@
+import { deepFreeze } from "./Functions.ts";
 import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V4InfoJSON, Vec3 } from "./Types.ts";
 
 /**
@@ -149,7 +150,7 @@ export class TwoWayMap<K extends string | number | symbol, V extends string | nu
 /**
  * A collection of constants used internally by Lite-Mapper. Do not edit these as this will break Lite-Mapper's functionality, they are intended to remain constant.
  */
-export const LM_CONST = {
+export const LM_CONST = deepFreeze({
 	/**
 	 * Placeholder for valid V2 info JSON if certain values don't exist.
 	 */
@@ -259,4 +260,4 @@ export const LM_CONST = {
 	 * Internal map for applying difficulty rank numbers to rank names in V2 info files.
 	 */
 	difficultyRankMap: new TwoWayMap({ Easy: 1, Normal: 3, Hard: 5, Expert: 7, ExpertPlus: 9 })
-};
+});

@@ -640,24 +640,79 @@ export function universalComparison<Tr extends T, T extends number | string | un
 }
 
 export class Noise {
+	/**
+	 * The seed for the noise generator.
+	 */
 	public readonly seed = Math.random();
 	private n2d = makeNoise2D(this.seed);
 	private n3d = makeNoise3D(this.seed);
 	private n4d = makeNoise4D(this.seed);
+	/**
+	 * Initialise 1d, 2d, 3d, and 4d noise generators.
+	 * @param seed The see for the generator.
+	 */
 	constructor(seed = Math.random()) {
 		this.seed = seed;
 	}
 
+	/**
+	 * Get a 1-dimensional point on the noise map.
+	 * @param x The position on the map.
+	 * @param range The range to scale the noise values.
+	 */
 	point1D(x: number, range: Vec2 = [-1, 1]) {
 		return mapRange(this.n2d(x, 0), [-0.9, 0.9], range);
 	}
+	/**
+	 * Get a 2-dimensional point on the map.
+	 * @param x The x position on the map.
+	 * @param y The y position on the map.
+	 * @param range The range to scale the noise values.
+	 */
 	point2D(x: number, y: number, range: Vec2 = [-1, 1]) {
 		return mapRange(this.n2d(x, y), [-0.9, 0.9], range);
 	}
+	/**
+	 * Get a 3-dimensional point on the map.
+	 * @param x The x position on the map.
+	 * @param y The y position on the map.
+	 * @param z The z position on the map.
+	 * @param range The range to scale the noise values.
+	 */
 	point3D(x: number, y: number, z: number, range: Vec2 = [-1, 1]) {
 		return mapRange(this.n3d(x, y, z), [-0.9, 0.9], range);
 	}
+	/**
+	 * Get a 4-dimensional point on the map.
+	 * @param x The x position on the map.
+	 * @param y The y position on the map.
+	 * @param z The z position on the map.
+	 * @param w The w position on the map.
+	 * @param range The range to scale the noise values.
+	 */
 	point4D(x: number, y: number, z: number, w: number, range: Vec2 = [-1, 1]) {
 		return mapRange(this.n4d(x, y, z, w), [-0.9, 0.9], range);
 	}
+}
+
+/**
+ * Recursively freeze all nested objects in an object.
+ * @param obj The object to freeze.
+ */
+export function deepFreeze<T>(obj: T): T {
+	if (typeof obj !== "object" || obj === null || Object.isFrozen(obj)) {
+		return obj;
+	}
+
+	Object.freeze(obj);
+
+	if (Array.isArray(obj)) {
+		obj.forEach(deepFreeze);
+	} else {
+		Object.getOwnPropertyNames(obj).forEach(prop => {
+			deepFreeze((obj as Record<string, any>)[prop]);
+		});
+	}
+
+	return obj;
 }
