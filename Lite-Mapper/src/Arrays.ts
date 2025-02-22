@@ -9,11 +9,10 @@ export class ArrOp<T extends NumberArrLike> {
 	 */
 	static add<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
 		if (typeof arr2 == "number") {
-			arr1 = arr1.map(x => x + arr2) as T;
+			return arr1.map(x => x + arr2) as T;
 		} else {
-			arr1 = arr1.map((x, i) => x + arr2[i]) as T;
+			return arr1.map((x, i) => x + arr2[i]) as T;
 		}
-		return arr1;
 	}
 
 	/**
@@ -23,11 +22,10 @@ export class ArrOp<T extends NumberArrLike> {
 	 */
 	static subtract<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
 		if (typeof arr2 == "number") {
-			arr1 = arr1.map(x => x - arr2) as T;
+			return arr1.map(x => x - arr2) as T;
 		} else {
-			arr1 = arr1.map((x, i) => x - arr2[i]) as T;
+			return arr1.map((x, i) => x - arr2[i]) as T;
 		}
-		return arr1;
 	}
 
 	/**
@@ -37,11 +35,10 @@ export class ArrOp<T extends NumberArrLike> {
 	 */
 	static divide<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
 		if (typeof arr2 == "number") {
-			arr1 = arr1.map(x => x / arr2) as T;
+			return arr1.map(x => x / arr2) as T;
 		} else {
-			arr1 = arr1.map((x, i) => x / arr2[i]) as T;
+			return arr1.map((x, i) => x / arr2[i]) as T;
 		}
-		return arr1;
 	}
 
 	/**
@@ -51,11 +48,10 @@ export class ArrOp<T extends NumberArrLike> {
 	 */
 	static multiply<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
 		if (typeof arr2 == "number") {
-			arr1 = arr1.map(x => x * arr2) as T;
+			return arr1.map(x => x * arr2) as T;
 		} else {
-			arr1 = arr1.map((x, i) => x * arr2[i]) as T;
+			return arr1.map((x, i) => x * arr2[i]) as T;
 		}
-		return arr1;
 	}
 
 	/**
@@ -67,11 +63,10 @@ export class ArrOp<T extends NumberArrLike> {
 	 */
 	static lerp<T extends NumberArrLike, T2 extends NumberArrLike>(from: T, to: number | T2, fraction: number, ease?: Easing) {
 		if (typeof to == "number") {
-			from = from.map(x => lerp(x, to, fraction, ease)) as T;
+			return from.map(x => lerp(x, to, fraction, ease)) as T;
 		} else {
-			from = from.map((x, i) => lerp(x, to[i], fraction, ease)) as T;
+			return from.map((x, i) => lerp(x, to[i], fraction, ease)) as T;
 		}
-		return from;
 	}
 
 	/**
