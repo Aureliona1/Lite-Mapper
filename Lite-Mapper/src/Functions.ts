@@ -209,7 +209,7 @@ export function repeat(rep: number, code: (x: number) => void) {
  * @param length The length of the array.
  * @param func The function to run through the array.
  */
-export const arrFromFunction = <T extends any>(length: number, func: (x: number) => T) => Array.from(Array(length).keys()).map(x => func(x));
+export const arrFromFunction = <T>(length: number, func: (x: number) => T) => Array.from(Array(length).keys()).map(x => func(x));
 
 /**
  * Generate a random number.
