@@ -207,10 +207,25 @@ export class Environment {
 }
 
 export class Material {
+	/**
+	 * The color of the material. Some shaders may not properly display this.
+	 */
 	color?: Vec3 | Vec4;
+	/**
+	 * The track of the material, so that the color can be animated.
+	 */
 	track?: string;
+	/**
+	 * Any shader keywords to apply to the material. Leave blank for all default keywords to be applied.
+	 */
 	shaderKeywords?: string[];
+	/**
+	 * The shader to use for the material.
+	 */
 	shader: MaterialShader = "Standard";
+	/**
+	 * Initialise the material to use the BTSPillar shader. This will add autofill for the shader keywords to suggest only compatible keywords for BTSPillar.
+	 */
 	BTSPillar(shaderKeywords?: KeywordsBTSPillar, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -218,6 +233,9 @@ export class Material {
 		this.shader = "BTSPillar";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the OpaqueLight shader. This will add autofill for the shader keywords to suggest only compatible keywords for OpaqueLight.
+	 */
 	OpaqueLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -225,6 +243,9 @@ export class Material {
 		this.shader = "OpaqueLight";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the TransparentLight shader. This will add autofill for the shader keywords to suggest only compatible keywords for TransparentLight.
+	 */
 	TransparentLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -232,6 +253,9 @@ export class Material {
 		this.shader = "TransparentLight";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the BaseWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BaseWater.
+	 */
 	BaseWater(shaderKeywords?: KeywordsBaseWater, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -239,6 +263,9 @@ export class Material {
 		this.shader = "BaseWater";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the BillieWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BillieWater.
+	 */
 	BillieWater(shaderKeywords?: KeywordsBillieWater, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -246,6 +273,9 @@ export class Material {
 		this.shader = "BillieWater";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the Standard shader. This will add autofill for the shader keywords to suggest only compatible keywords for Standard.
+	 */
 	Standard(shaderKeywords?: KeywordsStandard, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -253,6 +283,9 @@ export class Material {
 		this.shader = "Standard";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the InterscopeConcrete shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeConcrete.
+	 */
 	InterscopeConcrete(shaderKeywords?: KeywordsInterscopeConcrete, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -260,6 +293,9 @@ export class Material {
 		this.shader = "InterscopeConcrete";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the InterscopeCar shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeCar.
+	 */
 	InterscopeCar(shaderKeywords?: KeywordsInterscopeCar, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -267,6 +303,9 @@ export class Material {
 		this.shader = "InterscopeCar";
 		return this;
 	}
+	/**
+	 * Initialise the material to use the WaterfallMirror shader. This will add autofill for the shader keywords to suggest only compatible keywords for WaterfallMirror.
+	 */
 	WaterfallMirror(shaderKeywords?: KeywordsWaterfallMirror, color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
@@ -363,7 +402,7 @@ export class Polygon {
 	}
 }
 
-class staticFog {
+class StaticFog {
 	private fog = new Environment().env("[0]Environment", "EndsWith");
 	private get components() {
 		this.fog.components ??= {};
@@ -475,7 +514,7 @@ export class Fog {
 	 * Set up fog to be set statically.
 	 */
 	static() {
-		return new staticFog();
+		return new StaticFog();
 	}
 	private assignFogTrack(track: string) {
 		const fog = new Environment().env("[0]Environment", "EndsWith");

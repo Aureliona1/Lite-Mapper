@@ -2,7 +2,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj, universalComparison } from "./Functions.ts";
+import { copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj, compare } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
@@ -801,7 +801,7 @@ class Info {
 		}
 	}
 	get isModified() {
-		return !universalComparison(JSON.parse(Deno.readTextFileSync("info.dat")), this.raw);
+		return !compare(JSON.parse(Deno.readTextFileSync("info.dat")), this.raw);
 	}
 	/**
 	 * Write to the info file.

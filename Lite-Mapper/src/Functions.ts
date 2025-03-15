@@ -492,8 +492,7 @@ export function rgba2Hex(color: Vec4) {
 	color = color.map(x => Math.round(clamp(x, [0, 1]) * 255)) as Vec4;
 	const digits: string[] = [];
 	color.forEach(x => {
-		digits.push(HEX_MAP[Math.floor(x / 16)]);
-		digits.push(HEX_MAP[x % 16]);
+		digits.push(x.toString(16));
 	});
 	return digits.join("");
 }
@@ -615,7 +614,10 @@ export function arrRem<T extends any[]>(arr: T, indexes: number[]) {
 	return arr as T;
 }
 
-export function universalComparison<Tr extends T, T extends number | string | undefined | Array<Tr> | Record<string, Tr>>(a: T, b: T) {
+/**
+ * Recursively compare everything on any type of data.
+ */
+export function compare<Tr extends T, T extends number | string | undefined | Array<Tr> | Record<string, Tr>>(a: T, b: T) {
 	if (typeof a !== "object") {
 		return a === b;
 	} else {
@@ -623,7 +625,7 @@ export function universalComparison<Tr extends T, T extends number | string | un
 			if (a.length == b.length) {
 				let eq = true;
 				a.forEach((x, i) => {
-					if (!universalComparison(x, b[i])) {
+					if (!compare(x, b[i])) {
 						eq = false;
 					}
 				});
@@ -634,7 +636,7 @@ export function universalComparison<Tr extends T, T extends number | string | un
 		} else {
 			const a2arr = Object.entries(a);
 			const b2arr = Object.entries(b as Record<string, Tr>);
-			return universalComparison(a2arr, b2arr);
+			return compare(a2arr, b2arr);
 		}
 	}
 }
@@ -703,9 +705,7 @@ export function deepFreeze<T>(obj: T): T {
 	if (typeof obj !== "object" || obj === null || Object.isFrozen(obj)) {
 		return obj;
 	}
-
 	Object.freeze(obj);
-
 	if (Array.isArray(obj)) {
 		obj.forEach(deepFreeze);
 	} else {
