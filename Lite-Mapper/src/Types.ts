@@ -370,15 +370,15 @@ type EaseBase<T extends string> = `easeIn${T}` | `easeOut${T}` | `easeInOut${T}`
 export type Easing = EaseBase<"Sine"> | EaseBase<"Quad"> | EaseBase<"Cubic"> | EaseBase<"Quart"> | EaseBase<"Quint"> | EaseBase<"Circ"> | EaseBase<"Expo"> | EaseBase<"Back"> | EaseBase<"Bounce"> | EaseBase<"Elastic"> | "easeStep" | "easeLinear";
 
 export type KFVec3 = [number, number, number, number, Easing?, "splineCatmullRom"?];
-export type KFSingle = [number, number, Easing?];
+export type KFScalar = [number, number, Easing?];
 export type KFVec4 = [number, number, number, number, number, Easing?, "splineCatmullRom"?];
 
-export type modifierKFVec3 = [baseModifiers] | [baseModifiers, [number, number, number, modifierOps]];
-export type modifierKFVec4 = [baseModifiers] | [baseModifiers, [number, number, number, number, modifierOps]];
-export type modifierKFSingle = [baseModifiers] | [baseModifiers, [number, modifierOps]];
+export type KFVec3Modifier = [ModifierTarget] | [ModifierTarget, [number, number, number, ModifierOpKeyword]];
+export type KFVec4Modifier = [ModifierTarget] | [ModifierTarget, [number, number, number, number, ModifierOpKeyword]];
+export type KFScalarModifier = [ModifierTarget] | [ModifierTarget, [number, ModifierOpKeyword]];
 
-export type modifierOps = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
-export type baseModifiers =
+export type ModifierOpKeyword = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
+export type ModifierTarget =
 	| "baseHeadLocalPosition"
 	| "baseLeftHandLocalPosition"
 	| "baseRightHandLocalPosition"
@@ -394,20 +394,20 @@ export type baseModifiers =
 	| "baseEnvironmentColorWBoost"
 	| "baseObstaclesColor";
 
-export type LightKeyframeFrameType = [number, number, number, number, number, Easing?, ("HSV" | "RGB")?];
+export type KFColorVec4 = [number, number, number, number, number, Easing?, ("HSV" | "RGB")?];
 
 // Object Properties
 
 export type ObjectAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	scale?: Vec3 | KFVec3[] | modifierKFVec3;
-	dissolve?: [number] | KFSingle[] | modifierKFSingle;
-	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
-	interactable?: [number] | KFSingle[] | modifierKFSingle;
-	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
+	interactable?: [number] | KFScalar[] | KFScalarModifier;
+	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	color?: Vec4 | KFVec4[] | KFVec4Modifier;
 };
 
 export type ComponentStaticProps = {
@@ -494,61 +494,61 @@ export type LightValueNumbers = keyof typeof LM_CONST.LightEventValuesMap.revers
 export type CustomEventJSON = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
 
 export type PathAnimAllProps = {
-	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	scale?: Vec3 | KFVec3[] | modifierKFVec3;
-	dissolve?: [number] | KFSingle[] | modifierKFSingle;
-	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
-	interactable?: [number] | KFSingle[] | modifierKFSingle;
-	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
+	interactable?: [number] | KFScalar[] | KFScalarModifier;
+	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	color?: Vec4 | KFVec4[] | KFVec4Modifier;
 	track?: string | string[];
 	duration?: number;
 	easing?: Easing;
 };
 export type PathAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	scale?: Vec3 | KFVec3[] | modifierKFVec3;
-	dissolve?: [number] | KFSingle[] | modifierKFSingle;
-	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
-	interactable?: [number] | KFSingle[] | modifierKFSingle;
-	definitePosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	color?: Vec4 | KFVec4[] | modifierKFVec4;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
+	interactable?: [number] | KFScalar[] | KFScalarModifier;
+	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	color?: Vec4 | KFVec4[] | KFVec4Modifier;
 };
 export type TrackAnimAllProps = {
-	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	scale?: Vec3 | KFVec3[] | modifierKFVec3;
-	dissolve?: [number] | KFSingle[] | modifierKFSingle;
-	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
-	interactable?: [number] | KFSingle[] | modifierKFSingle;
-	time?: KFSingle[];
-	color?: Vec4 | KFVec4[] | modifierKFVec4;
-	position?: Vec3 | KFVec3[] | modifierKFVec3;
-	rotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
+	interactable?: [number] | KFScalar[] | KFScalarModifier;
+	time?: KFScalar[];
+	color?: Vec4 | KFVec4[] | KFVec4Modifier;
+	position?: Vec3 | KFVec3[] | KFVec3Modifier;
+	rotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 	track?: string | string[];
 	duration?: number;
 	easing?: Easing;
 	repeat?: number;
 };
 export type TrackAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[] | modifierKFVec3;
-	offsetWorldRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localRotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	scale?: Vec3 | KFVec3[] | modifierKFVec3;
-	dissolve?: [number] | KFSingle[] | modifierKFSingle;
-	dissolveArrow?: [number] | KFSingle[] | modifierKFSingle;
-	interactable?: [number] | KFSingle[] | modifierKFSingle;
-	time?: KFSingle[];
-	color?: Vec4 | KFVec4[] | modifierKFVec4;
-	position?: Vec3 | KFVec3[] | modifierKFVec3;
-	rotation?: Vec3 | KFVec3[] | modifierKFVec3;
-	localPosition?: Vec3 | KFVec3[] | modifierKFVec3;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
+	interactable?: [number] | KFScalar[] | KFScalarModifier;
+	time?: KFScalar[];
+	color?: Vec4 | KFVec4[] | KFVec4Modifier;
+	position?: Vec3 | KFVec3[] | KFVec3Modifier;
+	rotation?: Vec3 | KFVec3[] | KFVec3Modifier;
+	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 };
 export type TrackParentProps = { childrenTracks: string[]; parentTrack: string; worldPositionStays?: boolean };
 export type PlayerObjectControllers = "Root" | "Head" | "LeftHand" | "RightHand";
@@ -557,8 +557,8 @@ export type ComponentAnimProps = {
 	track?: string;
 	duration?: number;
 	easing?: Easing;
-	BloomFogEnvironment?: { attenuation?: [number] | KFSingle[]; offset?: [number] | KFSingle[]; startY?: [number] | KFSingle[]; height?: [number] | KFSingle[] };
-	TubeBloomPrePassLight?: { colorAlphaMultiplier?: [number] | KFSingle[]; bloomFogIntensityMultiplier?: [number] | KFSingle[] };
+	BloomFogEnvironment?: { attenuation?: [number] | KFScalar[]; offset?: [number] | KFScalar[]; startY?: [number] | KFScalar[]; height?: [number] | KFScalar[] };
+	TubeBloomPrePassLight?: { colorAlphaMultiplier?: [number] | KFScalar[]; bloomFogIntensityMultiplier?: [number] | KFScalar[] };
 };
 
 // Environment and Geometry

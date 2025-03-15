@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Easing, LightEventCustomData, LightEventJSON, LightTypeNames, LightValueNames, LightKeyframeFrameType, LightTypeNumbers, LightValueNumbers, Vec3, Vec4 } from "./Types.ts";
+import { Easing, LightEventCustomData, LightEventJSON, LightTypeNames, LightValueNames, KFColorVec4, LightTypeNumbers, LightValueNumbers, Vec3, Vec4 } from "./Types.ts";
 
 export class LightEvent {
 	/**
@@ -256,7 +256,7 @@ export class LightKeyframe {
 	 * @param ids The light id/s to target.
 	 */
 	constructor(public time = 0, public duration = 1, public type: LightTypeNames = "BackLasers", public ids?: number | number[]) {}
-	private animation: LightKeyframeFrameType[] = [];
+	private animation: KFColorVec4[] = [];
 	get keyframes() {
 		return this.animation.sort((a, b) => a[4] - b[4]);
 	}
@@ -268,7 +268,7 @@ export class LightKeyframe {
 	 * Add keyframes to your animation.
 	 * @param frames The frames to add.
 	 */
-	addFrames(...frames: LightKeyframeFrameType[]) {
+	addFrames(...frames: KFColorVec4[]) {
 		this.keyframes = [...this.keyframes, ...frames];
 		return this;
 	}
