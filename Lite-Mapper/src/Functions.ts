@@ -205,13 +205,6 @@ export function repeat(rep: number, code: (x: number) => void) {
 }
 
 /**
- * Create a new array from a function of x. e.g arrFromFunction(10, x => x * 2)
- * @param length The length of the array.
- * @param func The function to run through the array.
- */
-export const arrFromFunction = <T>(length: number, func: (x: number) => T) => Array.from(Array(length).keys()).map(x => func(x));
-
-/**
  * Generate a random number.
  * @param min The minimun possible number to generate (inclusive).
  * @param max The maximum possible number to generate (exclusive).
@@ -600,18 +593,6 @@ export function jsonPrune(obj: Record<string, any>) {
 			delete obj[prop];
 		}
 	});
-}
-
-/**
- * Remove entries from an array and return the modified array. Affects the original array, therefore you do not need to reassign.
- * @param arr The array to remove elements from.
- * @param indexes The indexes of the elements to remove.
- */
-export function arrRem<T extends any[]>(arr: T, indexes: number[]) {
-	for (let i = indexes.length - 1; i >= 0; i--) {
-		arr.splice(indexes[i], 1);
-	}
-	return arr as T;
 }
 
 /**

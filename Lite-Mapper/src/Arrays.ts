@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { lerp, random, repeat } from "./Functions.ts";
 import { Easing, NumberArrLike } from "./Types.ts";
 
@@ -246,3 +247,22 @@ export class ArrOp<T extends NumberArrLike> {
 		return Array.from(this.arr).reduce((a, b) => a + b);
 	}
 }
+
+/**
+ * Remove entries from an array and return the modified array. This mutates the original array, therefore you do not need to reassign.
+ * @param arr The array to remove elements from.
+ * @param indexes The indexes of the elements to remove.
+ */
+export function arrRem(arr: any[], indexes: number[]) {
+	for (let i = indexes.length - 1; i >= 0; i--) {
+		arr.splice(indexes[i], 1);
+	}
+	return arr;
+}
+
+/**
+ * Create a new array from a function of x. e.g arrFromFunction(10, x => x * 2)
+ * @param length The length of the array.
+ * @param func The function to run through the array.
+ */
+export const arrFromFunction = <T>(length: number, func: (x: number) => T) => new Array(length).fill(0).map((_, i) => func(i));
