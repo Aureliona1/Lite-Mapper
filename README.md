@@ -1,7 +1,7 @@
 # Lite-Mapper
 
 ![image](images/banner1.png "This image was actually made with ReMapper lol")
-Lite-Mapper is a lightweight, library to aid in the creation of V3 Beat Saber maps. Lite-Mapper provides basic support for the creation of various objects for Beat Saber maps. This includes modded elements for [Chroma and Noodle Extensions](https://github.com/Aeroluna/Heck).
+Lite-Mapper is a lightweight library to aid in the creation of V3 Beat Saber maps. Lite-Mapper provides basic support for the creation of various objects for Beat Saber maps. This includes modded elements for [Chroma and Noodle Extensions](https://github.com/Aeroluna/Heck).
 
 ## How to use it
 
