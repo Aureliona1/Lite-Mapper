@@ -1,8 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
+import { arrRem } from "./Arrays.ts";
 import { ye3 } from "./Consts.ts";
 import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { repeat, filterEnvironments, arrRem, mapRange } from "./Functions.ts";
+import { repeat, filterEnvironments, mapRange } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
 
