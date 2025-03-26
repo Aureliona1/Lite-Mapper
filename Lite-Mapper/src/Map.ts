@@ -281,7 +281,20 @@ export class BeatMap {
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
-		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+		let rawMap: V3MapJSON = copy(LM_CONST.V3_MAP_FALLBACK);
+		try {
+			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
+		} catch (e) {
+			LMLog(e, "Error", "MapHandler");
+			LMLog("Writing empty map as fallback...");
+			try {
+				Deno.writeTextFileSync(inputDiff + ".dat", JSON.stringify(rawMap));
+			} catch (e2) {
+				LMLog(e2, "Error", "MapHandler");
+				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				Deno.exit(1);
+			}
+		}
 
 		// Check the version before attempting to classify
 		if (!/3\.\d+\.\d+/.test(rawMap.version)) {
@@ -606,7 +619,14 @@ export class BeatMap {
 	 * @param diff The name of the input difficulty to add elements from.
 	 */
 	addInputDiff(diff: DiffNames) {
-		const input: V3MapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
+		let input: V3MapJSON = copy(LM_CONST.V3_MAP_FALLBACK);
+		try {
+			input = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
+		} catch (e) {
+			LMLog(`Unable to add ${diff} to your map...`, "Error", "addInputDiff");
+			LMLog(e, "Error", "addInputDiff");
+		}
+
 		const classMap = BMJSON.classify(input);
 
 		this.bpmEvents.push(...classMap.bpmEvents);
@@ -673,7 +693,11 @@ export class BeatMap {
 			optimizeMaterials();
 		}
 		const rawMap = BMJSON.JSONify(this.internalMap);
-		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
+		try {
+			Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
+		} catch (e) {
+			LMLog(e, "Error");
+		}
 		if (this.info.isModified) {
 			this.info.save();
 		}
@@ -756,6 +780,7 @@ class Info {
 
 	private infoVersion: number = 0;
 	raw: V2InfoJSON = copy(LM_CONST.V2_INFO_FALLBACK);
+	private initialRaw: V2InfoJSON = copy(LM_CONST.V2_INFO_FALLBACK);
 	/**
 	 * Initialise the info file reader.
 	 */
@@ -767,8 +792,16 @@ class Info {
 		} catch (e) {
 			LMLog("Error reading info file: " + e, "Error", "InfoHandler");
 			LMLog("Writing blank info file...", "Log", "InfoHandler");
+
 			inputRaw = copy(LM_CONST.V2_INFO_FALLBACK);
-			Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
+			try {
+				Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
+			} catch (e2) {
+				LMLog(e2, "Error", "InfoHandler");
+				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				Deno.exit(1);
+			}
+
 			LMLog(`Fallback info.dat written...`, "Log", "InfoHandler");
 			LMLog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
 			Deno.exit(1);
@@ -784,6 +817,7 @@ class Info {
 		} else if (inputRaw._version) {
 			if (/2\.\d\.\d/.test(inputRaw._version)) {
 				this.raw = inputRaw as V2InfoJSON;
+				this.initialRaw = copy(inputRaw) as V2InfoJSON;
 				this.infoVersion = 2;
 
 				// Make sure we are using the templated format
@@ -806,7 +840,7 @@ class Info {
 		}
 	}
 	get isModified() {
-		return !compare(JSON.parse(Deno.readTextFileSync("info.dat")), this.raw);
+		return !compare(this.initialRaw, this.raw);
 	}
 	/**
 	 * Write to the info file.

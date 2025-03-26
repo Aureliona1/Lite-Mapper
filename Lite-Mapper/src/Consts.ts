@@ -1,5 +1,5 @@
 import { deepFreeze } from "./Functions.ts";
-import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V4InfoJSON, Vec3 } from "./Types.ts";
+import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON, Vec3 } from "./Types.ts";
 
 /**
  * Constant value to send objects to so that they are out of view of the player.
@@ -197,6 +197,29 @@ export const LM_CONST = deepFreeze({
 		colorSchemes: [],
 		difficultyBeatmaps: []
 	} satisfies V4InfoJSON,
+	/**
+	 * Placeholder for valid V3 beatmap JSON.
+	 */
+	V3_MAP_FALLBACK: {
+		version: "2.1.0",
+		bpmEvents: [],
+		colorNotes: [],
+		bombNotes: [],
+		obstacles: [],
+		sliders: [],
+		burstSliders: [],
+		waypoints: [],
+		rotationEvents: [],
+		basicBeatmapEvents: [],
+		basicEventTypesWithKeywords: {},
+		colorBoostBeatmapEvents: [],
+		vfxEventBoxGroups: [],
+		lightColorEventBoxGroups: [],
+		lightRotationEventBoxGroups: [],
+		lightTranslationEventBoxGroups: [],
+		useNormalEventsAsCompatibleEvents: true,
+		_fxEventsCollection: { _fl: [], _il: [] }
+	} satisfies V3MapJSON,
 	/**
 	 * Internal map for mapping numerical object colors to named colors. DO NOT EDIT!
 	 */

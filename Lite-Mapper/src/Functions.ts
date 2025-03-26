@@ -352,7 +352,11 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 	const fileName = "LM_Cache.json";
 	ensureFileSync(fileName);
 	if (process == "Clear") {
-		Deno.writeTextFileSync(fileName, JSON.stringify({}));
+		try {
+			Deno.removeSync(fileName);
+		} catch (e) {
+			LMLog(e, "Error");
+		}
 	} else {
 		try {
 			const raw = Deno.readTextFileSync(fileName),
