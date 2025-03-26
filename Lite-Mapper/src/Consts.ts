@@ -201,7 +201,7 @@ export const LM_CONST = deepFreeze({
 	 * Placeholder for valid V3 beatmap JSON.
 	 */
 	V3_MAP_FALLBACK: {
-		version: "2.1.0",
+		version: "3.3.0",
 		bpmEvents: [],
 		colorNotes: [],
 		bombNotes: [],

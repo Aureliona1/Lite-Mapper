@@ -4,7 +4,7 @@
     ],
     "scripts": {
         "lm": {
-            "cmd": "deno run --no-check script.ts",
+            "cmd": "deno run --allow-all script.ts",
             "desc": "Run Lite-Mapper"
         }
     },

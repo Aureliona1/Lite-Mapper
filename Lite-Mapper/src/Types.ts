@@ -220,7 +220,7 @@ export type V2MapJSON = {
  * The JSON layout of a V3 map.
  */
 export type V3MapJSON = {
-	version: string;
+	version: "3.0.0" | "3.1.0" | "3.2.0" | "3.3.0";
 	bpmEvents: { b: number; m: number }[];
 	rotationEvents: { b: number; e: number; r: number }[];
 	colorNotes: NoteJSON[];

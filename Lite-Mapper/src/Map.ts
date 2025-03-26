@@ -286,7 +286,8 @@ export class BeatMap {
 			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		} catch (e) {
 			LMLog(e, "Error", "MapHandler");
-			LMLog("Writing empty map as fallback...");
+			LMLog("Ensure that you have selected the correct difficulty as your input difficulty, and make sure that the file exists...", "Warning", "MapHandler");
+			LMLog("Writing empty map as fallback...", "Warning", "MapHandler");
 			try {
 				Deno.writeTextFileSync(inputDiff + ".dat", JSON.stringify(rawMap));
 			} catch (e2) {
