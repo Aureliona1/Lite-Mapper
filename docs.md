@@ -32,6 +32,13 @@ For a better understanding of how properties and objects work, read the [Heck](h
 
 ## Using Lite-Mapper
 
+Lite-Mapper is made with [TypeScript](https://www.typescriptlang.org/), so if you don't know how to code in TypeScript (or even JavaScript), then it is a very good idea to get a grasp of the basics. Some useful places to look for learning TypeScipt and JavaScript are:
+
+-   [W3Schools JS](https://www.w3schools.com/js/default.asp)
+-   [TypeScript Docs](https://www.typescriptlang.org/docs/)
+-   [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting)
+-   [Code Academy](https://www.codecademy.com/learn/learn-typescript)
+
 Most of Lite-Mapper's code has extensive JSDoc comments to help self-document the code as you write it.
 This will appear automatically as you type out functions, classes, and variables in VSCode.
 
