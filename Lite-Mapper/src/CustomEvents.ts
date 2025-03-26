@@ -1,6 +1,6 @@
 import { jsonPrune, copy } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { CustomEventJSON, CustomEventNames, TrackAnimAllProps, TrackAnimProps, PathAnimAllProps, PathAnimProps, TrackParentProps, PlayerObjectControllers, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
+import { CustomEventJSON, CustomEventName, TrackAnimDataProps, TrackAnimAnimationProps, PathAnimDataProps, PathAnimAnimationProps, TrackParentProps, PlayerObjectTarget, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.
@@ -41,8 +41,8 @@ export class AnimateTrack {
 		this.duration = duration;
 	}
 	private b = 0;
-	private t: CustomEventNames = "AnimateTrack";
-	private d: TrackAnimAllProps = {};
+	private t: CustomEventName = "AnimateTrack";
+	private d: TrackAnimDataProps = {};
 
 	set time(x: number) {
 		this.b = x;
@@ -66,7 +66,7 @@ export class AnimateTrack {
 		return this.d.duration;
 	}
 	get animate() {
-		return this.d as TrackAnimProps;
+		return this.d as TrackAnimAnimationProps;
 	}
 	set animate(x) {
 		this.d = { ...this.d, ...x };
@@ -106,7 +106,7 @@ export class AnimateTrack {
 	static from(x: CustomEventJSON) {
 		const a = new AnimateTrack();
 		if (x.t == "AnimateTrack") {
-			a.d = x.d as TrackAnimAllProps;
+			a.d = x.d as TrackAnimDataProps;
 			a.b = x.b;
 		}
 		return a;
@@ -131,8 +131,8 @@ export class AssignPathAnimation {
 		this.track = track;
 	}
 	private b = 0;
-	private t: CustomEventNames = "AssignPathAnimation";
-	private d: PathAnimAllProps = {};
+	private t: CustomEventName = "AssignPathAnimation";
+	private d: PathAnimDataProps = {};
 
 	set time(x) {
 		this.b = x;
@@ -156,7 +156,7 @@ export class AssignPathAnimation {
 		return this.d.easing;
 	}
 	get animate() {
-		return this.d as PathAnimProps;
+		return this.d as PathAnimAnimationProps;
 	}
 	set animate(x) {
 		this.d = { ...this.d, ...x };
@@ -184,7 +184,7 @@ export class AssignPathAnimation {
 	static from(x: CustomEventJSON) {
 		const a = new AssignPathAnimation();
 		if (x.t == "AssignPathAnimation") {
-			a.d = x.d as PathAnimAllProps;
+			a.d = x.d as PathAnimDataProps;
 			a.b = x.b;
 		}
 		return a;
@@ -214,7 +214,7 @@ export class AssignTrackParent {
 		}
 	}
 	private b = 0;
-	private t: CustomEventNames = "AssignTrackParent";
+	private t: CustomEventName = "AssignTrackParent";
 	private d: TrackParentProps = { childrenTracks: [], parentTrack: "" };
 
 	set time(x) {
@@ -287,13 +287,13 @@ export class AssignPlayerToTrack {
 	 * @param time The time of the assignment (leave blank for 0).
 	 * @param target The target section of the player to assign.
 	 */
-	constructor(track: string = "", time = 0, target?: PlayerObjectControllers) {
+	constructor(track: string = "", time = 0, target?: PlayerObjectTarget) {
 		this.time = time;
 		this.track = track;
 		this.target = target;
 	}
 	private b = 0;
-	private t: CustomEventNames = "AssignPlayerToTrack";
+	private t: CustomEventName = "AssignPlayerToTrack";
 	private d: PlayerToTrackProps = {};
 
 	set time(x) {
@@ -366,7 +366,7 @@ export class AnimateComponent {
 		this.duration = duration;
 	}
 	private b = 0;
-	private t: CustomEventNames = "AnimateComponent";
+	private t: CustomEventName = "AnimateComponent";
 	private d: ComponentAnimProps = {};
 
 	set time(x) {

@@ -8,17 +8,17 @@ import {
 	EnvironmentJSON,
 	GeometryMaterialJSON,
 	GeometryObjectJSON,
-	GeometryObjectTypes,
-	KeywordsBTSPillar,
-	KeywordsBaseWater,
-	KeywordsBillieWater,
-	KeywordsInterscopeCar,
-	KeywordsInterscopeConcrete,
-	KeywordsStandard,
-	KeywordsWaterfallMirror,
-	LightTypeNumbers,
+	GeometryObjectPrimitive,
+	KeywordBTSPillar,
+	KeywordBaseWater,
+	KeywordBillieWater,
+	KeywordInterscopeCar,
+	KeywordInterscopeConcrete,
+	KeywordStandard,
+	KeywordWaterfallMirror,
+	LightTypeNumber,
 	LookupMethod,
-	MaterialShader,
+	MaterialShaderName,
 	Vec3,
 	Vec4
 } from "./Types.ts";
@@ -53,7 +53,7 @@ export class Environment {
 	 * @param type The geometry primitive type to use.
 	 * @param mat The material of the geometry object.
 	 */
-	geo(type: GeometryObjectTypes, mat: GeometryMaterialJSON | string) {
+	geo(type: GeometryObjectPrimitive, mat: GeometryMaterialJSON | string) {
 		this.geometry = {
 			type: type,
 			material: mat
@@ -128,7 +128,7 @@ export class Environment {
 			if (x.components.ILightWithId) {
 				e.components.lightIds = { id: x.components.ILightWithId.lightID };
 				if (x.components.ILightWithId.type) {
-					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypeNumbers);
+					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypeNumber);
 				}
 			}
 			if (x.components.TubeBloomPrePassLight) {
@@ -222,11 +222,11 @@ export class Material {
 	/**
 	 * The shader to use for the material.
 	 */
-	shader: MaterialShader = "Standard";
+	shader: MaterialShaderName = "Standard";
 	/**
 	 * Initialise the material to use the BTSPillar shader. This will add autofill for the shader keywords to suggest only compatible keywords for BTSPillar.
 	 */
-	BTSPillar(shaderKeywords?: KeywordsBTSPillar, color?: Vec3 | Vec4, track?: string) {
+	BTSPillar(shaderKeywords?: KeywordBTSPillar[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -256,7 +256,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the BaseWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BaseWater.
 	 */
-	BaseWater(shaderKeywords?: KeywordsBaseWater, color?: Vec3 | Vec4, track?: string) {
+	BaseWater(shaderKeywords?: KeywordBaseWater[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -266,7 +266,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the BillieWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BillieWater.
 	 */
-	BillieWater(shaderKeywords?: KeywordsBillieWater, color?: Vec3 | Vec4, track?: string) {
+	BillieWater(shaderKeywords?: KeywordBillieWater[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -276,7 +276,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the Standard shader. This will add autofill for the shader keywords to suggest only compatible keywords for Standard.
 	 */
-	Standard(shaderKeywords?: KeywordsStandard, color?: Vec3 | Vec4, track?: string) {
+	Standard(shaderKeywords?: KeywordStandard[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -286,7 +286,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the InterscopeConcrete shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeConcrete.
 	 */
-	InterscopeConcrete(shaderKeywords?: KeywordsInterscopeConcrete, color?: Vec3 | Vec4, track?: string) {
+	InterscopeConcrete(shaderKeywords?: KeywordInterscopeConcrete[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -296,7 +296,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the InterscopeCar shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeCar.
 	 */
-	InterscopeCar(shaderKeywords?: KeywordsInterscopeCar, color?: Vec3 | Vec4, track?: string) {
+	InterscopeCar(shaderKeywords?: KeywordInterscopeCar[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -306,7 +306,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the WaterfallMirror shader. This will add autofill for the shader keywords to suggest only compatible keywords for WaterfallMirror.
 	 */
-	WaterfallMirror(shaderKeywords?: KeywordsWaterfallMirror, color?: Vec3 | Vec4, track?: string) {
+	WaterfallMirror(shaderKeywords?: KeywordWaterfallMirror[], color?: Vec3 | Vec4, track?: string) {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;

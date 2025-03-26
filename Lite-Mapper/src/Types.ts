@@ -11,11 +11,23 @@ export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`
 export type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
 export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
+/**
+ * JSON Objects used in V3 light events to filter lights.
+ */
 export type BeatmapFilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
+/**
+ * JSON RGBA objeect with named keys.
+ */
 export type RGBAObject = { r: number; b: number; g: number; a: number };
+/**
+ * JSON Fx event for V3 beatmaps.
+ */
 export type BeatmapfxEvent = { b: number; p: number; i: number; v: number };
 
-export type V2ColorScheme = {
+/**
+ * The color scheme layout for V2 info files.
+ */
+export type V2InfoColorScheme = {
 	useOverride: boolean;
 	colorScheme: {
 		colorSchemeId: string;
@@ -29,6 +41,9 @@ export type V2ColorScheme = {
 	};
 };
 
+/**
+ * The layout for beatmaps in V2 info files.
+ */
 export type V2InfoBeatmap = {
 	_difficulty: BeatMapDifficultyNames;
 	_difficultyRank: number;
@@ -40,11 +55,17 @@ export type V2InfoBeatmap = {
 	_customData?: Record<string, any>;
 };
 
+/**
+ * JSON for beatmap sets in V2 info files.
+ */
 export type V2InfoBeatmapSet = {
 	_beatmapCharacteristicName: BeatMapCharacteristicNames;
 	_difficultyBeatmaps: V2InfoBeatmap[];
 };
 
+/**
+ * JSON layout for V2 info files.
+ */
 export type V2InfoJSON = {
 	_version: "2.1.0";
 	_songName: string;
@@ -62,17 +83,23 @@ export type V2InfoJSON = {
 	_allDirectionsEnvironmentName: string;
 	_songTimeOffset: number;
 	_environmentNames?: EnvironmentName[];
-	_colorSchemes?: V2ColorScheme[];
+	_colorSchemes?: V2InfoColorScheme[];
 	_customData?: Record<string, any>;
 	_difficultyBeatmapSets: V2InfoBeatmapSet[];
 };
 
+/**
+ * The song info object in V4 info files.
+ */
 export type V4SongInfo = {
 	title: string;
 	subTitle: string;
 	author: string;
 };
 
+/**
+ * The audio info object in V4 info files.
+ */
 export type V4AudioInfo = {
 	songFilename: string;
 	songDuration?: number;
@@ -83,6 +110,9 @@ export type V4AudioInfo = {
 	previewDuration: number;
 };
 
+/**
+ * The color scheme layout for V4 info files.
+ */
 export type V4InfoColorScheme = {
 	useOverride: boolean;
 	colorSchemeName: string;
@@ -95,6 +125,9 @@ export type V4InfoColorScheme = {
 	environmentColor1Boost: string;
 };
 
+/**
+ * The beatmap layout for V4 info files.
+ */
 export type V4InfoBeatmap = {
 	characteristic: BeatMapCharacteristicNames;
 	difficulty: BeatMapDifficultyNames;
@@ -111,6 +144,9 @@ export type V4InfoBeatmap = {
 	customData?: Record<string, any>;
 };
 
+/**
+ * The JSON layout of a V4 info file.
+ */
 export type V4InfoJSON = {
 	version: "4.0.0";
 	song: V4SongInfo;
@@ -123,6 +159,9 @@ export type V4InfoJSON = {
 	customData?: Record<string, any>;
 };
 
+/**
+ * The JSON layout for V4 audio data files.
+ */
 export type V2AudioDataJSON = {
 	_version: "2.0.0";
 	_songSampleCount: number;
@@ -130,6 +169,9 @@ export type V2AudioDataJSON = {
 	_regions: { _startSampleIndex: number; _endSampleIndex: number; _startBeat: number; _endBeat: number }[];
 };
 
+/**
+ * This is currently unused by LM, but there are plans to implement this in the future.
+ */
 export type V2MapJSON = {
 	_version: string;
 	_notes: {
@@ -174,6 +216,9 @@ export type V2MapJSON = {
 	_customData?: Record<string, any>;
 };
 
+/**
+ * The JSON layout of a V3 map.
+ */
 export type V3MapJSON = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
@@ -223,6 +268,9 @@ export type V3MapJSON = {
 	};
 };
 
+/**
+ * The layout of a V3 beatmap with all objects in class form.
+ */
 export type ClassMap = {
 	version: string;
 	bpmEvents: { b: number; m: number }[];
@@ -272,6 +320,9 @@ export type ClassMap = {
 	};
 };
 
+/**
+ * A collection of all the valid environment names.
+ */
 export type EnvironmentName =
 	| "BTSEnvironment"
 	| "BigMirrorEnvironment"
@@ -301,6 +352,9 @@ export type EnvironmentName =
 	| "TheSecondEnvironment"
 	| "EDMEnvironment";
 
+/**
+ * The collection of valid setings that Heck can override.
+ */
 export type HeckSettings = {
 	_playerOptions?: {
 		_leftHanded?: boolean;
@@ -367,6 +421,9 @@ export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];
 
 type EaseBase<T extends string> = `easeIn${T}` | `easeOut${T}` | `easeInOut${T}`;
+/**
+ * All valid easings implemented in beat saber.
+ */
 export type Easing = EaseBase<"Sine"> | EaseBase<"Quad"> | EaseBase<"Cubic"> | EaseBase<"Quart"> | EaseBase<"Quint"> | EaseBase<"Circ"> | EaseBase<"Expo"> | EaseBase<"Back"> | EaseBase<"Bounce"> | EaseBase<"Elastic"> | "easeStep" | "easeLinear";
 
 export type KFVec3 = [number, number, number, number, Easing?, "splineCatmullRom"?];
@@ -398,6 +455,9 @@ export type KFColorVec4 = [number, number, number, number, number, Easing?, ("HS
 
 // Object Properties
 
+/**
+ * A collection of all the valid properties that can be animated on gameplay objects.
+ */
 export type ObjectAnimProps = {
 	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
@@ -410,18 +470,28 @@ export type ObjectAnimProps = {
 	color?: Vec4 | KFVec4[] | KFVec4Modifier;
 };
 
+/**
+ * A collection of the properties that can be applied in the components section of an environment.
+ * These properties are all static.
+ */
 export type ComponentStaticProps = {
-	lightIds?: { id?: number; type?: LightTypeNames };
+	lightIds?: { id?: number; type?: LightTypeName };
 	fog?: { attenuation?: number; offset?: number; startY?: number; height?: number };
 	lightBloom?: { colorMult?: number; bloomMult?: number };
 };
 
+/**
+ * JSON representation of static component properties.
+ */
 export type ComponentStaticJSONProps = {
 	ILightWithId?: { lightID?: number; type?: number };
 	BloomFogEnvironment?: { attenuation?: number; offset?: number; startY?: number; height?: number };
 	TubeBloomPrePassLight?: { colorAlphaMultiplier?: number; bloomFogIntensityMultiplier?: number };
 };
 
+/**
+ * A collection of the custom properties that can be added onto note objects.
+ */
 export type NoteCustomProps = {
 	coordinates?: Vec2;
 	worldRotation?: Vec3;
@@ -441,6 +511,9 @@ export type NoteCustomProps = {
 	track?: string | string[];
 	animation?: ObjectAnimProps;
 };
+/**
+ * A collection of the custom properties that can be added to slider objects.
+ */
 export type SliderCustomProps = {
 	coordinates?: Vec2;
 	worldRotation?: Vec3;
@@ -455,12 +528,22 @@ export type SliderCustomProps = {
 	track?: string | string[];
 };
 
-export type ObjectColorNames = keyof typeof LM_CONST.ObjectColorsMap.map;
-export type ObjectColorNumbers = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
-export type ObjectDirectionNames = keyof typeof LM_CONST.ObjectDirectionsMap.map;
-export type ObjectDirectionNumbers = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
-
+/**
+ * A collection of the custom properties that can be added to walls.
+ */
 export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
+
+/**
+ * The L or R colors of gameplay objects.
+ */
+export type ObjectColorName = keyof typeof LM_CONST.ObjectColorsMap.map;
+export type ObjectColorNumber = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
+/**
+ * Valid cut directions of gameplay objects.
+ */
+export type ObjectDirectionName = keyof typeof LM_CONST.ObjectDirectionsMap.map;
+export type ObjectDirectionNumber = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
+
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
 export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
@@ -484,30 +567,34 @@ export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 |
 export type LightEventJSON = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
 export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
-export type LightTypeNames = keyof typeof LM_CONST.LightEventTypesMap.map;
-export type LightValueNames = keyof typeof LM_CONST.LightEventValuesMap.map;
-export type LightTypeNumbers = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
-export type LightValueNumbers = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
+/**
+ * A valid light type name, this specifies which light/s to target with a light event.
+ */
+export type LightTypeName = keyof typeof LM_CONST.LightEventTypesMap.map;
+/**
+ * A valid light value name, this specifies what the light event actually does to the light/s.
+ */
+export type LightValueName = keyof typeof LM_CONST.LightEventValuesMap.map;
+export type LightTypeNumber = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
+export type LightValueNumber = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
 
 // CE props
 
-export type CustomEventJSON = { b: number; t: CustomEventNames; d: TrackAnimProps | PathAnimProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
+export type CustomEventName = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
 
-export type PathAnimAllProps = {
-	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
-	dissolve?: [number] | KFScalar[] | KFScalarModifier;
-	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
-	interactable?: [number] | KFScalar[] | KFScalarModifier;
-	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	color?: Vec4 | KFVec4[] | KFVec4Modifier;
-	track?: string | string[];
-	duration?: number;
-	easing?: Easing;
-};
-export type PathAnimProps = {
+/**
+ * The JSON format of a generic custom event.
+ */
+export type CustomEventJSON = { b: number; t: CustomEventName; d: TrackAnimAnimationProps | PathAnimAnimationProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
+
+/**
+ * A collection of the properties that can be added to a path animation.
+ */
+export type PathAnimDataProps = PathAnimAnimationProps & { track?: string | string[]; duration?: number; easing?: Easing };
+/**
+ * A collection of the animatable properties that can be added to a path animation.
+ */
+export type PathAnimAnimationProps = {
 	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
 	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
@@ -518,25 +605,20 @@ export type PathAnimProps = {
 	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 	color?: Vec4 | KFVec4[] | KFVec4Modifier;
 };
-export type TrackAnimAllProps = {
-	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
-	dissolve?: [number] | KFScalar[] | KFScalarModifier;
-	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
-	interactable?: [number] | KFScalar[] | KFScalarModifier;
-	time?: KFScalar[];
-	color?: Vec4 | KFVec4[] | KFVec4Modifier;
-	position?: Vec3 | KFVec3[] | KFVec3Modifier;
-	rotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+
+/**
+ * A collection of the properties that can be added to a track animation.
+ */
+export type TrackAnimDataProps = TrackAnimAnimationProps & {
 	track?: string | string[];
 	duration?: number;
 	easing?: Easing;
 	repeat?: number;
 };
-export type TrackAnimProps = {
+/**
+ * A collection of all the animatable properties that can be added to a track animation.
+ */
+export type TrackAnimAnimationProps = {
 	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
 	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
@@ -550,27 +632,64 @@ export type TrackAnimProps = {
 	rotation?: Vec3 | KFVec3[] | KFVec3Modifier;
 	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
 };
+
+/**
+ * A collection of the properties that can be added to a track parent assignment.
+ */
 export type TrackParentProps = { childrenTracks: string[]; parentTrack: string; worldPositionStays?: boolean };
-export type PlayerObjectControllers = "Root" | "Head" | "LeftHand" | "RightHand";
-export type PlayerToTrackProps = { track?: string; target?: PlayerObjectControllers };
+
+/**
+ * A valid target on the player object that can be assigned to a track.
+ */
+export type PlayerObjectTarget = "Root" | "Head" | "LeftHand" | "RightHand";
+/**
+ * A collection of the properties that can be added to a player track assignment.
+ */
+export type PlayerToTrackProps = { track?: string; target?: PlayerObjectTarget };
+
+/**
+ * A collection of the properties that can be added to a component animation.
+ */
 export type ComponentAnimProps = {
 	track?: string;
 	duration?: number;
 	easing?: Easing;
-	BloomFogEnvironment?: { attenuation?: [number] | KFScalar[]; offset?: [number] | KFScalar[]; startY?: [number] | KFScalar[]; height?: [number] | KFScalar[] };
-	TubeBloomPrePassLight?: { colorAlphaMultiplier?: [number] | KFScalar[]; bloomFogIntensityMultiplier?: [number] | KFScalar[] };
+	BloomFogEnvironment?: {
+		attenuation?: [number] | KFScalar[];
+		offset?: [number] | KFScalar[];
+		startY?: [number] | KFScalar[];
+		height?: [number] | KFScalar[];
+	};
+	TubeBloomPrePassLight?: {
+		colorAlphaMultiplier?: [number] | KFScalar[];
+		bloomFogIntensityMultiplier?: [number] | KFScalar[];
+	};
 };
 
 // Environment and Geometry
 
+/**
+ * A valid lookup method that chroma will use to search for your environment id.
+ */
 export type LookupMethod = "Contains" | "Regex" | "Exact" | "StartsWith" | "EndsWith";
-export type GeometryObjectTypes = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "Plane" | "Quad" | "Triangle";
-export type MaterialShader = "Standard" | "OpaqueLight" | "TransparentLight" | "BaseWater" | "BillieWater" | "BTSPillar" | "InterscopeConcrete" | "InterscopeCar" | "Obstacle" | "WaterfallMirror";
-export type GeometryMaterialJSON = { shader: MaterialShader; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
-export type GeometryObjectJSON = { type: GeometryObjectTypes; material: GeometryMaterialJSON | string };
-export type CustomEventNames = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
+/**
+ * A valid geometry primitive object.
+ */
+export type GeometryObjectPrimitive = "Sphere" | "Capsule" | "Cylinder" | "Cube" | "Plane" | "Quad" | "Triangle";
+/**
+ * The name of one of chroma's registered material shaders.
+ */
+export type MaterialShaderName = "Standard" | "OpaqueLight" | "TransparentLight" | "BaseWater" | "BillieWater" | "BTSPillar" | "InterscopeConcrete" | "InterscopeCar" | "Obstacle" | "WaterfallMirror";
+/**
+ * The JSON format of a geometry material.
+ */
+export type GeometryMaterialJSON = { shader: MaterialShaderName; color?: Vec3 | Vec4; track?: string; shaderKeywords?: string[] };
+/**
+ * The JSON format of a geometry object.
+ */
+export type GeometryObjectJSON = { type: GeometryObjectPrimitive; material: GeometryMaterialJSON | string };
 
-export type KeywordsBaseWater = (
+export type KeywordBaseWater =
 	| "FOG"
 	| "HEIGHT_FOG"
 	| "INVERT_RIMLIGHT"
@@ -587,10 +706,9 @@ export type KeywordsBaseWater = (
 	| "_ROTATE_UV_NONE"
 	| "_VERTEXMODE_NONE"
 	| "_WHITEBOOSTTYPE_NONE"
-	| "_ZWRITE_ON"
-)[];
+	| "_ZWRITE_ON";
 
-export type KeywordsBillieWater = (
+export type KeywordBillieWater =
 	| "FOG"
 	| "HEIGHT_FOG"
 	| "INVERT_RIMLIGHT"
@@ -607,12 +725,11 @@ export type KeywordsBillieWater = (
 	| "_ROTATE_UV_NONE"
 	| "_VERTEXMODE_NONE"
 	| "_WHITEBOOSTTYPE_NONE"
-	| "_ZWRITE_ON"
-)[];
+	| "_ZWRITE_ON";
 
-export type KeywordsBTSPillar = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE")[];
+export type KeywordBTSPillar = "DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE";
 
-export type KeywordsInterscopeCar = (
+export type KeywordInterscopeCar =
 	| "ENABLE_DIFFUSE"
 	| "ENABLE_DIRT"
 	| "ENABLE_DIRT_DETAIL"
@@ -632,10 +749,9 @@ export type KeywordsInterscopeCar = (
 	| "_ENABLE_FOG_TINT"
 	| "_RIMLIGHT_NONE"
 	| "_VERTEXMODE_METALSMOOTHNESS"
-	| "_WHITEBOOSTTYPE_NONE"
-)[];
+	| "_WHITEBOOSTTYPE_NONE";
 
-export type KeywordsInterscopeConcrete = (
+export type KeywordInterscopeConcrete =
 	| "DIRT"
 	| "ENABLE_DIFFUSE"
 	| "ENABLE_DIRT"
@@ -652,12 +768,11 @@ export type KeywordsInterscopeConcrete = (
 	| "REFLECTION_PROBE_BOX_PROJECTION_OFFSET"
 	| "_EMISSION"
 	| "_ENABLE_FOG_TINT"
-	| "_RIMLIGHT_NONE"
-)[];
+	| "_RIMLIGHT_NONE";
 
-export type KeywordsStandard = ("DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE")[];
+export type KeywordStandard = "DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE";
 
-export type KeywordsWaterfallMirror = ("DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION")[];
+export type KeywordWaterfallMirror = "DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION";
 
 // Helper types
 
