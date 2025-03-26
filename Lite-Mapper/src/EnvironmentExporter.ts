@@ -41,7 +41,7 @@ export function exportShareableEnv(settings: USESettings) {
 		envArray.push(nu.return());
 	});
 	if (envArray.length == 0) {
-		LMLog("Map doesn't contain eny environments! Shareable env will be empty...", "Warning");
+		LMLog("Map doesn't contain eny environments! Shareable env will be empty...", "Warning", "EnvironmentExporter");
 	}
 	//Create the file
 	try {
@@ -62,5 +62,5 @@ export function exportShareableEnv(settings: USESettings) {
 	} catch (error) {
 		LMLog(error, "Error");
 	}
-	LMLog(`Exported ${envArray.map.length} environments to "${settings.name}.dat"...`);
+	LMLog(`Exported ${envArray.map.length} environments to "${settings.name}.dat"...`, "Log", "EnvironmentExporter");
 }

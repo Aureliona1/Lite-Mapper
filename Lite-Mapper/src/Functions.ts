@@ -245,20 +245,45 @@ export async function copyToDir(toDir: string, extraFiles?: string[]) {
 	await ensureDir(toDir);
 	currentDiff.info.raw._difficultyBeatmapSets.forEach(x => {
 		x._difficultyBeatmaps.forEach(y => {
-			Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
+			try {
+				Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
+			} catch (e) {
+				LMLog(e, "Error");
+				LMLog("Skipping this beatmap...", "Warning", "copyToDir");
+			}
 		});
 	});
 	const songName = currentDiff.info.raw._songFilename,
 		coverName = currentDiff.info.raw._coverImageFilename;
-	Deno.copyFileSync("info.dat", toDir + "/info.dat");
-	Deno.copyFileSync(songName, toDir + "/" + songName);
-	Deno.copyFileSync(coverName, toDir + "/" + coverName);
+	try {
+		Deno.copyFileSync("info.dat", toDir + "/info.dat");
+	} catch (e) {
+		LMLog(e, "Error");
+		LMLog("Skipping info file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+	}
+	try {
+		Deno.copyFileSync(songName, toDir + "/" + songName);
+	} catch (e) {
+		LMLog(e, "Error");
+		LMLog("Skipping song file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+	}
+	try {
+		Deno.copyFileSync(coverName, toDir + "/" + coverName);
+	} catch (e) {
+		LMLog(e, "Error");
+		LMLog("Skipping cover file...", "Warning", "copyToDir");
+	}
 	if (extraFiles) {
 		extraFiles.forEach(x => {
-			Deno.copyFileSync(x, toDir + "/" + x);
+			try {
+				Deno.copyFileSync(x, toDir + "/" + x);
+			} catch (e) {
+				LMLog(e, "Error");
+				LMLog(`Skipping ${x}...`, "Warning", "copyToDir");
+			}
 		});
 	}
-	LMLog(`Copied map to ${toDir}...`);
+	LMLog(`Copied map to ${toDir}...`, "Log", "copyToDir");
 }
 
 /**
@@ -271,15 +296,15 @@ export function runTime() {
 /**
  * Console log with prepended LM message.
  * @param message Message to log.
- * @param error Optional error level.
+ * @param errorLvl Optional error level.
  */
-export function LMLog(message: any, error?: "Warning" | "Error") {
-	if (error == "Warning") {
-		console.log(`\x1b[33m[Warning in LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
-	} else if (error == "Error") {
-		console.log(`\x1b[33m[Error in LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
+export function LMLog(message: any, errorLvl: "Warning" | "Error" | "Log" = "Log", logSource = "Lite-Mapper") {
+	if (errorLvl == "Warning") {
+		console.warn(`${rgb(255, 255, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 255, 0)}WARNING: ${message}\x1b[0m`);
+	} else if (errorLvl == "Error") {
+		console.error(`${rgb(255, 0, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 0, 0)}ERROR: ${message}\x1b[0m`);
 	} else {
-		console.log(`\x1b[37m[LiteMapper: ${runTime()}ms] ${message}\x1b[0m`);
+		console.log(`\x1b[34m[*] \x1b[90m[${logSource}: ${runTime()}ms] \x1b[0m${message}\x1b[0m`);
 	}
 }
 
@@ -345,7 +370,8 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 			}
 			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
 		} catch (e) {
-			console.log(`Cache suffered from error, invalidating cache: ${e}`);
+			LMLog(e, "Error", "CacheHandler");
+			LMLog("Invalidating cache...", "Log", "CacheHandler");
 			LMCache("Clear");
 		}
 	}
@@ -697,3 +723,12 @@ export function deepFreeze<T>(obj: T): T {
 
 	return obj;
 }
+
+/**
+ * Generates an RGB code to color all following text in the console. Reset this with \x1b[0m.
+ * @param red The red value (0 - 255).
+ * @param green The green value (0 - 255).
+ * @param blue The blue value (0 - 255).
+ * @param bg Whether to affect the foreground color or the background (Default - false).
+ */
+export const rgb = (r: number, g: number, b: number, bg = false) => "\x1b[" + (bg ? 48 : 38) + ";2;" + (Math.round(r) % 256) + ";" + (Math.round(g) % 256) + ";" + (Math.round(b) % 256) + "m";

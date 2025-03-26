@@ -3,19 +3,9 @@ import { arrRem } from "./Arrays.ts";
 import { ye3 } from "./Consts.ts";
 import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { repeat, filterEnvironments, mapRange } from "./Functions.ts";
+import { repeat, filterEnvironments, mapRange, compare } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
-
-const duplicateArrsNoOrder = <T extends any[]>(arr1: T, arr2: T) => arr1.sort().toString() == arr2.sort().toString();
-
-function identicalMaterials(mat1: GeometryMaterialJSON | string = { shader: "BTSPillar" }, mat2: GeometryMaterialJSON | string = { shader: "BTSPillar" }) {
-	if (typeof mat1 == "string" || typeof mat2 == "string") {
-		return mat1 == mat2;
-	} else {
-		return mat1.shader == mat2.shader && mat1.color?.toString() == mat2.color?.toString() && (mat2.shaderKeywords ? (mat1.shaderKeywords ? duplicateArrsNoOrder(mat2.shaderKeywords, mat1.shaderKeywords) : false) : !mat1.shaderKeywords) && mat1.track == mat2.track;
-	}
-}
 
 /**
  * Performs several actions on geometry materials across the map.
@@ -49,7 +39,7 @@ export function optimizeMaterials() {
 			if (typeof x.geometry.material !== "string") {
 				currentDiff.environments.forEach(y => {
 					if (y.geometry) {
-						if (typeof y.geometry.material !== "string" && identicalMaterials(x.geometry?.material, y.geometry.material) && j !== k) {
+						if (typeof y.geometry.material !== "string" && compare(x.geometry?.material, y.geometry.material) && j !== k) {
 							duped = true;
 							currentDiff.materials[i] = x.geometry?.material as GeometryMaterialJSON;
 							y.geometry.material = i.toString();
@@ -79,7 +69,7 @@ export function optimizeMaterials() {
 					proc = false;
 				}
 			});
-			if (identicalMaterials(mat, xmat) && i !== j && proc) {
+			if (compare(mat, xmat) && i !== j && proc) {
 				dupes.push([i, j]);
 			}
 		});

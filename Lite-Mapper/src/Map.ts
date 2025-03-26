@@ -2,7 +2,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj, compare } from "./Functions.ts";
+import { compare, copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog, rgb, rgba2Obj } from "./Functions.ts";
 import { LightEvent } from "./Lights.ts";
 import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
@@ -12,7 +12,7 @@ import { LMUpdateCheck } from "./UpdateChecker.ts";
 export let currentDiff: BeatMap,
 	lMInitTime = 0;
 
-export class BeatMapParser {
+export class BMJSON {
 	/**
 	 * Convert raw V3JSON to a classmap.
 	 * @param raw The json to import.
@@ -281,21 +281,20 @@ export class BeatMap {
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
 	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
-		lMInitTime = Date.now();
 		const rawMap: V3MapJSON = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 
-		this.internalMap = BeatMapParser.classify(rawMap);
+		// Check the version before attempting to classify
+		if (!/3\.\d+\.\d+/.test(rawMap.version)) {
+			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error", "MapHandler");
+		}
+
+		this.internalMap = BMJSON.classify(rawMap);
 
 		// Set current diff
 		currentDiff = this;
 
 		this.chromapperValues.bookmarksUseOfficialBPMEvents = this.internalMap.customData?.bookmarksUseOfficialBpmEvents ?? true;
 		this.chromapperValues.mappingTime = this.internalMap.customData?.time ?? 0;
-
-		// Check that the map is V3, we probably wouldn't get here anyway if the map was V2
-		if (/[^3]\.\d\.\d/.test(this.version)) {
-			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error");
-		}
 
 		// Make sure the input and outputs actually exist
 		let inExists = false,
@@ -311,10 +310,10 @@ export class BeatMap {
 			});
 		});
 		if (!inExists) {
-			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
+			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (!outExists) {
-			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning");
+			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (updateCheckFrequency !== "Never") {
 			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
@@ -324,6 +323,9 @@ export class BeatMap {
 				LMCache("Write", "updateCheckTimeout", Date.now() + timeOffset);
 			}
 		}
+
+		// Stats
+		LMLog(`${inputDiff} has been imported, map initialized...`);
 	}
 
 	/**
@@ -605,7 +607,7 @@ export class BeatMap {
 	 */
 	addInputDiff(diff: DiffNames) {
 		const input: V3MapJSON = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
-		const classMap = BeatMapParser.classify(input);
+		const classMap = BMJSON.classify(input);
 
 		this.bpmEvents.push(...classMap.bpmEvents);
 		this.events.push(...classMap.basicBeatmapEvents);
@@ -670,7 +672,7 @@ export class BeatMap {
 		if (this.optimize.materials) {
 			optimizeMaterials();
 		}
-		const rawMap = BeatMapParser.JSONify(this.internalMap);
+		const rawMap = BMJSON.JSONify(this.internalMap);
 		Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		if (this.info.isModified) {
 			this.info.save();
@@ -758,23 +760,26 @@ class Info {
 	 * Initialise the info file reader.
 	 */
 	constructor() {
+		lMInitTime = Date.now();
 		let inputRaw: Record<string, any>;
 		try {
 			inputRaw = JSON.parse(Deno.readTextFileSync("info.dat"));
 		} catch (e) {
-			LMLog("Error reading info file:\n" + e, "Error");
-			LMLog("Writing temporary fallback info file...");
+			LMLog("Error reading info file: " + e, "Error", "InfoHandler");
+			LMLog("Writing blank info file...", "Log", "InfoHandler");
 			inputRaw = copy(LM_CONST.V2_INFO_FALLBACK);
-			this.save();
-			LMLog("Fallback info.dat written...\n\x1b[38;2;255;0;0mIMPORTANT: Save you map in a map editor and fill out required info fields!\nYour map probably will not load in-game until you do this!\x1b[0m");
+			Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
+			LMLog(`Fallback info.dat written...`, "Log", "InfoHandler");
+			LMLog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
+			Deno.exit(1);
 		}
 		if (inputRaw.version) {
 			if (/4\.\d\.\d/.test(inputRaw.version)) {
-				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning");
+				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning", "InfoHandler");
 				this.raw = Info.v4ToV2(inputRaw as V4InfoJSON);
 				this.infoVersion = 4;
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error");
+				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else if (inputRaw._version) {
 			if (/2\.\d\.\d/.test(inputRaw._version)) {
@@ -794,10 +799,10 @@ class Info {
 				// Enforce newer version
 				this.raw._version = "2.1.0";
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error");
+				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else {
-			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error");
+			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
 		}
 	}
 	get isModified() {
