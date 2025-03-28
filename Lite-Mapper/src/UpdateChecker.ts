@@ -6,10 +6,9 @@ import { LMLog, rgb } from "./Functions.ts";
  */
 export async function LMUpdateCheck() {
 	try {
-		const raw = (await fetch("https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/main/Lite-Mapper/src/UpdateChecker.ts")).text(),
-			remoteVer = eval(`${/".+";/.exec(await raw)}`),
-			localVer = ver;
-		if (localVer !== remoteVer) {
+		const json = await (await fetch("https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/main/Lite-Mapper/src/UpdateChecker.ts")).json(),
+			remoteVer = json.version;
+		if (ver !== remoteVer) {
 			LMLog(`A new update of Lite-Mapper is available (${remoteVer}):\n    ${rgb(0, 0, 255)}https://jsr.io/@aurellis/lite-mapper`, "Log", "UpdateChecker");
 		}
 	} catch (e) {
