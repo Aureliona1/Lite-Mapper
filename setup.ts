@@ -56,7 +56,7 @@ function displayHelp() {
 	console.log("    --update-freq: [Daily, Weekly]: Overrides -no-update, adds a line to the generated code to set the update frequency.");
 	console.log(`\n\n${rgb(100, 255, 100)}Difficulty labels:${rgb(255, 255, 0)}`);
 	console.log("    " + diffNames.join("\n    "));
-	prompt(`\n\n${rgb(100, 255, 100)}Press enter to continue...`);
+	prompt(`\n\n${rgb(100, 255, 100)}Press enter to continue...\x1b[0m`);
 	Deno.exit(0);
 }
 
