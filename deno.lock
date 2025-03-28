@@ -1,0 +1,17 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@bengineering/mulberry32@0.0.1": "0.0.1",
+    "npm:fast-simplex-noise@4.0.0": "4.0.0"
+  },
+  "jsr": {
+    "@bengineering/mulberry32@0.0.1": {
+      "integrity": "e856a21a0ce067c430367f2ffdb28992103fe03ab0007faa7f2a1c01c5b987e9"
+    }
+  },
+  "npm": {
+    "fast-simplex-noise@4.0.0": {
+      "integrity": "sha512-2zRCJkPdMnPyXNEeI5IYgH555Nbd/j9nC8YVoOm5dmFDjqxuLD888nEAGB8cSUIyxLlNHCZVlZ7AO27Fm3boJA=="
+    }
+  }
+}

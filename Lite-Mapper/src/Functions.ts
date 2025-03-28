@@ -768,7 +768,7 @@ export function deepFreeze<T>(obj: T): T {
 }
 
 /**
- * Generates an RGB code to color all following text in the console. Reset this with \x1b[0m.
+ * Generates an RGB code to color all following text in the console. Reset this with `\x1b[0m`.
  * @param red The red value (0 - 255).
  * @param green The green value (0 - 255).
  * @param blue The blue value (0 - 255).
