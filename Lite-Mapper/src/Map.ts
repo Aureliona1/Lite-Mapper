@@ -304,9 +304,6 @@ export class BeatMap {
 
 		this.internalMap = BMJSON.classify(rawMap);
 
-		// Set current diff
-		currentDiff = this;
-
 		this.chromapperValues.bookmarksUseOfficialBPMEvents = this.internalMap.customData?.bookmarksUseOfficialBpmEvents ?? true;
 		this.chromapperValues.mappingTime = this.internalMap.customData?.time ?? 0;
 
@@ -340,6 +337,9 @@ export class BeatMap {
 
 		// Stats
 		LMLog(`${inputDiff} has been imported, map initialized...`);
+
+		// Set current diff
+		currentDiff = this;
 	}
 
 	/**

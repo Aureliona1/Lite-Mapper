@@ -1,8 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { ensureDir } from "https://deno.land/std@0.110.0/fs/ensure_dir.ts";
-import { ensureFileSync } from "https://deno.land/std@0.110.0/fs/ensure_file.ts";
-import { makeNoise2D, makeNoise3D, makeNoise4D } from "https://deno.land/x/open_simplex_noise@v2.5.0/mod.ts";
-import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
+import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
+import mulberry32 from "jsr:@bengineering/mulberry32@0.0.1";
 import { ArrOp } from "./Arrays.ts";
 import { ye3 } from "./Consts.ts";
 import { type AnimateComponent, AnimateTrack, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
@@ -204,6 +202,13 @@ export function repeat(rep: number, code: (x: number) => void) {
 	for (let i = 0; i < rep; i++) code(i);
 }
 
+export function stringCodeToNumber(s: string) {
+	return s
+		.split(/./)
+		.map(x => x.charCodeAt(0))
+		.reduce((x, y) => x + y);
+}
+
 /**
  * Generate a random number.
  * @param min The minimun possible number to generate (inclusive).
@@ -214,7 +219,7 @@ export function repeat(rep: number, code: (x: number) => void) {
  */
 export function random(min: number, max: number, seed: number | string = Math.random(), precision = 3) {
 	[min, max] = min > max ? [max, min] : [min, max];
-	return Math.round(new Seed(seed.toString()).randomFloat(min, max) * Math.pow(10, precision)) / Math.pow(10, precision);
+	return decimals(mulberry32(stringCodeToNumber(seed.toString()))() * (max - min) + min, precision);
 }
 
 /**
@@ -237,12 +242,46 @@ export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
 }
 
 /**
+ * Ensures that a dir exists.
+ */
+function ensureDir(...paths: string[]) {
+	paths.forEach(path => {
+		path = path.replaceAll("\\", "/");
+		const dirs = path.split("/");
+		let accumilator = dirs[0];
+		for (let i = 1; i <= dirs.length; accumilator += `/${dirs[i++]}`) {
+			try {
+				Deno.statSync(accumilator);
+			} catch (_) {
+				try {
+					Deno.mkdirSync(accumilator);
+				} catch (e) {
+					console.error(e);
+				}
+			}
+		}
+	});
+}
+
+function ensureFile(path: string) {
+	try {
+		Deno.statSync(path);
+	} catch (_) {
+		try {
+			Deno.writeFileSync(path, new Uint8Array());
+		} catch (e) {
+			console.error(e);
+		}
+	}
+}
+
+/**
  * Copy map directory contents to another directory.
  * @param toDir The target directory to copy to.
  * @param extraFiles Any extra files to copy over.
  */
-export async function copyToDir(toDir: string, extraFiles?: string[]) {
-	await ensureDir(toDir);
+export function copyToDir(toDir: string, extraFiles?: string[]) {
+	ensureDir(toDir);
 	currentDiff.info.raw._difficultyBeatmapSets.forEach(x => {
 		x._difficultyBeatmaps.forEach(y => {
 			try {
@@ -350,7 +389,7 @@ export function lerp(start: number, end: number, fraction: number, easing: Easin
  */
 export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = "", data?: any) {
 	const fileName = "LM_Cache.json";
-	ensureFileSync(fileName);
+	ensureFile(fileName);
 	if (process == "Clear") {
 		try {
 			Deno.removeSync(fileName);
@@ -657,9 +696,9 @@ export class Noise {
 	 * The seed for the noise generator.
 	 */
 	public readonly seed = Math.random();
-	private n2d = makeNoise2D(this.seed);
-	private n3d = makeNoise3D(this.seed);
-	private n4d = makeNoise4D(this.seed);
+	private n2d = makeNoise2D(() => this.seed);
+	private n3d = makeNoise3D(() => this.seed);
+	private n4d = makeNoise4D(() => this.seed);
 	/**
 	 * Initialise 1d, 2d, 3d, and 4d noise generators.
 	 * @param seed The see for the generator.
