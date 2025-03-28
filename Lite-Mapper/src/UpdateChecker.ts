@@ -1,4 +1,4 @@
-const ver = "1.3.1";
+const ver = "1.3.2";
 import { LMLog, rgb } from "./Functions.ts";
 
 /**
@@ -10,7 +10,7 @@ export async function LMUpdateCheck() {
 			remoteVer = eval(`${/".+";/.exec(await raw)}`),
 			localVer = ver;
 		if (localVer !== remoteVer) {
-			LMLog(`A new update of Lite-Mapper is available (${remoteVer}):\n    ${rgb(0, 0, 255)}https://github.com/Aureliona1/Lite-Mapper/releases/latest`, "Log", "UpdateChecker");
+			LMLog(`A new update of Lite-Mapper is available (${remoteVer}):\n    ${rgb(0, 0, 255)}https://jsr.io/@aurellis/lite-mapper`, "Log", "UpdateChecker");
 		}
 	} catch (e) {
 		LMLog(e, "Error", "UpdateChecker");

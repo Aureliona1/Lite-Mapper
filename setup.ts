@@ -57,6 +57,7 @@ function displayHelp() {
 	console.log(`\n\n${rgb(100, 255, 100)}Difficulty labels:${rgb(255, 255, 0)}`);
 	console.log("    " + diffNames.join("\n    "));
 	prompt(`\n\n${rgb(100, 255, 100)}Press enter to continue...\x1b[0m`);
+	console.log("Closing...");
 	Deno.exit(0);
 }
 
@@ -126,7 +127,7 @@ if (opts["-denon"]) {
 				legacy: false
 			}
 		};
-		Deno.writeTextFileSync("scripts.json", JSON.stringify(denonObject));
+		Deno.writeTextFileSync("scripts.json", JSON.stringify(denonObject, undefined, 4));
 	} catch (_) {
 		console.error(`${rgb(255, 50, 50)}Error writing denon scripts.json file...`);
 		console.log("Check folder and Deno write permissions...\x1b[0m");
