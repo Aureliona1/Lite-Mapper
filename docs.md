@@ -16,19 +16,41 @@ If you see an issue with Lite-Mapper, or would like to add a feature to the libr
 
 ## Getting Started
 
+It is highly recommended to use [Visual Studio Code](https://code.visualstudio.com/) (VSCode) when using Lite-Mapper, all the documentation and usage has been built around it.
+
 Lite-Mapper runs on [Deno](https://deno.com/), so you will need to download it to run Lite-Mapper. You will also need the Deno extension for VSCode to properly utilise the features of Deno.
 
-To use Lite-Mapper, download the `Lite-Mapper.zip` folder in the [latest release](https://github.com/Aureliona1/Lite-Mapper/releases/latest), then extract the zip into your map folder. From there, simply open the folder in VSCode (or your favourite code editor) and add some stuff to `script.ts`.
-Then, open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac, and type `Deno: Initialize Workspace Configuration` and press yes for anything that it asks.
+To start using Lite-Mapper, open a terminal somewhere (the location doesn't matter as you are simply getting the Lite-Mapper setup file). You can do this in VSCode by going to the top toolbar of the VSCode window and going to `Terminal > New Terminal`, or open powershell on windows, or bash on linux etc.
 
-To run Lite-Mapper, open up any terminal (powershell, bash, cmd etc.) of your choice, or use the VSCode inbuilt terminal by clicking `Terminal` at the top of the window and choosing `New Terminal`.
+Then in this terminal, run:
 
-It is highly recommended to use [denon](https://deno.land/x/denon) to automatically re-run your script when you save.
+```bash
+deno install -f -g -n lm-init --allow-all -r https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/refs/heads/main/setup.ts
+```
 
-If the terminal is not open to your map folder, use `cd` to navigate to the folder. Then, if you are using denon, run:
+You only need to do this once, this simply downloads the install script that you can now reuse for every map that you make.
 
-Many of Lite-Mapper's features are made for the Heck mods for Beat Saber (Noodle Extensions and Chroma).
-For a better understanding of how properties and objects work, read the [Heck](https://heck.aeroluna.dev/) documentation.
+Next, you will need to open VSCode in your map folder if you haven't already. To do this, open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac and type `File: Open Folder`. From here, navigate to your map folder and press Open.
+
+With the folder now open, you can run the install script to generate the required files for mapping. Open a terminal, or use the already open one if you still have it. Then run the command:
+
+```bash
+lm-init -denon
+```
+
+This will create your `script.ts` and `scripts.json` file. Open up the `script.ts` file. Open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac, and type `Deno: Initialize Workspace Configuration` and press yes for anything that it asks.
+
+It is highly recommended to use [denon](https://deno.land/x/denon) to automatically re-run your script when you save. To run Lite-Mapper with denon, in the terminal, run:
+
+```bash
+denon lm
+```
+
+Or without denon, run:
+
+```bash
+deno run --allow-all script.ts
+```
 
 ## Using Lite-Mapper
 
@@ -42,7 +64,7 @@ Lite-Mapper is made with [TypeScript](https://www.typescriptlang.org/), so if yo
 Most of Lite-Mapper's code has extensive JSDoc comments to help self-document the code as you write it.
 This will appear automatically as you type out functions, classes, and variables in VSCode.
 
-Additionally, if you want to view the source code or internal functionality of anything, you can type it out in your script, then hold `ctrl` and click on the item.
+Additionally, if you want to view the source code or internal functionality of anything, you can type it out in your script, then hold `ctrl` and click on the item. You can also press `F12` with your text-cursor on the iterm to view some source information about it.
 
 ### Map Initialization
 

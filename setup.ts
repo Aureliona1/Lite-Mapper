@@ -46,10 +46,10 @@ function displayHelp() {
 	console.log("This tool can be used to initialize a Lite-Mapper workspace for the first time.");
 	console.log("If you are seeing this message, either you didn't supply any arguments to the command, or you used --help.");
 	console.log("\n\nCommand usage:");
-	console.log("\nStandard: lm_init [ ...ARGS ] input output");
-	console.log("\nAlternative: lm_init [ ...ARGS ]    <-- input and output will be set to ExpertStandard and ExpertPlusStandard respectively.");
+	console.log("\nStandard: lm-init [ ...ARGS ] input output");
+	console.log("\nAlternative: lm-init [ ...ARGS ]    <-- input and output will be set to ExpertStandard and ExpertPlusStandard respectively.");
 	console.log("\n\nArguments:");
-	console.log("    -help:        Display this help message, or just run lm_init with no args.");
+	console.log("    -help:        Display this help message, or just run lm-init with no args.");
 	console.log("    -denon:       Create a scripts.json file for use with denon.");
 	console.log("    -no-update:   Adds a line to the generated script to prevent Lite-Mapper from checking for updates.");
 	console.log("    --update-freq: [Daily, Weekly]: Overrides -no-update, adds a line to the generated code to set the update frequency.");
@@ -60,18 +60,18 @@ function displayHelp() {
 }
 
 type SetupArgs = {
-	help: boolean;
-	denon: boolean;
-	noUpdate: boolean;
-	updateFreq?: "Daily" | "Weekly";
+	"-help": boolean;
+	"-denon": boolean;
+	"-no-update": boolean;
+	"--update-freq"?: "Daily" | "Weekly";
 	input: DiffName;
 	output: DiffName;
 } & Record<string, string | boolean | number>;
 
 const opts: SetupArgs = {
-	help: false,
-	denon: false,
-	noUpdate: false,
+	"-help": false,
+	"-denon": false,
+	"-no-update": false,
 	input: "ExpertStandard",
 	output: "ExpertPlusStandard"
 };
@@ -110,7 +110,7 @@ if (opts.help) {
 	displayHelp();
 }
 
-if (opts.denon) {
+if (opts["-denon"]) {
 	try {
 		const denonObject = {
 			allow: ["all"],
@@ -133,7 +133,7 @@ if (opts.denon) {
 	}
 }
 
-const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper@1.3.1"\nconst map = new BeatMap(${opts.input}, ${opts.output}, ${opts.updateFreq ?? opts.noUpdate ? "Never" : ""});\n// Write your map code here\nmap.save();\n`;
+const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper@1.3.1"\n\nconst map = new BeatMap("${opts.input}", "${opts.output}", ${opts["--update-freq"] ?? opts["-no-update"] ? "Never" : ""});\n// Write your map code here\nmap.save();\n`;
 try {
 	Deno.writeTextFileSync("script.ts", scriptString);
 } catch (_) {
