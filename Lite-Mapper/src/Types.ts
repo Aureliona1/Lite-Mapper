@@ -12,17 +12,9 @@ export type BeatMapCharacteristicName = "Standard" | "Lightshow" | "Lawless" | "
 export type BeatMapDifficultyName = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
 /**
- * JSON Objects used in V3 light events to filter lights.
- */
-export type BeatmapFilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
-/**
  * JSON RGBA objeect with named keys.
  */
 export type RGBAObject = { r: number; b: number; g: number; a: number };
-/**
- * JSON Fx event for V3 beatmaps.
- */
-export type BeatmapfxEvent = { b: number; p: number; i: number; v: number };
 
 /**
  * The color scheme layout for V2 info files.
@@ -217,39 +209,132 @@ export type V2MapJSON = {
 };
 
 /**
+ * A version string for valid V3 beatmap versions in Beat Saber.
+ */
+export type V3ValidVersion = "3.0.0" | "3.1.0" | "3.2.0" | "3.3.0";
+/**
+ * The JSON format for a BPM event.
+ */
+export type BpmEventJSON = { b: number; m: number };
+/**
+ * The JSON format for a rotation event.
+ */
+export type RotationEventJSON = { b: number; e: number; r: number };
+/**
+ * The JSON format for a waypoint event.
+ */
+export type WaypointJSON = { b: number; x: number; y: number; d: number };
+/**
+ * The JSON format for a color boost event.
+ */
+export type ColorBoostEventJSON = { b: number; o: boolean };
+/**
+ * JSON Objects used in V3 light events to filter lights.
+ */
+export type BeatmapFilterObject = { c: number; f: number; p: number; t: number; r: number; n: number; s: number; l: number; d: number };
+/**
+ * The base format for all box group events.
+ */
+export type BoxGroupBaseEventJSON = {
+	f: BeatmapFilterObject;
+	w: number;
+	d: number;
+	t: number;
+	b: number;
+	i: number;
+};
+/**
+ * The JSON format for color event box groups.
+ */
+export type ColorEventBoxGroupJSON = {
+	b: number;
+	g: number;
+	e: (BoxGroupBaseEventJSON & {
+		r: number;
+		e: {
+			b: number;
+			i: number;
+			c: number;
+			s: number;
+			f: number;
+		}[];
+	})[];
+};
+/**
+ * The JSON format for rotation event box groups.
+ */
+export type RotationEventBoxGroupJSON = {
+	b: number;
+	g: number;
+	e: (BoxGroupBaseEventJSON & {
+		s: number;
+		a: number;
+		r: number;
+		l: {
+			b: number;
+			p: number;
+			e: number;
+			l: number;
+			r: number;
+			o: number;
+		}[];
+	})[];
+};
+/**
+ * The JSON format for translation event box groups.
+ */
+export type TranslationEventBoxGroupJSON = {
+	b: number;
+	g: number;
+	e: (BoxGroupBaseEventJSON & {
+		s: number;
+		a: number;
+		r: number;
+		l: {
+			b: number;
+			p: number;
+			e: number;
+			t: number;
+		}[];
+	})[];
+};
+/**
+ * The JSON format for vfx event box groups.
+ */
+export type VfxEventBoxGroupJSON = {
+	b: number;
+	g: number;
+	e: (BoxGroupBaseEventJSON & {
+		s: number;
+		l: number[];
+	})[];
+};
+/**
+ * JSON Fx event for V3 beatmaps.
+ */
+export type BeatmapfxEvent = { b: number; p: number; i: number; v: number };
+
+/**
  * The JSON layout of a V3 map.
  */
 export type V3MapJSON = {
-	version: "3.0.0" | "3.1.0" | "3.2.0" | "3.3.0";
-	bpmEvents: { b: number; m: number }[];
-	rotationEvents: { b: number; e: number; r: number }[];
+	version: V3ValidVersion;
+	bpmEvents: BpmEventJSON[];
+	rotationEvents: RotationEventJSON[];
 	colorNotes: NoteJSON[];
 	bombNotes: BombJSON[];
 	obstacles: ObstacleJSON[];
 	sliders: SliderJSON[];
 	burstSliders: BurstSliderJSON[];
-	waypoints: { b: number; x: number; y: number; d: number }[];
+	waypoints: WaypointJSON[];
 	basicBeatmapEvents: LightEventJSON[];
-	colorBoostBeatmapEvents: { b: number; o: boolean }[];
-	lightColorEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
-	lightRotationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
-	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
+	colorBoostBeatmapEvents: ColorBoostEventJSON[];
+	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
+	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
+	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
-	vfxEventBoxGroups: {
-		b: number;
-		g: number;
-		e: {
-			f: BeatmapFilterObject;
-			w: number;
-			d: number;
-			s: number;
-			t: number;
-			b: number;
-			i: number;
-			l: number[];
-		}[];
-	}[];
+	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {
 		_fl: BeatmapfxEvent[];
 		_il: BeatmapfxEvent[];
@@ -268,56 +353,47 @@ export type V3MapJSON = {
 	};
 };
 
+export type CustomEvent = AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent;
+
+export type CustomData = {
+	customEvents?: CustomEvent[];
+	environment?: Environment[];
+	materials?: Record<string, GeometryMaterialJSON>;
+	fakeColorNotes?: Note[];
+	fakeBombNotes?: Bomb[];
+	fakeObstacles?: Wall[];
+	fakeBurstSliders?: Chain[];
+	bookmarks?: Bookmark[];
+	bookmarksUseOfficialBpmEvents?: boolean;
+	time?: number;
+};
+
 /**
  * The layout of a V3 beatmap with all objects in class form.
  */
 export type ClassMap = {
-	version: string;
-	bpmEvents: { b: number; m: number }[];
-	rotationEvents: { b: number; e: number; r: number }[];
+	version: V3ValidVersion;
+	bpmEvents: BpmEventJSON[];
+	rotationEvents: RotationEventJSON[];
 	colorNotes: Note[];
 	bombNotes: Bomb[];
 	obstacles: Wall[];
 	sliders: Arc[];
 	burstSliders: Chain[];
-	waypoints: unknown[];
+	waypoints: WaypointJSON[];
 	basicBeatmapEvents: LightEvent[];
-	colorBoostBeatmapEvents: { b: number; o: boolean }[];
-	lightColorEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; r: number; t: number; b: number; i: number; e: { b: number; i: number; c: number; s: number; f: number }[] }[] }[];
-	lightRotationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; l: number; r: number; o: number }[] }[] }[];
-	lightTranslationEventBoxGroups: { b: number; g: number; e: { f: BeatmapFilterObject; w: number; d: number; s: number; t: number; b: number; i: number; a: number; r: number; l: { b: number; p: number; e: number; t: number }[] }[] }[];
+	colorBoostBeatmapEvents: ColorBoostEventJSON[];
+	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
+	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
+	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
 	basicEventTypesWithKeywords: Record<string, unknown>;
 	useNormalEventsAsCompatibleEvents: boolean;
-	vfxEventBoxGroups: {
-		b: number;
-		g: number;
-		e: {
-			f: BeatmapFilterObject;
-			w: number;
-			d: number;
-			s: number;
-			t: number;
-			b: number;
-			i: number;
-			l: number[];
-		}[];
-	}[];
+	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {
 		_fl: BeatmapfxEvent[];
 		_il: BeatmapfxEvent[];
 	};
-	customData?: {
-		customEvents?: Array<AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent>;
-		environment?: Environment[];
-		materials?: Record<string, GeometryMaterialJSON>;
-		fakeColorNotes?: Note[];
-		fakeBombNotes?: Bomb[];
-		fakeObstacles?: Wall[];
-		fakeBurstSliders?: Chain[];
-		bookmarks?: Bookmark[];
-		bookmarksUseOfficialBpmEvents?: boolean;
-		time?: number;
-	};
+	customData?: CustomData;
 };
 
 /**
@@ -648,22 +724,32 @@ export type PlayerObjectTarget = "Root" | "Head" | "LeftHand" | "RightHand";
 export type PlayerToTrackProps = { track?: string; target?: PlayerObjectTarget };
 
 /**
+ * A collection of the properties that can be animated on fog.
+ */
+export type FogAnimationProps = {
+	attenuation?: [number] | KFScalar[];
+	offset?: [number] | KFScalar[];
+	startY?: [number] | KFScalar[];
+	height?: [number] | KFScalar[];
+};
+
+/**
+ * A collection of the properties that can be animated for tube lights and bloom.
+ */
+export type TubeLightAnimationProps = {
+	colorAlphaMultiplier?: [number] | KFScalar[];
+	bloomFogIntensityMultiplier?: [number] | KFScalar[];
+};
+
+/**
  * A collection of the properties that can be added to a component animation.
  */
 export type ComponentAnimProps = {
 	track?: string;
 	duration?: number;
 	easing?: Easing;
-	BloomFogEnvironment?: {
-		attenuation?: [number] | KFScalar[];
-		offset?: [number] | KFScalar[];
-		startY?: [number] | KFScalar[];
-		height?: [number] | KFScalar[];
-	};
-	TubeBloomPrePassLight?: {
-		colorAlphaMultiplier?: [number] | KFScalar[];
-		bloomFogIntensityMultiplier?: [number] | KFScalar[];
-	};
+	BloomFogEnvironment?: FogAnimationProps;
+	TubeBloomPrePassLight?: TubeLightAnimationProps;
 };
 
 // Environment and Geometry
@@ -779,3 +865,5 @@ export type KeywordWaterfallMirror = "DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ET
 export type NumberArrLike = Uint16Array | Uint32Array | Uint8Array | Int16Array | Int32Array | Int8Array | Float16Array | Float32Array | Float64Array | Array<number>;
 
 export type DatFilename = `${string}.dat`;
+
+export type Optional<T> = T | undefined;

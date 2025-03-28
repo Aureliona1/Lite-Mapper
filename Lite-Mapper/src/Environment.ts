@@ -5,10 +5,12 @@ import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type {
 	ComponentStaticProps,
+	CustomEventJSON,
 	EnvironmentJSON,
 	GeometryMaterialJSON,
 	GeometryObjectJSON,
 	GeometryObjectPrimitive,
+	KFScalar,
 	KeywordBTSPillar,
 	KeywordBaseWater,
 	KeywordBillieWater,
@@ -19,6 +21,7 @@ import type {
 	LightTypeNumber,
 	LookupMethod,
 	MaterialShaderName,
+	Optional,
 	Vec3,
 	Vec4
 } from "./Types.ts";
@@ -226,7 +229,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the BTSPillar shader. This will add autofill for the shader keywords to suggest only compatible keywords for BTSPillar.
 	 */
-	BTSPillar(shaderKeywords?: KeywordBTSPillar[], color?: Vec3 | Vec4, track?: string) {
+	BTSPillar(shaderKeywords?: KeywordBTSPillar[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -236,7 +239,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the OpaqueLight shader. This will add autofill for the shader keywords to suggest only compatible keywords for OpaqueLight.
 	 */
-	OpaqueLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
+	OpaqueLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -246,7 +249,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the TransparentLight shader. This will add autofill for the shader keywords to suggest only compatible keywords for TransparentLight.
 	 */
-	TransparentLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string) {
+	TransparentLight(shaderKeywords?: string[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -256,7 +259,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the BaseWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BaseWater.
 	 */
-	BaseWater(shaderKeywords?: KeywordBaseWater[], color?: Vec3 | Vec4, track?: string) {
+	BaseWater(shaderKeywords?: KeywordBaseWater[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -266,7 +269,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the BillieWater shader. This will add autofill for the shader keywords to suggest only compatible keywords for BillieWater.
 	 */
-	BillieWater(shaderKeywords?: KeywordBillieWater[], color?: Vec3 | Vec4, track?: string) {
+	BillieWater(shaderKeywords?: KeywordBillieWater[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -276,7 +279,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the Standard shader. This will add autofill for the shader keywords to suggest only compatible keywords for Standard.
 	 */
-	Standard(shaderKeywords?: KeywordStandard[], color?: Vec3 | Vec4, track?: string) {
+	Standard(shaderKeywords?: KeywordStandard[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -286,7 +289,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the InterscopeConcrete shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeConcrete.
 	 */
-	InterscopeConcrete(shaderKeywords?: KeywordInterscopeConcrete[], color?: Vec3 | Vec4, track?: string) {
+	InterscopeConcrete(shaderKeywords?: KeywordInterscopeConcrete[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -296,7 +299,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the InterscopeCar shader. This will add autofill for the shader keywords to suggest only compatible keywords for InterscopeCar.
 	 */
-	InterscopeCar(shaderKeywords?: KeywordInterscopeCar[], color?: Vec3 | Vec4, track?: string) {
+	InterscopeCar(shaderKeywords?: KeywordInterscopeCar[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -306,7 +309,7 @@ export class Material {
 	/**
 	 * Initialise the material to use the WaterfallMirror shader. This will add autofill for the shader keywords to suggest only compatible keywords for WaterfallMirror.
 	 */
-	WaterfallMirror(shaderKeywords?: KeywordWaterfallMirror[], color?: Vec3 | Vec4, track?: string) {
+	WaterfallMirror(shaderKeywords?: KeywordWaterfallMirror[], color?: Vec3 | Vec4, track?: string): this {
 		this.color = color ?? this.color;
 		this.track = track ?? this.track;
 		this.shaderKeywords = shaderKeywords ?? this.shaderKeywords;
@@ -324,7 +327,7 @@ export class Material {
 	/**
 	 * Return the class as json.
 	 */
-	return() {
+	return(): GeometryMaterialJSON {
 		const out: GeometryMaterialJSON = {
 			color: this.color,
 			track: this.track,
@@ -383,7 +386,7 @@ export class Polygon {
 	 * Returns the array of geometry instead of pushing to the diff.
 	 * @returns Geometry array.
 	 */
-	return() {
+	return(): Environment[] {
 		const returnArray: Environment[] = [];
 		repeat(this.sides, side => {
 			const cube = new Environment().geo("Cube", this.material);
@@ -418,7 +421,7 @@ class StaticFog {
 	 * Set the attenuation of the fog. This controls how "thick" the overall fog is.
 	 * @param x The attenuation value from -1 to 1 (negative values are not supported by quest).
 	 */
-	attenuation(x: number) {
+	attenuation(x: number): this {
 		this.components.attenuation = x;
 		return this;
 	}
@@ -426,7 +429,7 @@ class StaticFog {
 	 * Set the height value of the fog. This controls how gradually objects fade to nothing as they approach teh fog Y level.
 	 * @param x The height of the fog (can be negative to create a fog "ceiling" rather than a "floor").
 	 */
-	height(x: number) {
+	height(x: number): this {
 		this.components.height = x;
 		return this;
 	}
@@ -434,7 +437,7 @@ class StaticFog {
 	 * The y value of the height fog. This controles the vertical position at which objects completely fade out.
 	 * @param x The Y value.
 	 */
-	startY(x: number) {
+	startY(x: number): this {
 		this.components.startY = x;
 		return this;
 	}
@@ -442,7 +445,7 @@ class StaticFog {
 	 * The offset of the fog. This controls the distance from the camera at which objects begin to fade out. It acts as a hard clamp to attenuation, so objects that would normally be 0.5x opacity become fully solid when crossing the offset threshold.
 	 * @param x The offset value of the fog.
 	 */
-	offset(x: number) {
+	offset(x: number): this {
 		this.components.offset = x;
 		return this;
 	}
@@ -467,35 +470,35 @@ class AnimatedFog {
 		this.componentAnimation.fog ??= {};
 		this.componentAnimation.fog = x;
 	}
-	get attenuation() {
+	get attenuation(): Optional<[number] | KFScalar[]> {
 		return this.fog.attenuation;
 	}
-	set attenuation(x) {
+	set attenuation(x: Optional<[number] | KFScalar[]>) {
 		this.fog.attenuation = x;
 	}
-	get height() {
+	get height(): Optional<[number] | KFScalar[]> {
 		return this.fog.height;
 	}
-	set height(x) {
+	set height(x: Optional<[number] | KFScalar[]>) {
 		this.fog.height = x;
 	}
-	get startY() {
+	get startY(): Optional<[number] | KFScalar[]> {
 		return this.fog.startY;
 	}
-	set startY(x) {
+	set startY(x: Optional<[number] | KFScalar[]>) {
 		this.fog.startY = x;
 	}
-	get offset() {
+	get offset(): Optional<[number] | KFScalar[]> {
 		return this.fog.offset;
 	}
-	set offset(x) {
+	set offset(x: Optional<[number] | KFScalar[]>) {
 		this.fog.offset = x;
 	}
 	/**
 	 * Get the json of the underlying component animation.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		return this.componentAnimation.return(dupe);
 	}
 	/**
@@ -513,7 +516,7 @@ export class Fog {
 	/**
 	 * Set up fog to be set statically.
 	 */
-	static() {
+	static(): StaticFog {
 		return new StaticFog();
 	}
 	private assignFogTrack(track: string) {
@@ -527,7 +530,7 @@ export class Fog {
 	 * @param time The time of the animation.
 	 * @param duration The duration of the animation.
 	 */
-	animated(track = "fog", time = 0, duration = 1) {
+	animated(track = "fog", time = 0, duration = 1): AnimatedFog {
 		this.assignFogTrack(track);
 		return new AnimatedFog(track, time, duration);
 	}

@@ -8,7 +8,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param arr1 The base array.
 	 * @param arr2 The array or number to add.
 	 */
-	static add<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+	static add<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2): T {
 		if (typeof arr2 == "number") {
 			return arr1.map(x => x + arr2) as T;
 		} else {
@@ -21,7 +21,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param arr1 The base array.
 	 * @param arr2 The array or number to subtract from the base array.
 	 */
-	static subtract<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+	static subtract<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2): T {
 		if (typeof arr2 == "number") {
 			return arr1.map(x => x - arr2) as T;
 		} else {
@@ -34,7 +34,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param arr1 The base array.
 	 * @param arr2 The array or number to divide by.
 	 */
-	static divide<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+	static divide<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2): T {
 		if (typeof arr2 == "number") {
 			return arr1.map(x => x / arr2) as T;
 		} else {
@@ -47,7 +47,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param arr1 The base array.
 	 * @param arr2 The array or number to mulitply by.
 	 */
-	static multiply<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2) {
+	static multiply<T extends NumberArrLike, T2 extends NumberArrLike>(arr1: T, arr2: number | T2): T {
 		if (typeof arr2 == "number") {
 			return arr1.map(x => x * arr2) as T;
 		} else {
@@ -62,7 +62,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param fraction The fraction of interpolation (0 - 1).
 	 * @param ease Optional easing to add to the lerp.
 	 */
-	static lerp<T extends NumberArrLike, T2 extends NumberArrLike>(from: T, to: number | T2, fraction: number, ease?: Easing) {
+	static lerp<T extends NumberArrLike, T2 extends NumberArrLike>(from: T, to: number | T2, fraction: number, ease?: Easing): T {
 		if (typeof to == "number") {
 			return from.map(x => lerp(x, to, fraction, ease)) as T;
 		} else {
@@ -75,7 +75,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * @param arr The array to shuffle.
 	 * @param seed The seed for the shuffle (leave blank for random).
 	 */
-	static shuffle<T extends NumberArrLike>(arr: T, seed = Math.random()) {
+	static shuffle<T extends NumberArrLike>(arr: T, seed: number = Math.random()): T {
 		const swap = (a: number, b: number) => {
 			[arr[a], arr[b]] = [arr[b], arr[a]];
 		};
@@ -89,23 +89,23 @@ export class ArrOp<T extends NumberArrLike> {
 	 * Sort an array in ascending order according to each element's numerical value.
 	 * @param arr The array to sort.
 	 */
-	static sortNumericAsc<T extends NumberArrLike>(arr: T) {
-		return arr.sort((a, b) => a - b);
+	static sortNumericAsc<T extends NumberArrLike>(arr: T): T {
+		return arr.sort((a, b) => a - b) as T;
 	}
 
 	/**
 	 * Sort an array in descending order according to each element's numerical value.
 	 * @param arr The array to sort.
 	 */
-	static sortNumericDsc<T extends NumberArrLike>(arr: T) {
-		return arr.sort((a, b) => b - a);
+	static sortNumericDsc<T extends NumberArrLike>(arr: T): T {
+		return arr.sort((a, b) => b - a) as T;
 	}
 
 	/**
 	 * Get the total numeric range of the array. i.e., the distance between the greatest and least elements.
 	 * @param arr The array.
 	 */
-	static range(arr: NumberArrLike) {
+	static range(arr: NumberArrLike): number {
 		return Math.max(...arr) - Math.min(...arr);
 	}
 
@@ -113,7 +113,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * Get the numeric average (mean) of the array.
 	 * @param arr The array to find the mean of.
 	 */
-	static mean(arr: NumberArrLike) {
+	static mean(arr: NumberArrLike): number {
 		return [...arr].reduce((a, b) => a + b) / arr.length;
 	}
 
@@ -121,7 +121,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * Get the numeric median of the array.
 	 * @param arr The array to find the median of.
 	 */
-	static median(arr: NumberArrLike) {
+	static median(arr: NumberArrLike): number {
 		return arr.toSorted((a, b) => a - b)[Math.floor(arr.length / 2)];
 	}
 
@@ -129,7 +129,7 @@ export class ArrOp<T extends NumberArrLike> {
 	 * Get the most common value (mode) in the array.
 	 * @param arr The array to find the mode of.
 	 */
-	static mode(arr: NumberArrLike) {
+	static mode(arr: NumberArrLike): number {
 		const out: NumberArrLike[] = [];
 		const set = [...new Set(arr)];
 		repeat(set.length, i => {
@@ -148,14 +148,14 @@ export class ArrOp<T extends NumberArrLike> {
 	/**
 	 * Get the sum of all the elements in the array.
 	 */
-	static sum(arr: NumberArrLike) {
+	static sum(arr: NumberArrLike): number {
 		return Array.from(arr).reduce((a, b) => a + b);
 	}
 
 	/**
 	 * Get the product of all the elements in the array.
 	 */
-	static product(arr: NumberArrLike) {
+	static product(arr: NumberArrLike): number {
 		return Array.from(arr).reduce((a, b) => a * b);
 	}
 
@@ -164,14 +164,14 @@ export class ArrOp<T extends NumberArrLike> {
 	/**
 	 * Get the element with the greatest numerical value.
 	 */
-	get max() {
+	get max(): number {
 		return Math.max(...this.arr);
 	}
 
 	/**
 	 * Clamp the maximum value in the array to this value.
 	 */
-	set max(x) {
+	set max(x: number) {
 		this.arr.forEach(a => {
 			a = a > x ? x : a;
 		});
@@ -180,7 +180,7 @@ export class ArrOp<T extends NumberArrLike> {
 	/**
 	 * Clamp the minimum value in the array to this value.
 	 */
-	set min(x) {
+	set min(x: number) {
 		this.arr.forEach(a => {
 			a = a < x ? x : a;
 		});
@@ -189,35 +189,35 @@ export class ArrOp<T extends NumberArrLike> {
 	/**
 	 * Get the element in the array with the least numerical value.
 	 */
-	get min() {
+	get min(): number {
 		return Math.min(...this.arr);
 	}
 
 	/**
 	 * Get the numerical distance between the least and greatest element in the array.
 	 */
-	get range() {
+	get range(): number {
 		return this.max - this.min;
 	}
 
 	/**
 	 * Get the average (mean) of the values in the array.
 	 */
-	get mean() {
+	get mean(): number {
 		return Array.from(this.arr).reduce((a, b) => a + b) / this.arr.length;
 	}
 
 	/**
 	 * Get the median value of the array.
 	 */
-	get median() {
+	get median(): number {
 		return this.arr.toSorted((a, b) => a - b)[Math.floor(this.arr.length / 2)];
 	}
 
 	/**
 	 * Get the most common value (mode) of the array.
 	 */
-	get mode() {
+	get mode(): number {
 		const arr: NumberArrLike[] = [];
 		const set = [...new Set(this.arr)];
 		repeat(set.length, i => {
@@ -236,14 +236,14 @@ export class ArrOp<T extends NumberArrLike> {
 	/**
 	 * Get the product of all the elements of the array.
 	 */
-	get product() {
+	get product(): number {
 		return Array.from(this.arr).reduce((a, b) => a * b);
 	}
 
 	/**
 	 * Get the sum of all the elements of the array.
 	 */
-	get sum() {
+	get sum(): number {
 		return Array.from(this.arr).reduce((a, b) => a + b);
 	}
 }
@@ -253,7 +253,7 @@ export class ArrOp<T extends NumberArrLike> {
  * @param arr The array to remove elements from.
  * @param indexes The indexes of the elements to remove.
  */
-export function arrRem(arr: any[], indexes: number[]) {
+export function arrRem(arr: any[], indexes: number[]): any[] {
 	for (let i = indexes.length - 1; i >= 0; i--) {
 		arr.splice(indexes[i], 1);
 	}
@@ -265,4 +265,4 @@ export function arrRem(arr: any[], indexes: number[]) {
  * @param length The length of the array.
  * @param func The function to run through the array.
  */
-export const arrFromFunction = <T>(length: number, func: (x: number) => T) => new Array(length).fill(0).map((_, i) => func(i));
+export const arrFromFunction = <T>(length: number, func: (x: number) => T): T[] => new Array(length).fill(0).map((_, i) => func(i));

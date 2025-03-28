@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type { Easing, LightEventCustomData, LightEventJSON, LightTypeName, LightValueName, KFColorVec4, LightTypeNumber, LightValueNumber, Vec3, Vec4 } from "./Types.ts";
+import type { Easing, LightEventCustomData, LightEventJSON, LightTypeName, LightValueName, KFColorVec4, LightTypeNumber, LightValueNumber, Vec3, Vec4, Optional } from "./Types.ts";
 
 export class LightEvent {
 	/**
@@ -27,65 +27,65 @@ export class LightEvent {
 	 */
 	constructor(public time = 0, public type: LightTypeName = "BackLasers", public value: LightValueName = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
 
-	set lightID(x) {
+	set lightID(x: Optional<number | number[]>) {
 		this.customData.lightID = x;
 	}
-	get lightID() {
+	get lightID(): Optional<number | number[]> {
 		return this.customData.lightID;
 	}
 
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set lerpType(x) {
+	set lerpType(x: Optional<"HSV" | "RGB">) {
 		this.customData.lerpType = x;
 	}
-	get lerpType() {
+	get lerpType(): Optional<"HSV" | "RGB"> {
 		return this.customData.lerpType;
 	}
 
-	set easing(x) {
+	set easing(x: Optional<Easing>) {
 		this.customData.easing = x;
 	}
-	get easing() {
+	get easing(): Optional<Easing> {
 		return this.customData.easing;
 	}
 	/**
 	 * Set the easing of the event (if "in" type).
 	 */
-	setEasing(ease: Easing) {
+	setEasing(ease: Easing): this {
 		this.easing = ease;
 		return this;
 	}
 	/**
 	 * Set the light id(s) of the event.
 	 */
-	setLightID(id: number | number[]) {
+	setLightID(id: number | number[]): this {
 		this.lightID = id;
 		return this;
 	}
 	/**
 	 * Set the color of the event.
 	 */
-	setColor(col: Vec3 | Vec4) {
+	setColor(col: Vec3 | Vec4): this {
 		this.color = col;
 		return this;
 	}
 	/**
 	 * Set the lightType of the event.
 	 */
-	setType(type: LightTypeName) {
+	setType(type: LightTypeName): this {
 		this.type = type;
 		return this;
 	}
 	/**
 	 * Set the value of the event.
 	 */
-	setValue(val: LightValueName) {
+	setValue(val: LightValueName): this {
 		this.value = val;
 		return this;
 	}
@@ -93,7 +93,7 @@ export class LightEvent {
 	 * Return the raw Json of the event.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): LightEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
@@ -110,7 +110,7 @@ export class LightEvent {
 	 * @param x The JSON.
 	 * @returns An event.
 	 */
-	static from(x: LightEventJSON) {
+	static from(x: LightEventJSON): LightEvent {
 		const e = new LightEvent(x.b);
 		e.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypeNumber);
 		e.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumber);
@@ -151,7 +151,7 @@ export class lightGradient {
 	 * Set the lightType
 	 * @param type The lightType to run the event on.
 	 */
-	type(type: LightTypeName) {
+	type(type: LightTypeName): this {
 		this.lightType = type;
 		return this;
 	}
@@ -159,7 +159,7 @@ export class lightGradient {
 	 * Set the lightID/s
 	 * @param id The light ids to run the event on.
 	 */
-	ID(id: number | number[]) {
+	ID(id: number | number[]): this {
 		this.lightID = id;
 		return this;
 	}
@@ -167,7 +167,7 @@ export class lightGradient {
 	 * Set the lerp type.
 	 * @param lerp Either lerp by HSV or RGB.
 	 */
-	lerp(lerp: "HSV" | "RGB") {
+	lerp(lerp: "HSV" | "RGB"): this {
 		this.lerpType = lerp;
 		return this;
 	}
@@ -175,7 +175,7 @@ export class lightGradient {
 	 * Set the easing for each transition.
 	 * @param ease The easing.
 	 */
-	easing(ease: Easing) {
+	easing(ease: Easing): this {
 		this.ease = ease;
 		return this;
 	}
@@ -257,10 +257,10 @@ export class LightKeyframe {
 	 */
 	constructor(public time = 0, public duration = 1, public type: LightTypeName = "BackLasers", public ids?: number | number[]) {}
 	private animation: KFColorVec4[] = [];
-	get keyframes() {
+	get keyframes(): KFColorVec4[] {
 		return this.animation.sort((a, b) => a[4] - b[4]);
 	}
-	set keyframes(x) {
+	set keyframes(x: KFColorVec4[]) {
 		this.animation = x;
 	}
 	animationLength = 1;
@@ -268,7 +268,7 @@ export class LightKeyframe {
 	 * Add keyframes to your animation.
 	 * @param frames The frames to add.
 	 */
-	addFrames(...frames: KFColorVec4[]) {
+	addFrames(...frames: KFColorVec4[]): this {
 		this.keyframes = [...this.keyframes, ...frames];
 		return this;
 	}

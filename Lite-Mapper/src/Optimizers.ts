@@ -138,7 +138,7 @@ export class GeoTrackStack {
 	 * @param object The generic object to use on the stack.
 	 * @param track Track must be defined here, not on the object.
 	 */
-	constructor(public object: Environment = new Environment().geo("Cube", { shader: "BTSPillar" }), public readonly track = Math.random().toString()) {}
+	constructor(public object: Environment = new Environment().geo("Cube", { shader: "BTSPillar" }), public readonly track: string = Math.random().toString()) {}
 
 	/**
 	 * Request an array of available tracks within a time period. If not enough track are available (or none are), new tracks will be created.
@@ -147,7 +147,7 @@ export class GeoTrackStack {
 	 * @param id Whether to return an array of track names, or a numerical "id" of the object (still string although it can be parsed).
 	 * @returns An array of available tracks.
 	 */
-	request(count: number, time: Vec2, id = false) {
+	request(count: number, time: Vec2, id = false): string[] {
 		time = time[0] > time[1] ? [time[1], time[0]] : time; // Sort time values
 		const out: string[] = [];
 		// Get all the indices of available tracks.

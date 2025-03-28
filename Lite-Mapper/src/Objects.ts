@@ -1,7 +1,26 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type { Vec2, ObjectColorName, ObjectDirectionName, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorNumber, ObjectDirectionNumber } from "./Types.ts";
+import type {
+	Vec2,
+	ObjectColorName,
+	ObjectDirectionName,
+	NoteCustomProps,
+	NoteJSON,
+	BombJSON,
+	WallCustomProps,
+	ObstacleJSON as WallJSON,
+	SliderCustomProps,
+	SliderJSON as ArcJSON,
+	BurstSliderJSON as ChainJSON,
+	Vec4,
+	BookmarkJSON,
+	ObjectColorNumber,
+	ObjectDirectionNumber,
+	ObjectAnimProps,
+	Vec3,
+	Optional
+} from "./Types.ts";
 
 export class Note {
 	/**
@@ -25,95 +44,95 @@ export class Note {
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public direction: ObjectDirectionName = "Dot", public angleOffset = 0) {}
 	customData: NoteCustomProps = {};
 
-	get offset() {
+	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
-	set offset(x) {
+	set offset(x: Optional<number>) {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x) {
+	set NJS(x: Optional<number>) {
 		this.customData.noteJumpMovementSpeed = x;
 	}
-	get NJS() {
+	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
 
-	set animation(x) {
+	set animation(x: ObjectAnimProps) {
 		this.customData.animation = x;
 	}
-	get animation() {
+	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
 
-	set rotation(x) {
+	set rotation(x: Optional<Vec3>) {
 		this.customData.worldRotation = x;
 	}
-	get rotation() {
+	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
 
-	set localRotation(x) {
+	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation() {
+	get localRotation(): Optional<Vec3> {
 		return this.customData.localRotation;
 	}
 
-	set disableNoteGravity(x) {
+	set disableNoteGravity(x: Optional<boolean>) {
 		this.customData.disableNoteGravity = x;
 	}
-	get disableNoteGravity() {
+	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
 
-	set disableNoteLook(x) {
+	set disableNoteLook(x: Optional<boolean>) {
 		this.customData.disableNoteLook = x;
 	}
-	get disableNoteLook() {
+	get disableNoteLook(): Optional<boolean> {
 		return this.customData.disableNoteLook;
 	}
 
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set spawnEffect(x) {
+	set spawnEffect(x: Optional<boolean>) {
 		this.customData.spawnEffect = x;
 	}
-	get spawnEffect() {
+	get spawnEffect(): Optional<boolean> {
 		return this.customData.spawnEffect;
 	}
 
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.customData.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
 
-	get interactable() {
+	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state) {
+	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
 	}
 
-	get x() {
+	get x(): number {
 		return this.pos[0];
 	}
-	set x(x) {
+	set x(x: number) {
 		this.pos[0] = x;
 	}
 
-	get y() {
+	get y(): number {
 		return this.pos[1];
 	}
-	set y(x) {
+	set y(x: number) {
 		this.pos[1] = x;
 	}
 
@@ -121,7 +140,7 @@ export class Note {
 	 * Return the raw json of the note.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): NoteJSON {
 		const temp = dupe ? copy(this) : this;
 		const out: NoteJSON = {
 			b: temp.time,
@@ -140,7 +159,7 @@ export class Note {
 	 * @param x The JSON.
 	 * @returns A note.
 	 */
-	static from(x: NoteJSON) {
+	static from(x: NoteJSON): Note {
 		const n = new Note(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
@@ -176,102 +195,102 @@ export class Bomb {
 	constructor(public time = 0, public pos: Vec2 = [0, 0]) {}
 	customData: NoteCustomProps = {};
 
-	get offset() {
+	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
-	set offset(x) {
+	set offset(x: Optional<number>) {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x) {
+	set NJS(x: Optional<number>) {
 		this.customData.noteJumpMovementSpeed = x;
 	}
-	get NJS() {
+	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
 
-	set animation(x) {
+	set animation(x: ObjectAnimProps) {
 		this.customData.animation = x;
 	}
-	get animation() {
+	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
 
-	set rotation(x) {
+	set rotation(x: Optional<Vec3>) {
 		this.customData.worldRotation = x;
 	}
-	get rotation() {
+	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
 
-	set localRotation(x) {
+	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation() {
+	get localRotation(): Optional<Vec3> {
 		return this.customData.localRotation;
 	}
 
-	set disableNoteGravity(x) {
+	set disableNoteGravity(x: Optional<boolean>) {
 		this.customData.disableNoteGravity = x;
 	}
-	get disableNoteGravity() {
+	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
 
-	set disableNoteLook(x) {
+	set disableNoteLook(x: Optional<boolean>) {
 		this.customData.disableNoteLook = x;
 	}
-	get disableNoteLook() {
+	get disableNoteLook(): Optional<boolean> {
 		return this.customData.disableNoteLook;
 	}
 
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set spawnEffect(x) {
+	set spawnEffect(x: Optional<boolean>) {
 		this.customData.spawnEffect = x;
 	}
-	get spawnEffect() {
+	get spawnEffect(): Optional<boolean> {
 		return this.customData.spawnEffect;
 	}
 
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.customData.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
 
-	get interactable() {
+	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state) {
+	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
 	}
 
-	get x() {
+	get x(): number {
 		return this.pos[0];
 	}
-	set x(x) {
+	set x(x: number) {
 		this.pos[0] = x;
 	}
 
-	get y() {
+	get y(): number {
 		return this.pos[1];
 	}
-	set y(x) {
+	set y(x: number) {
 		this.pos[1] = x;
 	}
 	/**
 	 * Return the raw Json of the bomb.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): BombJSON {
 		const temp = dupe ? copy(this) : this;
 		const out: BombJSON = {
 			b: temp.time,
@@ -287,7 +306,7 @@ export class Bomb {
 	 * @param x The JSON.
 	 * @returns A bomb.
 	 */
-	static from(x: BombJSON) {
+	static from(x: BombJSON): Bomb {
 		const b = new Bomb(x.b);
 		b.x = x.x ?? 0;
 		b.y = x.y ?? 0;
@@ -323,89 +342,89 @@ export class Wall {
 	constructor(public time = 0, public pos = [0, 0], public duration = 1, public width = 1, public height = 1) {}
 	customData: WallCustomProps = {};
 
-	set scale(x) {
+	set scale(x: Optional<Vec3>) {
 		this.customData.size = x;
 	}
-	get scale() {
+	get scale(): Optional<Vec3> {
 		return this.customData.size;
 	}
 
-	get offset() {
+	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
-	set offset(x) {
+	set offset(x: Optional<number>) {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x) {
+	set NJS(x: Optional<number>) {
 		this.customData.noteJumpMovementSpeed = x;
 	}
-	get NJS() {
+	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
 
-	set animation(x) {
+	set animation(x: ObjectAnimProps) {
 		this.customData.animation = x;
 	}
-	get animation() {
+	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
 
-	set rotation(x) {
+	set rotation(x: Optional<Vec3>) {
 		this.customData.worldRotation = x;
 	}
-	get rotation() {
+	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
 
-	set localRotation(x) {
+	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation() {
+	get localRotation(): Optional<Vec3> {
 		return this.customData.localRotation;
 	}
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.customData.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
 
-	get interactable() {
+	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state) {
+	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
 	}
 
-	get x() {
+	get x(): number {
 		return this.pos[0];
 	}
-	set x(x) {
+	set x(x: number) {
 		this.pos[0] = x;
 	}
 
-	get y() {
+	get y(): number {
 		return this.pos[1];
 	}
-	set y(x) {
+	set y(x: number) {
 		this.pos[1] = x;
 	}
 	/**
 	 * Return the raw Json of the wall.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): WallJSON {
 		const temp = dupe ? copy(this) : this;
-		const out: ObstacleJSON = {
+		const out: WallJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
@@ -422,7 +441,7 @@ export class Wall {
 	 * @param x The JSON.
 	 * @returns A wall.
 	 */
-	static from(x: ObstacleJSON) {
+	static from(x: WallJSON): Wall {
 		const w = new Wall(x.b);
 		w.x = x.x ?? 0;
 		w.y = x.y ?? 0;
@@ -466,103 +485,103 @@ export class Arc {
 	anchorMode = 1;
 	customData: SliderCustomProps = {};
 
-	get offset() {
+	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
-	set offset(x) {
+	set offset(x: Optional<number>) {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x) {
+	set NJS(x: Optional<number>) {
 		this.customData.noteJumpMovementSpeed = x;
 	}
-	get NJS() {
+	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
 
-	set animation(x) {
+	set animation(x: ObjectAnimProps) {
 		this.customData.animation = x;
 	}
-	get animation() {
+	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
 
-	set rotation(x) {
+	set rotation(x: Optional<Vec3>) {
 		this.customData.worldRotation = x;
 	}
-	get rotation() {
+	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
 
-	set localRotation(x) {
+	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation() {
+	get localRotation(): Optional<Vec3> {
 		return this.customData.localRotation;
 	}
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set disableNoteGravity(x) {
+	set disableNoteGravity(x: Optional<boolean>) {
 		this.customData.disableNoteGravity = x;
 	}
-	get disableNoteGravity() {
+	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
 
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.customData.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
 
-	get x() {
+	get x(): number {
 		return this.pos[0];
 	}
-	set x(x) {
+	set x(x: number) {
 		this.pos[0] = x;
 	}
 
-	get y() {
+	get y(): number {
 		return this.pos[1];
 	}
-	set y(x) {
+	set y(x: number) {
 		this.pos[1] = x;
 	}
 
-	get tx() {
+	get tx(): number {
 		return this.tailPos[0];
 	}
-	set tx(x) {
+	set tx(x: number) {
 		this.tailPos[0] = x;
 	}
 
-	get ty() {
+	get ty(): number {
 		return this.tailPos[1];
 	}
-	set ty(x) {
+	set ty(x: number) {
 		this.tailPos[1] = x;
 	}
 
-	get interactable() {
+	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state) {
+	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
 	}
 	/**
 	 * Return the raw Json of the arc.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): ArcJSON {
 		const temp = dupe ? copy(this) : this;
-		const out: SliderJSON = {
+		const out: ArcJSON = {
 			b: temp.time,
 			c: LM_CONST.ObjectColorsMap.get(temp.type),
 			x: temp.x,
@@ -585,7 +604,7 @@ export class Arc {
 	 * @param x The JSON.
 	 * @returns An arc.
 	 */
-	static from(x: SliderJSON) {
+	static from(x: ArcJSON): Arc {
 		const n = new Arc(x.b);
 		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
 		n.x = x.x ?? 0;
@@ -627,103 +646,103 @@ export class Chain {
 	squishFactor = 1;
 	customData: SliderCustomProps = {};
 
-	get offset() {
+	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
-	set offset(x) {
+	set offset(x: Optional<number>) {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x) {
+	set NJS(x: Optional<number>) {
 		this.customData.noteJumpMovementSpeed = x;
 	}
-	get NJS() {
+	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
 
-	set animation(x) {
+	set animation(x: ObjectAnimProps) {
 		this.customData.animation = x;
 	}
-	get animation() {
+	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
 
-	set rotation(x) {
+	set rotation(x: Optional<Vec3>) {
 		this.customData.worldRotation = x;
 	}
-	get rotation() {
+	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
 
-	set localRotation(x) {
+	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation() {
+	get localRotation(): Optional<Vec3> {
 		return this.customData.localRotation;
 	}
-	set color(x) {
+	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color() {
+	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
 
-	set disableNoteGravity(x) {
+	set disableNoteGravity(x: Optional<boolean>) {
 		this.customData.disableNoteGravity = x;
 	}
-	get disableNoteGravity() {
+	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
 
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.customData.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
 
-	get x() {
+	get x(): number {
 		return this.pos[0];
 	}
-	set x(x) {
+	set x(x: number) {
 		this.pos[0] = x;
 	}
 
-	get y() {
+	get y(): number {
 		return this.pos[1];
 	}
-	set y(x) {
+	set y(x: number) {
 		this.pos[1] = x;
 	}
 
-	get tx() {
+	get tx(): number {
 		return this.tailPos[0];
 	}
-	set tx(x) {
+	set tx(x: number) {
 		this.tailPos[0] = x;
 	}
 
-	get ty() {
+	get ty(): number {
 		return this.tailPos[1];
 	}
-	set ty(x) {
+	set ty(x: number) {
 		this.tailPos[1] = x;
 	}
 
-	get interactable() {
+	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
-	set interactable(state) {
+	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
 	}
 	/**
 	 * Return the raw Json of the chain.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): ChainJSON {
 		const temp = dupe ? copy(this) : this;
-		const out: BurstSliderJSON = {
+		const out: ChainJSON = {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
@@ -744,7 +763,7 @@ export class Chain {
 	 * @param x The JSON.
 	 * @returns A chain.
 	 */
-	static from(x: BurstSliderJSON) {
+	static from(x: ChainJSON): Chain {
 		const n = new Chain(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
@@ -787,7 +806,7 @@ export class Bookmark {
 	 * Return the bookmark as valid bookmark JSON.
 	 * @param dupe Whether to duplicate the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): BookmarkJSON {
 		const temp = dupe ? copy(this) : this;
 		const out: BookmarkJSON = {
 			b: temp.time,
@@ -802,7 +821,7 @@ export class Bookmark {
 	 * @param x The JSON.
 	 * @returns A bookmark.
 	 */
-	static from(x: BookmarkJSON) {
+	static from(x: BookmarkJSON): Bookmark {
 		return new Bookmark(x.b, x.n, x.c);
 	}
 	/**

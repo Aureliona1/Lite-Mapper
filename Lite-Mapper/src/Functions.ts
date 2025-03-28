@@ -169,7 +169,7 @@ function multiplymats(mat1: number[][], mat2: number[][]) {
  * @param rotation The rotation to apply.
  * @returns Vec3
  */
-export function rotateVector(start: Vec3, end: Vec3, rotation: Vec3) {
+export function rotateVector(start: Vec3, end: Vec3, rotation: Vec3): Vec3 {
 	rotation = rotation.map(x => (x * Math.PI) / 180) as Vec3;
 	let pos: number[][] = [[end[0] - start[0]], [end[1] - start[1]], [end[2] - start[2]]];
 	const xmat: number[][] = [
@@ -202,7 +202,7 @@ export function repeat(rep: number, code: (x: number) => void) {
 	for (let i = 0; i < rep; i++) code(i);
 }
 
-export function stringCodeToNumber(s: string) {
+export function stringCodeToNumber(s: string): number {
 	return s
 		.split(/./)
 		.map(x => x.charCodeAt(0))
@@ -217,7 +217,7 @@ export function stringCodeToNumber(s: string) {
  * @param precision (Default - 3) The number of decimals in the random number. This can be negative to round to different values, e.g., -1 will round to the nearest 10, -2 will round to the nearest 100 etc.
  * @returns Random number.
  */
-export function random(min: number, max: number, seed: number | string = Math.random(), precision = 3) {
+export function random(min: number, max: number, seed: number | string = Math.random(), precision = 3): number {
 	[min, max] = min > max ? [max, min] : [min, max];
 	return decimals(mulberry32(stringCodeToNumber(seed.toString()))() * (max - min) + min, precision);
 }
@@ -229,7 +229,7 @@ export function random(min: number, max: number, seed: number | string = Math.ra
  * @param defaultAngle The angle that determines where "forwards" is for the object, defaults to the +z axis. (i.e., player - [0,0,0], notes - [0,180,0], upwards facing lasers - [-90,0,0] etc.)
  * @returns Vec3 - The rotation for the object at point1.
  */
-export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3) {
+export function pointRotation(point1: Vec3, point2: Vec3, defaultAngle?: Vec3): Vec3 {
 	const vector = ArrOp.subtract(point2, point1),
 		angle = [0, (180 * Math.atan2(vector[0], vector[2])) / Math.PI, 0],
 		pitchPoint = rotateVector([0, 0, 0], vector, [0, -angle[1], 0]);
@@ -328,7 +328,7 @@ export function copyToDir(toDir: string, extraFiles?: string[]) {
 /**
  * Calculates the time in ms from map init.
  */
-export function runTime() {
+export function runTime(): number {
 	return Date.now() - lMInitTime;
 }
 
@@ -372,7 +372,7 @@ export function remove(lookup: LookupMethod, ids: string[], hardRemove?: boolean
  * @param fraction (0-1) The fraction between the start and end point.
  * @param easing The easing to use on the interpolation.
  */
-export function lerp(start: number, end: number, fraction: number, easing: Easing = "easeLinear") {
+export function lerp(start: number, end: number, fraction: number, easing: Easing = "easeLinear"): number {
 	return ease[easing](fraction) * (end - start) + start;
 }
 
@@ -470,7 +470,7 @@ export class PlayerAnim extends AnimateTrack {
  * @param vec1 The first vector.
  * @param vec2 The second vector.
  */
-export function distance(vec1: Vec3, vec2: Vec3) {
+export function distance(vec1: Vec3, vec2: Vec3): number {
 	return Math.hypot(...ArrOp.subtract(vec2, vec1));
 }
 
@@ -523,7 +523,7 @@ export function clamp<T extends number | string | any[] | Record<string, any>>(v
  * @param color The color in hsv format, all values range from 0-1 (inclusive).
  * @returns Linear rgb (0-1).
  */
-export function hsv2rgb(color: Vec4) {
+export function hsv2rgb(color: Vec4): Vec4 {
 	const [h, s, v, a] = color;
 	// I actually have no idea how this works, chatGPT made it ;)
 	const f = (n: number, k = (n + h * 6) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
@@ -534,7 +534,7 @@ export function hsv2rgb(color: Vec4) {
  * Convert color from rgb format to hsv.
  * @param color The color in rgb format (linear rgb 0-1 inclusive).
  */
-export function rgb2hsv(color: Vec4) {
+export function rgb2hsv(color: Vec4): Vec4 {
 	const max = Math.max(color[0], color[1], color[2]);
 	const min = Math.min(color[0], color[1], color[2]);
 	const delta = max - min;
@@ -550,7 +550,7 @@ const HEX_MAP = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C"
  * @param color The color to convert.
  * @returns Hex string.
  */
-export function rgba2Hex(color: Vec4) {
+export function rgba2Hex(color: Vec4): string {
 	color = color.map(x => Math.round(clamp(x, [0, 1]) * 255)) as Vec4;
 	const digits: string[] = [];
 	color.forEach(x => {
@@ -631,7 +631,7 @@ export function copy<T>(obj: T): T {
  * Checks if an object is empty.
  * @param o Object to check.
  */
-export function isEmptyObject(o: Record<string, any>) {
+export function isEmptyObject(o: Record<string, any>): boolean {
 	if (typeof o !== "object") return false;
 	return Object.keys(o).length === 0;
 }
@@ -667,7 +667,7 @@ export function jsonPrune(obj: Record<string, any>) {
 /**
  * Recursively compare everything on any type of data.
  */
-export function compare<Tr extends T, T extends number | string | undefined | Array<Tr> | Record<string, Tr>>(a: T, b: T) {
+export function compare<Tr extends T, T extends number | string | undefined | Array<Tr> | Record<string, Tr>>(a: T, b: T): boolean {
 	if (typeof a !== "object") {
 		return a === b;
 	} else {
@@ -695,7 +695,7 @@ export class Noise {
 	/**
 	 * The seed for the noise generator.
 	 */
-	public readonly seed = Math.random();
+	public readonly seed: number = Math.random();
 	private n2d = makeNoise2D(() => this.seed);
 	private n3d = makeNoise3D(() => this.seed);
 	private n4d = makeNoise4D(() => this.seed);
@@ -703,7 +703,7 @@ export class Noise {
 	 * Initialise 1d, 2d, 3d, and 4d noise generators.
 	 * @param seed The see for the generator.
 	 */
-	constructor(seed = Math.random()) {
+	constructor(seed: number = Math.random()) {
 		this.seed = seed;
 	}
 
@@ -712,7 +712,7 @@ export class Noise {
 	 * @param x The position on the map.
 	 * @param range The range to scale the noise values.
 	 */
-	point1D(x: number, range: Vec2 = [-1, 1]) {
+	point1D(x: number, range: Vec2 = [-1, 1]): number {
 		return mapRange(this.n2d(x, 0), [-0.9, 0.9], range);
 	}
 	/**
@@ -721,7 +721,7 @@ export class Noise {
 	 * @param y The y position on the map.
 	 * @param range The range to scale the noise values.
 	 */
-	point2D(x: number, y: number, range: Vec2 = [-1, 1]) {
+	point2D(x: number, y: number, range: Vec2 = [-1, 1]): number {
 		return mapRange(this.n2d(x, y), [-0.9, 0.9], range);
 	}
 	/**
@@ -731,7 +731,7 @@ export class Noise {
 	 * @param z The z position on the map.
 	 * @param range The range to scale the noise values.
 	 */
-	point3D(x: number, y: number, z: number, range: Vec2 = [-1, 1]) {
+	point3D(x: number, y: number, z: number, range: Vec2 = [-1, 1]): number {
 		return mapRange(this.n3d(x, y, z), [-0.9, 0.9], range);
 	}
 	/**
@@ -742,7 +742,7 @@ export class Noise {
 	 * @param w The w position on the map.
 	 * @param range The range to scale the noise values.
 	 */
-	point4D(x: number, y: number, z: number, w: number, range: Vec2 = [-1, 1]) {
+	point4D(x: number, y: number, z: number, w: number, range: Vec2 = [-1, 1]): number {
 		return mapRange(this.n4d(x, y, z, w), [-0.9, 0.9], range);
 	}
 }
@@ -774,4 +774,4 @@ export function deepFreeze<T>(obj: T): T {
  * @param blue The blue value (0 - 255).
  * @param bg Whether to affect the foreground color or the background (Default - false).
  */
-export const rgb = (r: number, g: number, b: number, bg = false) => "\x1b[" + (bg ? 48 : 38) + ";2;" + (Math.round(r) % 256) + ";" + (Math.round(g) % 256) + ";" + (Math.round(b) % 256) + "m";
+export const rgb = (r: number, g: number, b: number, bg = false): string => "\x1b[" + (bg ? 48 : 38) + ";2;" + (Math.round(r) % 256) + ";" + (Math.round(g) % 256) + ";" + (Math.round(b) % 256) + "m";

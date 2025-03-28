@@ -1,12 +1,28 @@
 import { jsonPrune, copy } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type { CustomEventJSON, CustomEventName, TrackAnimDataProps, TrackAnimAnimationProps, PathAnimDataProps, PathAnimAnimationProps, TrackParentProps, PlayerObjectTarget, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
+import type {
+	CustomEventJSON,
+	CustomEventName,
+	TrackAnimDataProps,
+	TrackAnimAnimationProps,
+	PathAnimDataProps,
+	PathAnimAnimationProps,
+	TrackParentProps,
+	PlayerObjectTarget,
+	PlayerToTrackProps,
+	ComponentAnimProps,
+	Easing,
+	FogAnimationProps,
+	TubeLightAnimationProps,
+	Optional,
+	CustomEvent
+} from "./Types.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.
  * @param x Input Json.
  */
-export function JSONToCE(x: CustomEventJSON) {
+export function JSONToCE(x: CustomEventJSON): CustomEvent {
 	if (x.t == "AnimateComponent") {
 		return AnimateComponent.from(x);
 	} else if (x.t == "AssignPathAnimation") {
@@ -24,7 +40,7 @@ export function JSONToCE(x: CustomEventJSON) {
  * Convert custom event class into json.
  * @param x Custom Event class.
  */
-export function CEToJSON(x: AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent) {
+export function CEToJSON(x: AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent): CustomEventJSON {
 	return x.return();
 }
 
@@ -47,41 +63,41 @@ export class AnimateTrack {
 	set time(x: number) {
 		this.b = x;
 	}
-	get time() {
+	get time(): number {
 		return this.b;
 	}
-	get type() {
+	get type(): CustomEventName {
 		return this.t;
 	}
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.d.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.d.track;
 	}
-	set duration(x) {
+	set duration(x: Optional<number>) {
 		this.d.duration = x;
 	}
-	get duration() {
+	get duration(): Optional<number> {
 		return this.d.duration;
 	}
-	get animate() {
+	get animate(): TrackAnimAnimationProps {
 		return this.d as TrackAnimAnimationProps;
 	}
-	set animate(x) {
+	set animate(x: TrackAnimAnimationProps) {
 		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
-	get easing() {
+	get easing(): Optional<Easing> {
 		return this.d.easing;
 	}
-	set easing(x) {
+	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
-	get repeat() {
+	get repeat(): Optional<number> {
 		return this.d.repeat;
 	}
-	set repeat(x) {
+	set repeat(x: Optional<number>) {
 		this.d.repeat = x;
 	}
 	/**
@@ -134,31 +150,31 @@ export class AssignPathAnimation {
 	private t: CustomEventName = "AssignPathAnimation";
 	private d: PathAnimDataProps = {};
 
-	set time(x) {
+	set time(x: number) {
 		this.b = x;
 	}
-	get time() {
+	get time(): number {
 		return this.b;
 	}
-	set track(x) {
+	set track(x: Optional<string | string[]>) {
 		this.d.track = x;
 	}
-	get track() {
+	get track(): Optional<string | string[]> {
 		return this.d.track;
 	}
-	get type() {
+	get type(): CustomEventName {
 		return this.t;
 	}
-	set easing(x) {
+	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
-	get easing() {
+	get easing(): Optional<Easing> {
 		return this.d.easing;
 	}
-	get animate() {
+	get animate(): PathAnimAnimationProps {
 		return this.d as PathAnimAnimationProps;
 	}
-	set animate(x) {
+	set animate(x: PathAnimAnimationProps) {
 		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
@@ -217,31 +233,31 @@ export class AssignTrackParent {
 	private t: CustomEventName = "AssignTrackParent";
 	private d: TrackParentProps = { childrenTracks: [], parentTrack: "" };
 
-	set time(x) {
+	set time(x: number) {
 		this.b = x;
 	}
-	get time() {
+	get time(): number {
 		return this.b;
 	}
-	get type() {
+	get type(): CustomEventName {
 		return this.t;
 	}
-	set childTracks(x) {
+	set childTracks(x: string[]) {
 		this.d.childrenTracks = x;
 	}
-	get childTracks() {
+	get childTracks(): string[] {
 		return this.d.childrenTracks;
 	}
-	set parentTrack(x) {
+	set parentTrack(x: string) {
 		this.d.parentTrack = x;
 	}
-	get parentTrack() {
+	get parentTrack(): string {
 		return this.d.parentTrack;
 	}
-	get worldPositionStays() {
+	get worldPositionStays(): Optional<boolean> {
 		return this.d.worldPositionStays;
 	}
-	set worldPositionStays(x) {
+	set worldPositionStays(x: Optional<boolean>) {
 		this.d.worldPositionStays = x;
 	}
 	/**
@@ -296,25 +312,25 @@ export class AssignPlayerToTrack {
 	private t: CustomEventName = "AssignPlayerToTrack";
 	private d: PlayerToTrackProps = {};
 
-	set time(x) {
+	set time(x: number) {
 		this.b = x;
 	}
-	get time() {
+	get time(): number {
 		return this.b;
 	}
-	get type() {
+	get type(): CustomEventName {
 		return this.t;
 	}
-	set track(x) {
+	set track(x: Optional<string>) {
 		this.d.track = x;
 	}
-	get track() {
+	get track(): Optional<string> {
 		return this.d.track;
 	}
-	set target(x) {
+	set target(x: Optional<PlayerObjectTarget>) {
 		this.d.target = x;
 	}
-	get target() {
+	get target(): Optional<PlayerObjectTarget> {
 		return this.d.target;
 	}
 	/**
@@ -369,43 +385,43 @@ export class AnimateComponent {
 	private t: CustomEventName = "AnimateComponent";
 	private d: ComponentAnimProps = {};
 
-	set time(x) {
+	set time(x: number) {
 		this.b = x;
 	}
-	get time() {
+	get time(): number {
 		return this.b;
 	}
-	get type() {
+	get type(): CustomEventName {
 		return this.t;
 	}
-	set track(x) {
+	set track(x: Optional<string>) {
 		this.d.track = x;
 	}
-	get track() {
+	get track(): Optional<string> {
 		return this.d.track;
 	}
-	set duration(x) {
+	set duration(x: Optional<number>) {
 		this.d.duration = x;
 	}
-	get duration() {
+	get duration(): Optional<number> {
 		return this.d.duration;
 	}
-	set easing(x) {
+	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
-	get easing() {
+	get easing(): Optional<Easing> {
 		return this.d.easing;
 	}
-	get fog() {
+	get fog(): Optional<FogAnimationProps> {
 		return this.d.BloomFogEnvironment;
 	}
-	set fog(x) {
+	set fog(x: Optional<FogAnimationProps>) {
 		this.d.BloomFogEnvironment = x;
 	}
-	get lightBloom() {
+	get lightBloom(): Optional<TubeLightAnimationProps> {
 		return this.d.TubeBloomPrePassLight;
 	}
-	set lightBloom(x) {
+	set lightBloom(x: Optional<TubeLightAnimationProps>) {
 		this.d.TubeBloomPrePassLight = x;
 	}
 	/**
