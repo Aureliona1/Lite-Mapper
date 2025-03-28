@@ -6,7 +6,7 @@ import { compare, copy, copyToDir, decimals, hex2Rgba, jsonPrune, LMCache, LMLog
 import { LightEvent } from "./Lights.ts";
 import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 import { optimizeMaterials } from "./Optimizers.ts";
-import { ClassMap, DiffNames, HeckSettings, V2InfoBeatmap, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
+import type { ClassMap, DiffName, HeckSettings, V2InfoBeatmap, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
 
 export let currentDiff: BeatMap,
@@ -280,7 +280,7 @@ export class BeatMap {
 	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
-	constructor(public readonly inputDiff: DiffNames = "ExpertStandard", public readonly outputDiff: DiffNames = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
+	constructor(public readonly inputDiff: DiffName = "ExpertStandard", public readonly outputDiff: DiffName = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
 		let rawMap: V3MapJSON = copy(LM_CONST.V3_MAP_FALLBACK);
 		try {
 			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
@@ -619,7 +619,7 @@ export class BeatMap {
 	 * Adds elements and objects from an additional difficulty file to your map.
 	 * @param diff The name of the input difficulty to add elements from.
 	 */
-	addInputDiff(diff: DiffNames) {
+	addInputDiff(diff: DiffName) {
 		let input: V3MapJSON = copy(LM_CONST.V3_MAP_FALLBACK);
 		try {
 			input = JSON.parse(Deno.readTextFileSync(diff + ".dat"));

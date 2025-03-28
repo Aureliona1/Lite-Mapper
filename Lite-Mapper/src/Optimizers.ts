@@ -5,7 +5,7 @@ import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { repeat, filterEnvironments, mapRange, compare } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
+import type { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
 
 /**
  * Performs several actions on geometry materials across the map.

@@ -3,7 +3,7 @@ import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
 import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import {
+import type {
 	ComponentStaticProps,
 	EnvironmentJSON,
 	GeometryMaterialJSON,

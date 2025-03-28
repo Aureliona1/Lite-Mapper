@@ -1,5 +1,5 @@
 import { deepFreeze } from "./Functions.ts";
-import { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON, Vec3 } from "./Types.ts";
+import type { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON, Vec3 } from "./Types.ts";
 
 /**
  * Constant value to send objects to so that they are out of view of the player.

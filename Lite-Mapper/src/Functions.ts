@@ -5,13 +5,13 @@ import { makeNoise2D, makeNoise3D, makeNoise4D } from "https://deno.land/x/open_
 import { Seed } from "https://deno.land/x/seed@1.0.0/index.ts";
 import { ArrOp } from "./Arrays.ts";
 import { ye3 } from "./Consts.ts";
-import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
+import { type AnimateComponent, AnimateTrack, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import * as ease from "./Easings.ts";
 import { Environment } from "./Environment.ts";
-import { LightEvent } from "./Lights.ts";
+import type { LightEvent } from "./Lights.ts";
 import { currentDiff, lMInitTime } from "./Map.ts";
-import { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
-import { Easing, LookupMethod, RGBAObject, Vec2, Vec3, Vec4 } from "./Types.ts";
+import type { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
+import type { Easing, LookupMethod, RGBAObject, Vec2, Vec3, Vec4 } from "./Types.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

@@ -1,6 +1,6 @@
 import { copy, LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { EnvironmentJSON, LightEventJSON } from "./Types.ts";
+import type { EnvironmentJSON, LightEventJSON } from "./Types.ts";
 
 export type USESettings = {
 	name?: string;

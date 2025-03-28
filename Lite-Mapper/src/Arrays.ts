@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { lerp, random, repeat } from "./Functions.ts";
-import { Easing, NumberArrLike } from "./Types.ts";
+import type { Easing, NumberArrLike } from "./Types.ts";
 
 export class ArrOp<T extends NumberArrLike> {
 	/**

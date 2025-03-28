@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Vec2, ObjectColorName, ObjectDirectionName, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorNumber, ObjectDirectionNumber } from "./Types.ts";
+import type { Vec2, ObjectColorName, ObjectDirectionName, NoteCustomProps, NoteJSON, BombJSON, WallCustomProps, ObstacleJSON, SliderCustomProps, SliderJSON, BurstSliderJSON, Vec4, BookmarkJSON, ObjectColorNumber, ObjectDirectionNumber } from "./Types.ts";
 
 export class Note {
 	/**

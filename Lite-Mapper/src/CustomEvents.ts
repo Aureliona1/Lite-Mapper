@@ -1,6 +1,6 @@
 import { jsonPrune, copy } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { CustomEventJSON, CustomEventName, TrackAnimDataProps, TrackAnimAnimationProps, PathAnimDataProps, PathAnimAnimationProps, TrackParentProps, PlayerObjectTarget, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
+import type { CustomEventJSON, CustomEventName, TrackAnimDataProps, TrackAnimAnimationProps, PathAnimDataProps, PathAnimAnimationProps, TrackParentProps, PlayerObjectTarget, PlayerToTrackProps, ComponentAnimProps } from "./Types.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.

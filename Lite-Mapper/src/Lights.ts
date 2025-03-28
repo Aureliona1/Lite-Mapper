@@ -1,7 +1,7 @@
 import { LM_CONST } from "./Consts.ts";
 import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import { Easing, LightEventCustomData, LightEventJSON, LightTypeName, LightValueName, KFColorVec4, LightTypeNumber, LightValueNumber, Vec3, Vec4 } from "./Types.ts";
+import type { Easing, LightEventCustomData, LightEventJSON, LightTypeName, LightValueName, KFColorVec4, LightTypeNumber, LightValueNumber, Vec3, Vec4 } from "./Types.ts";
 
 export class LightEvent {
 	/**

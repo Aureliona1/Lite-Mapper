@@ -1,15 +1,15 @@
 // deno-lint-ignore-file no-explicit-any
-import { LM_CONST } from "./Consts.ts";
-import { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
-import { Environment } from "./Environment.ts";
-import { LightEvent } from "./Lights.ts";
-import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
+import type { LM_CONST } from "./Consts.ts";
+import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
+import type { Environment } from "./Environment.ts";
+import type { LightEvent } from "./Lights.ts";
+import type { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
 
 // BeatMap types
 
-export type DiffNames = `${BeatMapDifficultyNames}${BeatMapCharacteristicNames}`;
-export type BeatMapCharacteristicNames = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
-export type BeatMapDifficultyNames = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
+export type DiffName = `${BeatMapDifficultyName}${BeatMapCharacteristicName}`;
+export type BeatMapCharacteristicName = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
+export type BeatMapDifficultyName = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
 /**
  * JSON Objects used in V3 light events to filter lights.
@@ -45,7 +45,7 @@ export type V2InfoColorScheme = {
  * The layout for beatmaps in V2 info files.
  */
 export type V2InfoBeatmap = {
-	_difficulty: BeatMapDifficultyNames;
+	_difficulty: BeatMapDifficultyName;
 	_difficultyRank: number;
 	_beatmapFilename: DatFilename;
 	_noteJumpMovementSpeed: number;
@@ -59,7 +59,7 @@ export type V2InfoBeatmap = {
  * JSON for beatmap sets in V2 info files.
  */
 export type V2InfoBeatmapSet = {
-	_beatmapCharacteristicName: BeatMapCharacteristicNames;
+	_beatmapCharacteristicName: BeatMapCharacteristicName;
 	_difficultyBeatmaps: V2InfoBeatmap[];
 };
 
@@ -129,8 +129,8 @@ export type V4InfoColorScheme = {
  * The beatmap layout for V4 info files.
  */
 export type V4InfoBeatmap = {
-	characteristic: BeatMapCharacteristicNames;
-	difficulty: BeatMapDifficultyNames;
+	characteristic: BeatMapCharacteristicName;
+	difficulty: BeatMapDifficultyName;
 	beatmapAuthors: {
 		mappers: string[];
 		lighters: string[];
