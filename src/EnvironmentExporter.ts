@@ -62,5 +62,5 @@ export function exportShareableEnv(settings: USESettings) {
 	} catch (error) {
 		LMLog(error, "Error");
 	}
-	LMLog(`Exported ${envArray.map.length} environments to "${settings.name}.dat"...`, "Log", "EnvironmentExporter");
+	LMLog(`Exported ${envArray.length} environments to "${settings.name}.dat"...`, "Log", "EnvironmentExporter");
 }
