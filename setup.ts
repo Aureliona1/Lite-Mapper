@@ -135,7 +135,7 @@ if (opts["-denon"]) {
 	}
 }
 
-const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper"\n\nconst map = new BeatMap("${opts.input}", "${opts.output}", "${opts["--update-freq"] ?? opts["-no-update"] ? "Never" : ""}");\n// Write your map code here\nmap.save();\n`;
+const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper"\n\nconst map = new BeatMap("${opts.input}", "${opts.output}", "${opts["--update-freq"] ?? opts["-no-update"] ? "Never" : "Weekly"}");\n// Write your map code here\nmap.save();\n`;
 try {
 	Deno.writeTextFileSync("script.ts", scriptString);
 } catch (_) {
