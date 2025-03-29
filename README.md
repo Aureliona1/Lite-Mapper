@@ -27,7 +27,13 @@ With the folder now open, you can run the install script to generate the require
 lm-init -denon
 ```
 
-This will create your `script.ts` and `scripts.json` file. Open up the `script.ts` file. Open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac, and type `Deno: Initialize Workspace Configuration` and press yes for anything that it asks.
+This will create your `script.ts` and `scripts.json` file.`lm-init` has a handful of options for setting up your map script. O view them all, run:
+
+```bash
+lm-init -help
+```
+
+From here, open up your `script.ts` file. Open the command palette with `Ctrl + Shift + P`, or `Cmd + Shift + P` on mac, and type `Deno: Initialize Workspace Configuration` and press yes for anything that it asks.
 
 It is highly recommended to use [denon](https://deno.land/x/denon) to automatically re-run your script when you save. To run Lite-Mapper with denon, in the terminal, run:
 
