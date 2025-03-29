@@ -27,7 +27,7 @@ With the folder now open, you can run the install script to generate the require
 lm-init -denon
 ```
 
-This will create your `script.ts` and `scripts.json` file.`lm-init` has a handful of options for setting up your map script. O view them all, run:
+This will create your `script.ts` and `scripts.json` file.`lm-init` has a handful of options for setting up your map script. To view them all, run:
 
 ```bash
 lm-init -help
