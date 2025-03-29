@@ -40,7 +40,7 @@ export class Environment {
 	 * @param id The Chroma id of the object/s you wish to target.
 	 * @param lookup The lookup method for finding these objects.
 	 */
-	env(id: string, lookup: LookupMethod) {
+	env(id: string, lookup: LookupMethod): this {
 		this.id = id;
 		this.lookupMethod = lookup;
 		if (this.geometry) {
@@ -56,7 +56,7 @@ export class Environment {
 	 * @param type The geometry primitive type to use.
 	 * @param mat The material of the geometry object.
 	 */
-	geo(type: GeometryObjectPrimitive, mat: GeometryMaterialJSON | string) {
+	geo(type: GeometryObjectPrimitive, mat: GeometryMaterialJSON | string): this {
 		this.geometry = {
 			type: type,
 			material: mat
@@ -123,7 +123,7 @@ export class Environment {
 	 * @param x The JSON.
 	 * @returns An environment (or geometry).
 	 */
-	static from(x: EnvironmentJSON) {
+	static from(x: EnvironmentJSON): Environment {
 		const e = new Environment();
 		e.active = x.active ?? e.active;
 		if (x.components) {
@@ -167,7 +167,7 @@ export class Environment {
 	 * Return your environment object as an object.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): EnvironmentJSON {
 		const temp = dupe ? copy(this) : this;
 		const out: EnvironmentJSON = {
 			active: temp.active,
@@ -317,11 +317,10 @@ export class Material {
 		return this;
 	}
 
-	/**
-	 * Import raw material json into a class.
-	 */
-	import(raw: GeometryMaterialJSON) {
-		return raw as Material;
+	static this(raw: GeometryMaterialJSON): Material {
+		const out = new Material();
+		Object.assign(out, raw);
+		return out;
 	}
 
 	/**

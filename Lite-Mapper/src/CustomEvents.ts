@@ -104,7 +104,7 @@ export class AnimateTrack {
 	 * Return the raw json of the animation.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out = {
 			b: temp.b,
@@ -119,7 +119,7 @@ export class AnimateTrack {
 	 * @param x The JSON.
 	 * @returns A track animation with converted props from the JSON (or a blank animation if the JSON is invalid).
 	 */
-	static from(x: CustomEventJSON) {
+	static from(x: CustomEventJSON): AnimateTrack {
 		const a = new AnimateTrack();
 		if (x.t == "AnimateTrack") {
 			a.d = x.d as TrackAnimDataProps;
@@ -182,7 +182,7 @@ export class AssignPathAnimation {
 	 * Return the animation as raw json.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out = {
 			b: temp.b,
@@ -197,7 +197,7 @@ export class AssignPathAnimation {
 	 * @param x The JSON.
 	 * @returns A path animation, or a blank path animation if the JSON is invalid.
 	 */
-	static from(x: CustomEventJSON) {
+	static from(x: CustomEventJSON): AssignPathAnimation {
 		const a = new AssignPathAnimation();
 		if (x.t == "AssignPathAnimation") {
 			a.d = x.d as PathAnimDataProps;
@@ -264,7 +264,7 @@ export class AssignTrackParent {
 	 * Return the parent track as json.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out = {
 			b: temp.b,
@@ -279,7 +279,7 @@ export class AssignTrackParent {
 	 * @param x The JSON.
 	 * @returns A trrack parent, or a blank track parent if the JSON is invalid.
 	 */
-	static from(x: CustomEventJSON) {
+	static from(x: CustomEventJSON): AssignTrackParent {
 		const a = new AssignTrackParent();
 		if (x.t == "AssignTrackParent") {
 			a.d = x.d as TrackParentProps;
@@ -337,7 +337,7 @@ export class AssignPlayerToTrack {
 	 * Return track assignment as json.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out = {
 			b: temp.b,
@@ -352,7 +352,7 @@ export class AssignPlayerToTrack {
 	 * @param x The JSON.
 	 * @returns A player track event, or an empty player track event if the JSON is invalid.
 	 */
-	static from(x: CustomEventJSON) {
+	static from(x: CustomEventJSON): AssignPlayerToTrack {
 		const a = new AssignPlayerToTrack();
 		if (x.t == "AssignPlayerToTrack") {
 			a.d = x.d as PlayerToTrackProps;
@@ -428,7 +428,7 @@ export class AnimateComponent {
 	 * Return the animation as json.
 	 * @param dupe Whether to copy the object on return.
 	 */
-	return(dupe = true) {
+	return(dupe = true): CustomEventJSON {
 		const temp = dupe ? copy(this) : this;
 		const out = {
 			b: temp.b,
@@ -443,7 +443,7 @@ export class AnimateComponent {
 	 * @param x The JSON.
 	 * @returns A component animation, or a blank component animation if the JSON is invalid.
 	 */
-	static from(x: CustomEventJSON) {
+	static from(x: CustomEventJSON): AnimateComponent {
 		const a = new AnimateComponent();
 		if (x.t == "AnimateComponent") {
 			a.d = x.d as ComponentAnimProps;

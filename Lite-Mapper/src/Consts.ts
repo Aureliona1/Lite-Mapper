@@ -135,14 +135,14 @@ export class TwoWayMap<K extends string | number | symbol, V extends string | nu
 	 * Get the value at a key in the map.
 	 * @param key The key to get.
 	 */
-	get(key: K) {
+	get(key: K): V {
 		return this.map[key];
 	}
 	/**
 	 * Get the key corresponding to a value. If multiple keys have this value then the last one will be returned.
 	 * @param value The value to get the key of.
 	 */
-	revGet(value: V) {
+	revGet(value: V): K {
 		return this.reverseMap[value];
 	}
 }
