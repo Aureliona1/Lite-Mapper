@@ -2,6 +2,7 @@ export * from "./Arrays.ts";
 export * from "./Consts.ts";
 export * from "./CustomEvents.ts";
 export * from "./Environment.ts";
+export * from "./EnvironmentExporter.ts";
 export * from "./Functions.ts";
 export * from "./Lights.ts";
 export * from "./Map.ts";
