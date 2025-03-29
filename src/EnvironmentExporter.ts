@@ -15,7 +15,7 @@ export type USESettings = {
 	};
 };
 
-export function exportShareableEnv(settings: USESettings) {
+export function exportShareableEnv(settings: USESettings, beatSaberInstallLocation?: string) {
 	// Add light events
 	if (settings.copyLightEvents) {
 		settings.features ??= {};
@@ -59,6 +59,16 @@ export function exportShareableEnv(settings: USESettings) {
 				materials: currentDiff.materials
 			})
 		);
+		if (beatSaberInstallLocation) {
+			// Validate install
+			if (/^(?:\/|[C-Z]\:\/).+/.test(beatSaberInstallLocation)) {
+				beatSaberInstallLocation = beatSaberInstallLocation.replaceAll("\\", "/");
+				beatSaberInstallLocation = /\/$/.test(beatSaberInstallLocation) ? beatSaberInstallLocation : beatSaberInstallLocation + "/";
+				Deno.copyFileSync(`${settings.name}.dat`, beatSaberInstallLocation + "UserData/Chroma/Environments/" + settings.name + ".dat");
+			} else {
+				LMLog("Beat Saber install location must be an absolute path. i.e., it should start with either / or DRIVE_LETTER:/...", "Error");
+			}
+		}
 	} catch (error) {
 		LMLog(error, "Error");
 	}
