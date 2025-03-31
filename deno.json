@@ -14,5 +14,10 @@
 			"./images",
 			"./github"
 		]
+	},
+	"imports": {
+		"@aurellis/helpers": "jsr:@aurellis/helpers@1.0.1",
+		"@bengineering/mulberry32": "jsr:@bengineering/mulberry32@0.0.1",
+		"fast-simplex-noise": "npm:fast-simplex-noise@4.0.0"
 	}
 }
