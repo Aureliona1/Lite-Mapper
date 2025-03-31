@@ -202,6 +202,9 @@ export function repeat(rep: number, code: (x: number) => void) {
 	for (let i = 0; i < rep; i++) code(i);
 }
 
+/**
+ * Generates a number based on the character codes in a string.
+ */
 export function stringCodeToNumber(s: string): number {
 	return s
 		.split(/./)
