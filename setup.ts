@@ -1,6 +1,7 @@
 // This is the LM installation/setup script.
 // You do not need this in order to run Lite-Mapper.
 import { rgb, type DiffName } from "jsr:@aurellis/lite-mapper";
+import pack from "./deno.json" with {type: "json"}
 
 const diffNames: DiffName[] = [
 	"Easy360Degree",
@@ -135,7 +136,7 @@ if (opts["-denon"]) {
 	}
 }
 
-const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper"\n\nconst map = new BeatMap("${opts.input}", "${opts.output}", "${opts["--update-freq"] ?? opts["-no-update"] ? "Never" : "Weekly"}");\n// Write your map code here\nmap.save();\n`;
+const scriptString = `import { BeatMap } from "jsr:@aurellis/lite-mapper@${pack.version}";\n\nconst map = new BeatMap("${opts.input}", "${opts.output}", "${opts["--update-freq"] ?? opts["-no-update"] ? "Never" : "Weekly"}");\n\n// Write your map code here\n\nmap.save();\n`;
 try {
 	Deno.writeTextFileSync("script.ts", scriptString);
 } catch (_) {
