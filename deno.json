@@ -1,6 +1,6 @@
 {
 	"name": "@aurellis/lite-mapper",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"license": "MIT",
 	"exports": "./src/mod.ts",
 	"publish": {
