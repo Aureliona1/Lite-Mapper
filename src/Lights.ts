@@ -1,4 +1,4 @@
-import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.1";
+import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.2";
 import { LM_CONST } from "./Consts.ts";
 import { jsonPrune, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";

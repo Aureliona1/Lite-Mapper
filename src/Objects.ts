@@ -1,4 +1,4 @@
-import { deepCopy, type Vec2, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.1";
+import { deepCopy, type Vec2, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.2";
 import { LM_CONST } from "./Consts.ts";
 import { jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";

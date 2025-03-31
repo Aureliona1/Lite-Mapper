@@ -1,4 +1,4 @@
-import { type Easing, deepCopy } from "jsr:@aurellis/helpers@1.0.1";
+import { type Easing, deepCopy } from "jsr:@aurellis/helpers@1.0.2";
 import { jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type { ComponentAnimProps, CustomEvent, CustomEventJSON, CustomEventName, FogAnimationProps, Optional, PathAnimAnimationProps, PathAnimDataProps, PlayerObjectTarget, PlayerToTrackProps, TrackAnimAnimationProps, TrackAnimDataProps, TrackParentProps, TubeLightAnimationProps } from "./Types.ts";
