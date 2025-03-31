@@ -12,7 +12,8 @@
 		],
 		"exclude": [
 			"./images",
-			"./github"
+			"./github",
+			"./test"
 		]
 	},
 	"imports": {

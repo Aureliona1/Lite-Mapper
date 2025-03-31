@@ -613,14 +613,16 @@ export class BeatMap {
 	};
 
 	get settings(): HeckSettings {
-		this.info.raw._difficultyBeatmapSets.forEach(x => {
-			x._difficultyBeatmaps.forEach(y => {
-				if (y._beatmapFilename == this.outputDiff + ".dat") {
-					y._customData ??= {};
-					return (y._customData["_settings"] ?? {}) as HeckSettings;
+		for (let i = 0; i < this.info.raw._difficultyBeatmapSets.length; i++) {
+			const bms = this.info.raw._difficultyBeatmapSets[i];
+			for (let j = 0; j < bms._difficultyBeatmaps.length; j++) {
+				const bm = bms._difficultyBeatmaps[j];
+				if (bm._beatmapFilename == this.outputDiff + ".dat") {
+					bm._customData ??= {};
+					return (bm._customData._settings ?? {}) as HeckSettings;
 				}
-			});
-		});
+			}
+		}
 		return {} as HeckSettings;
 	}
 
