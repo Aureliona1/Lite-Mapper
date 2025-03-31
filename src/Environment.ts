@@ -1,7 +1,7 @@
-import { ArrOp } from "./Arrays.ts";
+import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.1";
 import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
-import { copy, jsonPrune, repeat, rotateVector } from "./Functions.ts";
+import { jsonPrune, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type {
 	ComponentStaticProps,
@@ -21,9 +21,7 @@ import type {
 	LightTypeNumber,
 	LookupMethod,
 	MaterialShaderName,
-	Optional,
-	Vec3,
-	Vec4
+	Optional
 } from "./Types.ts";
 
 export class Environment {
@@ -168,7 +166,7 @@ export class Environment {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): EnvironmentJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: EnvironmentJSON = {
 			active: temp.active,
 			duplicate: temp.duplicate == undefined ? undefined : temp.duplicate ? 1 : 0,
@@ -205,7 +203,7 @@ export class Environment {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.environments.push(dupe ? copy(this) : this);
+		currentDiff.environments.push(dupe ? deepCopy(this) : this);
 	}
 }
 

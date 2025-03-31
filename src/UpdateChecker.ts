@@ -1,5 +1,6 @@
+import { rgb } from "jsr:@aurellis/helpers@1.0.1";
 import pack from "../deno.json" with {type: "json"};
-import { LMLog, rgb } from "./Functions.ts";
+import { LMLog } from "./Functions.ts";
 
 /**
  * This is an internal LM function, you should never need to run this. All it will do is check for updates on GitHub.

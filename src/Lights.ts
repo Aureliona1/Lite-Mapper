@@ -1,7 +1,8 @@
+import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.1";
 import { LM_CONST } from "./Consts.ts";
-import { copy, jsonPrune, lerp, repeat } from "./Functions.ts";
+import { jsonPrune, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type { Easing, LightEventCustomData, LightEventJSON, LightTypeName, LightValueName, KFColorVec4, LightTypeNumber, LightValueNumber, Vec3, Vec4, Optional } from "./Types.ts";
+import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "./Types.ts";
 
 export class LightEvent {
 	/**
@@ -94,7 +95,7 @@ export class LightEvent {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): LightEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
 			et: LM_CONST.LightEventTypesMap.get(temp.type),
@@ -124,7 +125,7 @@ export class LightEvent {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		jsonPrune(temp);
 		currentDiff.events.push(temp);
 	}
@@ -273,7 +274,7 @@ export class LightKeyframe {
 		return this;
 	}
 	push(dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		temp.keyframes.forEach(kf => {
 			kf[4] /= this.animationLength;
 			const time = this.time + kf[4] * this.duration;

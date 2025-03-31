@@ -1,4 +1,5 @@
-import { copy, LMLog } from "./Functions.ts";
+import { deepCopy } from "jsr:@aurellis/helpers@1.0.1";
+import { LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type { EnvironmentJSON, LightEventJSON } from "./Types.ts";
 
@@ -34,7 +35,7 @@ export function exportShareableEnv(settings: USESettings, beatSaberInstallLocati
 	// Convert the type and material to their underscored counterparts and remove tracks
 	const envArray: EnvironmentJSON[] = [];
 	currentDiff.environments.forEach(e => {
-		const nu = copy(e);
+		const nu = deepCopy(e);
 		if (nu.track) {
 			delete nu.track;
 		}

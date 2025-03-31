@@ -1,10 +1,18 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@aurellis/helpers@1.0.1": "1.0.1",
     "jsr:@bengineering/mulberry32@0.0.1": "0.0.1",
+    "jsr:@bengineering/mulberry32@^0.0.1": "0.0.1",
     "npm:fast-simplex-noise@4.0.0": "4.0.0"
   },
   "jsr": {
+    "@aurellis/helpers@1.0.1": {
+      "integrity": "e549b7450a90eb4162a90394370bfc210acaec06fb0c33b58d4104f6ac68dc29",
+      "dependencies": [
+        "jsr:@bengineering/mulberry32@^0.0.1"
+      ]
+    },
     "@bengineering/mulberry32@0.0.1": {
       "integrity": "e856a21a0ce067c430367f2ffdb28992103fe03ab0007faa7f2a1c01c5b987e9"
     }
@@ -13,5 +21,10 @@
     "fast-simplex-noise@4.0.0": {
       "integrity": "sha512-2zRCJkPdMnPyXNEeI5IYgH555Nbd/j9nC8YVoOm5dmFDjqxuLD888nEAGB8cSUIyxLlNHCZVlZ7AO27Fm3boJA=="
     }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@aurellis/helpers@1.0.1"
+    ]
   }
 }

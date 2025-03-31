@@ -1,25 +1,23 @@
+import { deepCopy, type Vec2, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.1";
 import { LM_CONST } from "./Consts.ts";
-import { copy, jsonPrune } from "./Functions.ts";
+import { jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type {
-	Vec2,
-	ObjectColorName,
-	ObjectDirectionName,
+	SliderJSON as ArcJSON,
+	BombJSON,
+	BookmarkJSON,
+	BurstSliderJSON as ChainJSON,
 	NoteCustomProps,
 	NoteJSON,
-	BombJSON,
-	WallCustomProps,
-	ObstacleJSON as WallJSON,
-	SliderCustomProps,
-	SliderJSON as ArcJSON,
-	BurstSliderJSON as ChainJSON,
-	Vec4,
-	BookmarkJSON,
-	ObjectColorNumber,
-	ObjectDirectionNumber,
 	ObjectAnimProps,
-	Vec3,
-	Optional
+	ObjectColorName,
+	ObjectColorNumber,
+	ObjectDirectionName,
+	ObjectDirectionNumber,
+	Optional,
+	SliderCustomProps,
+	WallCustomProps,
+	ObstacleJSON as WallJSON
 } from "./Types.ts";
 
 export class Note {
@@ -141,7 +139,7 @@ export class Note {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): NoteJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: NoteJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -177,7 +175,7 @@ export class Note {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeNotes?.push(temp);
 		} else {
@@ -291,7 +289,7 @@ export class Bomb {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): BombJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: BombJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -321,7 +319,7 @@ export class Bomb {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeBombs?.push(temp);
 		} else {
@@ -423,7 +421,7 @@ export class Wall {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): WallJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: WallJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -459,7 +457,7 @@ export class Wall {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeWalls?.push(temp);
 		} else {
@@ -580,7 +578,7 @@ export class Arc {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): ArcJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: ArcJSON = {
 			b: temp.time,
 			c: LM_CONST.ObjectColorsMap.get(temp.type),
@@ -627,7 +625,7 @@ export class Arc {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.arcs.push(dupe ? copy(this) : this);
+		currentDiff.arcs.push(dupe ? deepCopy(this) : this);
 	}
 }
 
@@ -741,7 +739,7 @@ export class Chain {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): ChainJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: ChainJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -785,7 +783,7 @@ export class Chain {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeChains?.push(temp);
 		} else {
@@ -807,7 +805,7 @@ export class Bookmark {
 	 * @param dupe Whether to duplicate the object on return.
 	 */
 	return(dupe = true): BookmarkJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out: BookmarkJSON = {
 			b: temp.time,
 			n: temp.name,
@@ -829,6 +827,6 @@ export class Bookmark {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.bookmarks?.push(dupe ? copy(this) : this);
+		currentDiff.bookmarks?.push(dupe ? deepCopy(this) : this);
 	}
 }

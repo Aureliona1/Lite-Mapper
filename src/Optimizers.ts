@@ -1,11 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
-import { arrRem } from "./Arrays.ts";
+import { arrRem, compare, mapRange, type Vec2 } from "jsr:@aurellis/helpers@1.0.1";
 import { ye3 } from "./Consts.ts";
 import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
-import { repeat, filterEnvironments, mapRange, compare } from "./Functions.ts";
+import { filterEnvironments, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type { GeometryMaterialJSON, KFVec3, Vec2 } from "./Types.ts";
+import type { GeometryMaterialJSON, KFVec3 } from "./Types.ts";
 
 /**
  * Performs several actions on geometry materials across the map.

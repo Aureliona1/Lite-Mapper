@@ -1,22 +1,7 @@
-import { jsonPrune, copy } from "./Functions.ts";
+import { type Easing, deepCopy } from "jsr:@aurellis/helpers@1.0.1";
+import { jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
-import type {
-	CustomEventJSON,
-	CustomEventName,
-	TrackAnimDataProps,
-	TrackAnimAnimationProps,
-	PathAnimDataProps,
-	PathAnimAnimationProps,
-	TrackParentProps,
-	PlayerObjectTarget,
-	PlayerToTrackProps,
-	ComponentAnimProps,
-	Easing,
-	FogAnimationProps,
-	TubeLightAnimationProps,
-	Optional,
-	CustomEvent
-} from "./Types.ts";
+import type { ComponentAnimProps, CustomEvent, CustomEventJSON, CustomEventName, FogAnimationProps, Optional, PathAnimAnimationProps, PathAnimDataProps, PlayerObjectTarget, PlayerToTrackProps, TrackAnimAnimationProps, TrackAnimDataProps, TrackParentProps, TubeLightAnimationProps } from "./Types.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.
@@ -105,7 +90,7 @@ export class AnimateTrack {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -132,7 +117,7 @@ export class AnimateTrack {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? copy(this) : this);
+		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
 	}
 }
 
@@ -183,7 +168,7 @@ export class AssignPathAnimation {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -210,7 +195,7 @@ export class AssignPathAnimation {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? copy(this) : this);
+		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
 	}
 }
 
@@ -265,7 +250,7 @@ export class AssignTrackParent {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -292,7 +277,7 @@ export class AssignTrackParent {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? copy(this) : this);
+		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
 	}
 }
 
@@ -338,7 +323,7 @@ export class AssignPlayerToTrack {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -365,7 +350,7 @@ export class AssignPlayerToTrack {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? copy(this) : this);
+		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
 	}
 }
 
@@ -429,7 +414,7 @@ export class AnimateComponent {
 	 * @param dupe Whether to copy the object on return.
 	 */
 	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? copy(this) : this;
+		const temp = dupe ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -456,6 +441,6 @@ export class AnimateComponent {
 	 * @param dupe Whether to copy the object on push.
 	 */
 	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? copy(this) : this);
+		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
 	}
 }

@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
+import type { Easing, Vec2, Vec3, Vec4 } from "jsr:@aurellis/helpers@1.0.1";
 import type { LM_CONST } from "./Consts.ts";
 import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import type { Environment } from "./Environment.ts";
@@ -492,16 +493,6 @@ export type HeckSettings = {
 
 // Animation types
 
-export type Vec2 = [number, number];
-export type Vec3 = [number, number, number];
-export type Vec4 = [number, number, number, number];
-
-type EaseBase<T extends string> = `easeIn${T}` | `easeOut${T}` | `easeInOut${T}`;
-/**
- * All valid easings implemented in beat saber.
- */
-export type Easing = EaseBase<"Sine"> | EaseBase<"Quad"> | EaseBase<"Cubic"> | EaseBase<"Quart"> | EaseBase<"Quint"> | EaseBase<"Circ"> | EaseBase<"Expo"> | EaseBase<"Back"> | EaseBase<"Bounce"> | EaseBase<"Elastic"> | "easeStep" | "easeLinear";
-
 export type KFVec3 = [number, number, number, number, Easing?, "splineCatmullRom"?];
 export type KFScalar = [number, number, Easing?];
 export type KFVec4 = [number, number, number, number, number, Easing?, "splineCatmullRom"?];
@@ -861,8 +852,6 @@ export type KeywordStandard = "DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENA
 export type KeywordWaterfallMirror = "DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION";
 
 // Helper types
-
-export type NumberArrLike = Uint16Array | Uint32Array | Uint8Array | Int16Array | Int32Array | Int8Array | Float16Array | Float32Array | Float64Array | Array<number>;
 
 export type DatFilename = `${string}.dat`;
 

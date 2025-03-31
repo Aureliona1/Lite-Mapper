@@ -1,5 +1,6 @@
+import type { Vec3 } from "jsr:@aurellis/helpers@1.0.1";
 import { deepFreeze } from "./Functions.ts";
-import type { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON, Vec3 } from "./Types.ts";
+import type { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
 
 /**
  * Constant value to send objects to so that they are out of view of the player.
