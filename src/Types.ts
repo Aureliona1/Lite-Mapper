@@ -493,32 +493,59 @@ export type HeckSettings = {
 
 // Animation types
 
-export type KFVec3 = [number, number, number, number, Easing?, "splineCatmullRom"?];
+export type KFVec3 = [number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
 export type KFScalar = [number, number, Easing?];
-export type KFVec4 = [number, number, number, number, number, Easing?, "splineCatmullRom"?];
+export type KFVec4 = [number, number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
 
-export type KFVec3Modifier = [ModifierTarget] | [ModifierTarget, [number, number, number, ModifierOpKeyword]];
-export type KFVec4Modifier = [ModifierTarget] | [ModifierTarget, [number, number, number, number, ModifierOpKeyword]];
-export type KFScalarModifier = [ModifierTarget] | [ModifierTarget, [number, ModifierOpKeyword]];
+export type KFVec3Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, ModifierOp]];
+export type KFVec4Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, number, ModifierOp]];
+export type KFScalarModifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, ModifierOp]];
 
-export type ModifierOpKeyword = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
-export type ModifierTarget =
-	| "baseHeadLocalPosition"
-	| "baseLeftHandLocalPosition"
-	| "baseRightHandLocalPosition"
+export type ModifierOp = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
+type VectorBase = "Position" | "LocalPosition" | "Rotation" | "LocalRotation" | "LocalScale";
+type BaseEnvColors = "0" | "1" | "W" | "0Boost" | "1Boost" | "WBoost";
+type ModifierBaseName =
+	| `baseHead${VectorBase}`
+	| `baseLeftHand${VectorBase}`
+	| `baseRightHand${VectorBase}`
 	| "baseNote0Color"
-	| "baseNote1color"
+	| "baseNote1Color"
+	| "baseObstaclesColor"
 	| "baseSaberAColor"
 	| "baseSaberBColor"
-	| "baseEnvironmentColor0"
-	| "baseEnvironmentColor1"
-	| "baseEnvironmentColorW"
-	| "baseEnvironmentColor0Boost"
-	| "baseEnvironmentColor1Boost"
-	| "baseEnvironmentColorWBoost"
-	| "baseObstaclesColor";
+	| `baseEnvironment${BaseEnvColors}`
+	| "baseCombo"
+	| "baseMultipliedScore"
+	| "baseImmediateMaxPossibleMultipliedScore"
+	| "baseModifiedScore"
+	| "baseImmediateMaxPossibleModifiedScore"
+	| "baseRelativeScore"
+	| "baseMultiplier"
+	| "baseEnergy"
+	| "baseSongTime"
+	| "baseSongLength";
 
+export type ModifierBaseTarget = "";
+
+/**
+ * A custom keyframe type for light keyframes that includes HSV and RGB interpolation.
+ */
 export type KFColorVec4 = [number, number, number, number, number, Easing?, ("HSV" | "RGB")?];
+
+/**
+ * An animatable property that uses a scalar value.
+ */
+export type AnimationSingle = [number] | KFScalar[] | KFScalarModifier;
+
+/**
+ * An animatable property that uses 3 values to represent a vector.
+ */
+export type AnimationVec3 = Vec3 | KFVec3[] | KFVec3Modifier;
+
+/**
+ * An animatable property that uses 4 values to represent a vector.
+ */
+export type AnimationVec4 = Vec4 | KFVec4[] | KFVec4Modifier;
 
 // Object Properties
 
@@ -526,15 +553,15 @@ export type KFColorVec4 = [number, number, number, number, number, Easing?, ("HS
  * A collection of all the valid properties that can be animated on gameplay objects.
  */
 export type ObjectAnimProps = {
-	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
-	dissolve?: [number] | KFScalar[] | KFScalarModifier;
-	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
-	interactable?: [number] | KFScalar[] | KFScalarModifier;
-	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	color?: Vec4 | KFVec4[] | KFVec4Modifier;
+	offsetPosition?: AnimationVec3;
+	offsetWorldRotation?: AnimationVec3;
+	localRotation?: AnimationVec3;
+	scale?: AnimationVec3;
+	dissolve?: AnimationSingle;
+	dissolveArrow?: AnimationSingle;
+	interactable?: AnimationSingle;
+	definitePosition?: AnimationVec3;
+	color?: AnimationVec4;
 };
 
 /**
@@ -662,15 +689,15 @@ export type PathAnimDataProps = PathAnimAnimationProps & { track?: string | stri
  * A collection of the animatable properties that can be added to a path animation.
  */
 export type PathAnimAnimationProps = {
-	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
-	dissolve?: [number] | KFScalar[] | KFScalarModifier;
-	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
-	interactable?: [number] | KFScalar[] | KFScalarModifier;
-	definitePosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	color?: Vec4 | KFVec4[] | KFVec4Modifier;
+	offsetPosition?: AnimationVec3;
+	offsetWorldRotation?: AnimationVec3;
+	localRotation?: AnimationVec3;
+	scale?: AnimationVec3;
+	dissolve?: AnimationSingle;
+	dissolveArrow?: AnimationSingle;
+	interactable?: AnimationSingle;
+	definitePosition?: AnimationVec3;
+	color?: AnimationVec4;
 };
 
 /**
@@ -686,18 +713,18 @@ export type TrackAnimDataProps = TrackAnimAnimationProps & {
  * A collection of all the animatable properties that can be added to a track animation.
  */
 export type TrackAnimAnimationProps = {
-	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
-	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	scale?: Vec3 | KFVec3[] | KFVec3Modifier;
-	dissolve?: [number] | KFScalar[] | KFScalarModifier;
-	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier;
-	interactable?: [number] | KFScalar[] | KFScalarModifier;
-	time?: KFScalar[];
-	color?: Vec4 | KFVec4[] | KFVec4Modifier;
-	position?: Vec3 | KFVec3[] | KFVec3Modifier;
-	rotation?: Vec3 | KFVec3[] | KFVec3Modifier;
-	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier;
+	offsetPosition?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	offsetWorldRotation?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	localRotation?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	scale?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	dissolve?: [number] | KFScalar[] | KFScalarModifier | string;
+	dissolveArrow?: [number] | KFScalar[] | KFScalarModifier | string;
+	interactable?: [number] | KFScalar[] | KFScalarModifier | string;
+	time?: KFScalar[] | string;
+	color?: Vec4 | KFVec4[] | KFVec4Modifier | string;
+	position?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	rotation?: Vec3 | KFVec3[] | KFVec3Modifier | string;
+	localPosition?: Vec3 | KFVec3[] | KFVec3Modifier | string;
 };
 
 /**

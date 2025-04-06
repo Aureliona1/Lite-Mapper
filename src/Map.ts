@@ -61,7 +61,16 @@ export class BMJSON {
 				_fl: [],
 				_il: []
 			},
-			customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
+			customData: {
+				environment: [],
+				customEvents: [],
+				materials: {},
+				fakeBombNotes: [],
+				fakeBurstSliders: [],
+				fakeColorNotes: [],
+				fakeObstacles: [],
+				bookmarks: []
+			}
 		};
 
 		function deepPush<T extends Record<string, any>>(obj: T, arr: T[]) {
@@ -205,7 +214,16 @@ export class BMJSON {
 		});
 
 		if (classMap.customData) {
-			rawMap.customData = { fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [], customEvents: [], environment: [], materials: {} };
+			rawMap.customData = {
+				fakeBombNotes: [],
+				fakeBurstSliders: [],
+				fakeColorNotes: [],
+				fakeObstacles: [],
+				bookmarks: [],
+				customEvents: [],
+				environment: [],
+				materials: {}
+			};
 			if (classMap.customData.fakeColorNotes) {
 				classMap.customData.fakeColorNotes.forEach(n => {
 					rawMap.customData!.fakeColorNotes!.push(n.return());
@@ -240,7 +258,6 @@ export class BMJSON {
 				classMap.customData.environment.forEach(e => {
 					rawMap.customData!.environment!.push(e.return());
 				});
-				// rawMap.customData.environment = classMap.customData.environment;
 			}
 			if (classMap.customData.materials) {
 				rawMap.customData.materials = classMap.customData.materials;
@@ -528,63 +545,72 @@ export class BeatMap {
 		this.internalMap.customData = x;
 	}
 	get customData(): CustomData {
-		return this.internalMap.customData ?? {};
+		this.internalMap.customData ??= {};
+		return this.internalMap.customData;
 	}
 
 	set customEvents(x: CustomEvent[]) {
 		this.customData.customEvents = x;
 	}
 	get customEvents(): CustomEvent[] {
-		return this.customData.customEvents ?? [];
+		this.customData.customEvents ??= [];
+		return this.customData.customEvents;
 	}
 
 	set environments(x: Environment[]) {
 		this.customData.environment = x;
 	}
 	get environments(): Environment[] {
-		return this.customData.environment ?? [];
+		this.customData.environment ??= [];
+		return this.customData.environment;
 	}
 
 	set materials(x: Record<string, GeometryMaterialJSON>) {
 		this.customData.materials = x;
 	}
 	get materials(): Record<string, GeometryMaterialJSON> {
-		return this.customData.materials ?? {};
+		this.customData.materials ??= {};
+		return this.customData.materials;
 	}
 
 	set fakeNotes(x: Note[]) {
 		this.customData.fakeColorNotes = x;
 	}
 	get fakeNotes(): Note[] {
-		return this.customData.fakeColorNotes ?? [];
+		this.customData.fakeColorNotes ??= [];
+		return this.customData.fakeColorNotes;
 	}
 
 	set fakeBombs(x: Bomb[]) {
 		this.customData.fakeBombNotes = x;
 	}
 	get fakeBombs(): Bomb[] {
-		return this.customData.fakeBombNotes ?? [];
+		this.customData.fakeBombNotes ??= [];
+		return this.customData.fakeBombNotes;
 	}
 
 	set fakeWalls(x: Wall[]) {
 		this.customData.fakeObstacles = x;
 	}
 	get fakeWalls(): Wall[] {
-		return this.customData.fakeObstacles ?? [];
+		this.customData.fakeObstacles ??= [];
+		return this.customData.fakeObstacles;
 	}
 
 	set fakeChains(x: Chain[]) {
 		this.customData.fakeBurstSliders = x;
 	}
 	get fakeChains(): Chain[] {
-		return this.customData.fakeBurstSliders ?? [];
+		this.customData.fakeBurstSliders ??= [];
+		return this.customData.fakeBurstSliders;
 	}
 
 	set bookmarks(x: Bookmark[]) {
 		this.customData.bookmarks = x;
 	}
 	get bookmarks(): Bookmark[] {
-		return this.customData.bookmarks ?? [];
+		this.customData.bookmarks ??= [];
+		return this.customData.bookmarks;
 	}
 
 	readonly chromapperValues = {
@@ -598,7 +624,6 @@ export class BeatMap {
 	get useNormalEventsAsCompatibleEvents(): boolean {
 		return this.internalMap.useNormalEventsAsCompatibleEvents;
 	}
-
 	/**
 	 * Optimizer settings.
 	 *
