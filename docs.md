@@ -25,7 +25,7 @@ To start using Lite-Mapper, open a terminal somewhere (the location doesn't matt
 Then in this terminal, run:
 
 ```bash
-deno install -f -g -n lm-init --allow-all -r https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/refs/heads/main/cli.ts
+deno install -f -g -n lm-init --allow-all -r https://raw.githubusercontent.com/Aureliona1/Lite-Mapper/refs/heads/main/setup.ts
 ```
 
 You only need to do this once, this simply downloads the install script that you can now reuse for every map that you make.
