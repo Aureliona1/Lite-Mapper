@@ -1,8 +1,7 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
-    "jsr:@aurellis/helpers@1.0.2": "1.0.2",
-    "jsr:@aurellis/helpers@^1.0.2": "1.0.2",
+    "jsr:@aurellis/helpers@^1.0.4": "1.0.4",
     "jsr:@std/assert@*": "1.0.12",
     "jsr:@std/internal@^1.0.6": "1.0.6",
     "jsr:@zip-js/zip-js@*": "2.7.60",
@@ -10,8 +9,8 @@
     "npm:fast-simplex-noise@4.0.0": "4.0.0"
   },
   "jsr": {
-    "@aurellis/helpers@1.0.2": {
-      "integrity": "85fa62a813b727dc17c0dfe21d3ddce1249720d7907ec17568e54975d0eaad33"
+    "@aurellis/helpers@1.0.4": {
+      "integrity": "9fe528705fb237c391964e2592c06f019b8c4027ad537c9a53931774bba0f6d3"
     },
     "@std/assert@1.0.12": {
       "integrity": "08009f0926dda9cbd8bef3a35d3b6a4b964b0ab5c3e140a4e0351fbf34af5b9a",
@@ -33,7 +32,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@aurellis/helpers@^1.0.2",
+      "jsr:@aurellis/helpers@^1.0.4",
       "npm:fast-simplex-noise@4"
     ]
   }
