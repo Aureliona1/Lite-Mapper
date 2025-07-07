@@ -1,4 +1,4 @@
-import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "jsr:@aurellis/helpers@1.0.2";
+import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
 import { jsonPrune, repeat } from "./Functions.ts";

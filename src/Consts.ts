@@ -1,4 +1,4 @@
-import type { Vec3 } from "jsr:@aurellis/helpers@1.0.2";
+import { TwoWayMap, type Vec3 } from "@aurellis/helpers";
 import { deepFreeze } from "./Functions.ts";
 import type { GeometryMaterialJSON, LookupMethod, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
 
@@ -121,32 +121,6 @@ export const ENV_PARAM = {
 		RAIN: ["Rain$", "Regex"] as [string, LookupMethod]
 	}
 };
-
-export class TwoWayMap<K extends string | number | symbol, V extends string | number | symbol> {
-	readonly reverseMap: Record<V, K>;
-	/**
-	 * A two-way map is a map that can be accessed by it's keys or by it's values. If a value is used as a key, it will return the corresponding key.
-	 * The two-way map cannot be modified, it is intended only for use with readonly maps.
-	 * @param map The initial map. If two keys have the same value, then each instance of the value will overwrite the reverse key.
-	 */
-	constructor(public readonly map: Record<K, V>) {
-		this.reverseMap = Object.fromEntries(Object.entries(map).map(x => [x[1], x[0]]));
-	}
-	/**
-	 * Get the value at a key in the map.
-	 * @param key The key to get.
-	 */
-	get(key: K): V {
-		return this.map[key];
-	}
-	/**
-	 * Get the key corresponding to a value. If multiple keys have this value then the last one will be returned.
-	 * @param value The value to get the key of.
-	 */
-	revGet(value: V): K {
-		return this.reverseMap[value];
-	}
-}
 
 /**
  * A collection of constants used internally by Lite-Mapper. Do not edit these as this will break Lite-Mapper's functionality, they are intended to remain constant.

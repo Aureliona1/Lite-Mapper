@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import type { Easing, Vec2, Vec3, Vec4 } from "jsr:@aurellis/helpers@1.0.2";
+import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
 import type { LM_CONST } from "./Consts.ts";
 import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import type { Environment } from "./Environment.ts";

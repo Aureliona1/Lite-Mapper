@@ -1,4 +1,4 @@
-import { rgb } from "jsr:@aurellis/helpers@1.0.2";
+import { rgb } from "@aurellis/helpers";
 import pack from "../deno.json" with {type: "json"};
 import { LMLog } from "./Functions.ts";
 

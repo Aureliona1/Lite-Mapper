@@ -1,4 +1,4 @@
-import { deepCopy } from "jsr:@aurellis/helpers@1.0.2";
+import { deepCopy } from "@aurellis/helpers";
 import { LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type { EnvironmentJSON, LightEventJSON } from "./Types.ts";

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { compare, decimals, deepCopy, rgb } from "jsr:@aurellis/helpers@1.0.2";
+import { compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
 import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
