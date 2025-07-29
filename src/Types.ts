@@ -640,7 +640,13 @@ export type ObjectDirectionNumber = keyof typeof LM_CONST.ObjectDirectionsMap.re
 
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
+/**
+ * JSON format of a wall object.
+ */
 export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+/**
+ * JSON format of an environment object.
+ */
 export type EnvironmentJSON = {
 	id?: string;
 	lookupMethod?: LookupMethod;
@@ -655,10 +661,25 @@ export type EnvironmentJSON = {
 	track?: string | string[];
 	geometry?: GeometryObjectJSON;
 };
+/**
+ * JSON format of a chain object.
+ */
 export type BurstSliderJSON = { b: number; x: number; y: number; c: number; d: number; tb: number; tx: number; ty: number; sc: number; s: number; customData?: SliderCustomProps };
+/**
+ * JSON format of an arc object.
+ */
 export type SliderJSON = { b: number; c: number; x: number; y: number; d: number; mu: number; tb: number; tx: number; ty: number; tc: number; tmu: number; m: number; customData?: SliderCustomProps };
+/**
+ * JSON format of the custom data of a light event object.
+ */
 export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+/**
+ * JSON format of a light event object.
+ */
 export type LightEventJSON = { b: number; et: number; i: number; f: number; customData?: LightEventCustomData };
+/**
+ * JSON format of a bookmark object.
+ */
 export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 
 /**
@@ -669,11 +690,20 @@ export type LightTypeName = keyof typeof LM_CONST.LightEventTypesMap.map;
  * A valid light value name, this specifies what the light event actually does to the light/s.
  */
 export type LightValueName = keyof typeof LM_CONST.LightEventValuesMap.map;
+/**
+ * Valid number for a light type.
+ */
 export type LightTypeNumber = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
+/**
+ * Valid number for a light value.
+ */
 export type LightValueNumber = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
 
 // CE props
 
+/**
+ * Custom event type name.
+ */
 export type CustomEventName = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
 
 /**
@@ -793,6 +823,9 @@ export type GeometryMaterialJSON = { shader: MaterialShaderName; color?: Vec3 | 
  */
 export type GeometryObjectJSON = { type: GeometryObjectPrimitive; material: GeometryMaterialJSON | string };
 
+/**
+ * Valid keyword for the base water shader.
+ */
 export type KeywordBaseWater =
 	| "FOG"
 	| "HEIGHT_FOG"
@@ -812,6 +845,9 @@ export type KeywordBaseWater =
 	| "_WHITEBOOSTTYPE_NONE"
 	| "_ZWRITE_ON";
 
+/**
+ * Valid keyword for the billie water shader.
+ */
 export type KeywordBillieWater =
 	| "FOG"
 	| "HEIGHT_FOG"
@@ -831,8 +867,14 @@ export type KeywordBillieWater =
 	| "_WHITEBOOSTTYPE_NONE"
 	| "_ZWRITE_ON";
 
+/**
+ * Valid keyword for the BTS pillar shader.
+ */
 export type KeywordBTSPillar = "DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE";
 
+/**
+ * Valid keyword for the interscope car shader.
+ */
 export type KeywordInterscopeCar =
 	| "ENABLE_DIFFUSE"
 	| "ENABLE_DIRT"
@@ -855,6 +897,9 @@ export type KeywordInterscopeCar =
 	| "_VERTEXMODE_METALSMOOTHNESS"
 	| "_WHITEBOOSTTYPE_NONE";
 
+/**
+ * Valid keyword for the interscope concrete shader.
+ */
 export type KeywordInterscopeConcrete =
 	| "DIRT"
 	| "ENABLE_DIFFUSE"
@@ -874,12 +919,24 @@ export type KeywordInterscopeConcrete =
 	| "_ENABLE_FOG_TINT"
 	| "_RIMLIGHT_NONE";
 
+/**
+ * Valid keyword for the standard shader.
+ */
 export type KeywordStandard = "DIFFUSE" | "ENABLE_DIFFUSE" | "ENABLE_FOG" | "ENABLE_HEIGHT_FOG" | "ENABLE_SPECULAR" | "FOG" | "HEIGHT_FOG" | "REFLECTION_PROBE_BOX_PROJECTION" | "SPECULAR" | "_EMISSION" | "_ENABLE_FOG_TINT" | "_RIMLIGHT_NONE";
 
+/**
+ * Valid keyword for the waterfall mirror shader.
+ */
 export type KeywordWaterfallMirror = "DETAIL_NORMAL_MAP" | "ENABLE_MIRROR" | "ETC1_EXTERNAL_ALPHA" | "LIGHTMAP" | "REFLECTION_PROBE_BOX_PROJECTION" | "_EMISSION";
 
 // Helper types
 
+/**
+ * String with .dat.
+ */
 export type DatFilename = `${string}.dat`;
 
+/**
+ * Type may be undefined.
+ */
 export type Optional<T> = T | undefined;
