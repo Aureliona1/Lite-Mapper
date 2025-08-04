@@ -36,4 +36,7 @@ jobs:
       #   run: deno fmt --check
 
       - name: Run linter
-        run: deno lint --rules-exclude=no-slow-types
+        run: deno lint
+
+      - name: Run doc linter
+        run: deno doc --lint src/mod.ts
