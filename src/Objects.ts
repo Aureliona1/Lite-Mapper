@@ -466,6 +466,9 @@ export class Wall {
 	}
 }
 
+/**
+ * Beatmap aarc object.
+ */
 export class Arc {
 	/**
 	 * Create a new arc.
