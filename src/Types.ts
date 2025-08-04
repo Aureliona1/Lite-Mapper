@@ -1,10 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
 import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
-import type { LM_CONST } from "./Consts.ts";
 import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
 import type { Environment } from "./Environment.ts";
 import type { LightEvent } from "./Lights.ts";
 import type { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
+import type { ObjectColorsMap, ObjectDirectionsMap, LightEventTypesMap, LightEventValuesMap } from "./Internal.ts";
 
 // BeatMap types
 
@@ -630,13 +630,13 @@ export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordi
 /**
  * The L or R colors of gameplay objects.
  */
-export type ObjectColorName = keyof typeof LM_CONST.ObjectColorsMap.map;
-export type ObjectColorNumber = keyof typeof LM_CONST.ObjectColorsMap.reverseMap;
+export type ObjectColorName = keyof typeof ObjectColorsMap.map;
+export type ObjectColorNumber = keyof typeof ObjectColorsMap.reverseMap;
 /**
  * Valid cut directions of gameplay objects.
  */
-export type ObjectDirectionName = keyof typeof LM_CONST.ObjectDirectionsMap.map;
-export type ObjectDirectionNumber = keyof typeof LM_CONST.ObjectDirectionsMap.reverseMap;
+export type ObjectDirectionName = keyof typeof ObjectDirectionsMap.map;
+export type ObjectDirectionNumber = keyof typeof ObjectDirectionsMap.reverseMap;
 
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
@@ -685,19 +685,19 @@ export type BookmarkJSON = { b: number; n: string; c: Vec4 };
 /**
  * A valid light type name, this specifies which light/s to target with a light event.
  */
-export type LightTypeName = keyof typeof LM_CONST.LightEventTypesMap.map;
+export type LightTypeName = keyof typeof LightEventTypesMap.map;
 /**
  * A valid light value name, this specifies what the light event actually does to the light/s.
  */
-export type LightValueName = keyof typeof LM_CONST.LightEventValuesMap.map;
+export type LightValueName = keyof typeof LightEventValuesMap.map;
 /**
  * Valid number for a light type.
  */
-export type LightTypeNumber = keyof typeof LM_CONST.LightEventTypesMap.reverseMap;
+export type LightTypeNumber = keyof typeof LightEventTypesMap.reverseMap;
 /**
  * Valid number for a light value.
  */
-export type LightValueNumber = keyof typeof LM_CONST.LightEventValuesMap.reverseMap;
+export type LightValueNumber = keyof typeof LightEventValuesMap.reverseMap;
 
 // CE props
 

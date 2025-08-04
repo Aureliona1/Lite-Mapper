@@ -7,5 +7,4 @@ export * from "./Lights.ts";
 export * from "./Map.ts";
 export * from "./Objects.ts";
 export * from "./Optimizers.ts";
-export * from "./Types.ts";
 export * from "@aurellis/helpers";
