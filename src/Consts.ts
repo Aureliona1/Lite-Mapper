@@ -4,7 +4,7 @@ import type { LookupMethod } from "./Types.ts";
 /**
  * Constant value to send objects to so that they are out of view of the player.
  */
-export const ye = -69420;
+export const ye: number = -69420;
 /**
  * Vec3 position to send objects to so that they are out of view of the player.
  */

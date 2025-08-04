@@ -1,5 +1,4 @@
 import { deepCopy, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { LM_CONST } from "./Consts.ts";
 import { jsonPrune } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type {
@@ -19,6 +18,7 @@ import type {
 	WallCustomProps,
 	ObstacleJSON as WallJSON
 } from "./Types.ts";
+import { ObjectColorsMap, ObjectDirectionsMap } from "./Internal.ts";
 
 export class Note {
 	/**
@@ -144,8 +144,8 @@ export class Note {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: LM_CONST.ObjectColorsMap.get(temp.type),
-			d: LM_CONST.ObjectDirectionsMap.get(temp.direction),
+			c: ObjectColorsMap.get(temp.type),
+			d: ObjectDirectionsMap.get(temp.direction),
 			a: temp.angleOffset,
 			customData: temp.customData
 		};
@@ -161,8 +161,8 @@ export class Note {
 		const n = new Note(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
-		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumber);
+		n.type = ObjectColorsMap.revGet(x.c ?? 0);
+		n.direction = ObjectDirectionsMap.revGet(x.d ?? 0);
 		n.angleOffset = x.a;
 		if (x.customData) {
 			n.customData = x.customData;
@@ -478,11 +478,26 @@ export class Arc {
 	 * @param tailDirection The direction of the end of the arc (Default - "Down").
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public headDirection: ObjectDirectionName = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirectionName = "Down") {}
+	/**
+	 * The arc head multiplier (see beatmap v3 spec).
+	 */
 	headMultiplier = 1;
+	/**
+	 * The arc tail multiplier (see beatmapp v3 spec).
+	 */
 	tailMultiplier = 1;
+	/**
+	 * The arc anchor mode (see beatmap v3 spec).
+	 */
 	anchorMode = 1;
+	/**
+	 * The raw custom data of the arc.
+	 */
 	customData: SliderCustomProps = {};
 
+	/**
+	 * The note jump offset (in beats) of this object.
+	 */
 	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
@@ -490,55 +505,80 @@ export class Arc {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x: Optional<number>) {
-		this.customData.noteJumpMovementSpeed = x;
-	}
+	/**
+	 * The note jump speed of this object.
+	 */
 	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
-
-	set animation(x: ObjectAnimProps) {
-		this.customData.animation = x;
+	set NJS(x: Optional<number>) {
+		this.customData.noteJumpMovementSpeed = x;
 	}
+
+	/**
+	 * The custom path animation on this object.
+	 */
 	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
-
-	set rotation(x: Optional<Vec3>) {
-		this.customData.worldRotation = x;
+	set animation(x: ObjectAnimProps) {
+		this.customData.animation = x;
 	}
+
+	/**
+	 * The global/world rotation of this object.
+	 */
 	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
+	set rotation(x: Optional<Vec3>) {
+		this.customData.worldRotation = x;
+	}
 
+	/**
+	 * The local/object rotation of this object.
+	 */
+	get localRotation(): Optional<Vec3> {
+		return this.customData.localRotation;
+	}
 	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation(): Optional<Vec3> {
-		return this.customData.localRotation;
+
+	/**
+	 * The chroma color of this arc.
+	 */
+	get color(): Optional<Vec3 | Vec4> {
+		return this.customData.color;
 	}
 	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color(): Optional<Vec3 | Vec4> {
-		return this.customData.color;
-	}
 
-	set disableNoteGravity(x: Optional<boolean>) {
-		this.customData.disableNoteGravity = x;
-	}
+	/**
+	 * Whether to use the "gravity" spawn effect for this arc.
+	 */
 	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
-
-	set track(x: Optional<string | string[]>) {
-		this.customData.track = x;
+	set disableNoteGravity(x: Optional<boolean>) {
+		this.customData.disableNoteGravity = x;
 	}
+
+	/**
+	 * The track/s that the arc belongs to.
+	 */
 	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
+	set track(x: Optional<string | string[]>) {
+		this.customData.track = x;
+	}
 
+	/**
+	 * The x position of the head of the arc.
+	 */
 	get x(): number {
 		return this.pos[0];
 	}
@@ -546,6 +586,9 @@ export class Arc {
 		this.pos[0] = x;
 	}
 
+	/**
+	 * The y position of the head of the arc.
+	 */
 	get y(): number {
 		return this.pos[1];
 	}
@@ -553,6 +596,9 @@ export class Arc {
 		this.pos[1] = x;
 	}
 
+	/**
+	 * The x position of the tail of the arc.
+	 */
 	get tx(): number {
 		return this.tailPos[0];
 	}
@@ -560,6 +606,9 @@ export class Arc {
 		this.tailPos[0] = x;
 	}
 
+	/**
+	 * The y position of the tail of the arc.
+	 */
 	get ty(): number {
 		return this.tailPos[1];
 	}
@@ -567,6 +616,9 @@ export class Arc {
 		this.tailPos[1] = x;
 	}
 
+	/**
+	 * Whether the game will register collisions between the sabers and this object.
+	 */
 	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
@@ -581,15 +633,15 @@ export class Arc {
 		const temp = dupe ? deepCopy(this) : this;
 		const out: ArcJSON = {
 			b: temp.time,
-			c: LM_CONST.ObjectColorsMap.get(temp.type),
+			c: ObjectColorsMap.get(temp.type),
 			x: temp.x,
 			y: temp.y,
-			d: LM_CONST.ObjectDirectionsMap.get(temp.headDirection),
+			d: ObjectDirectionsMap.get(temp.headDirection),
 			mu: temp.headMultiplier,
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
-			tc: LM_CONST.ObjectDirectionsMap.get(temp.tailDirection),
+			tc: ObjectDirectionsMap.get(temp.tailDirection),
 			tmu: temp.tailMultiplier,
 			m: temp.anchorMode,
 			customData: temp.customData
@@ -604,15 +656,15 @@ export class Arc {
 	 */
 	static from(x: ArcJSON): Arc {
 		const n = new Arc(x.b);
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
+		n.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.headDirection = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumber);
+		n.headDirection = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumber);
 		n.headMultiplier = x.mu ?? 0;
 		n.tailBeat = x.tb ?? 0;
 		n.tx = x.tx ?? 0;
 		n.ty = x.ty ?? 0;
-		n.tailDirection = LM_CONST.ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionNumber);
+		n.tailDirection = ObjectDirectionsMap.revGet((x.tc ?? 0) as ObjectDirectionNumber);
 		n.tailMultiplier = x.tmu ?? 0;
 		n.anchorMode = x.m ?? 0;
 		if (x.customData) {
@@ -629,6 +681,9 @@ export class Arc {
 	}
 }
 
+/**
+ * A beatmap chain object.
+ */
 export class Chain {
 	/**
 	 * Create a new chain (burstSlider) object.
@@ -641,9 +696,19 @@ export class Chain {
 	 * @param segments The number of segments in the chain (Default - 5).
 	 */
 	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public direction: ObjectDirectionName = "Down", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public segments = 5) {}
+	/**
+	 * The factor to "squish" the segments together by.
+	 * Setting this to 0 will crash the game.
+	 */
 	squishFactor = 1;
+	/**
+	 * The raw custom data of the chain.
+	 */
 	customData: SliderCustomProps = {};
 
+	/**
+	 * The jump offset (in beats) of the chain.
+	 */
 	get offset(): Optional<number> {
 		return this.customData.noteJumpStartBeatOffset;
 	}
@@ -651,55 +716,80 @@ export class Chain {
 		this.customData.noteJumpStartBeatOffset = x;
 	}
 
-	set NJS(x: Optional<number>) {
-		this.customData.noteJumpMovementSpeed = x;
-	}
+	/**
+	 * The jump speed of the chain.
+	 */
 	get NJS(): Optional<number> {
 		return this.customData.noteJumpMovementSpeed;
 	}
-
-	set animation(x: ObjectAnimProps) {
-		this.customData.animation = x;
+	set NJS(x: Optional<number>) {
+		this.customData.noteJumpMovementSpeed = x;
 	}
+
+	/**
+	 * The animation properties on the chain.
+	 */
 	get animation(): ObjectAnimProps {
 		this.customData.animation ??= {};
 		return this.customData.animation;
 	}
-
-	set rotation(x: Optional<Vec3>) {
-		this.customData.worldRotation = x;
+	set animation(x: ObjectAnimProps) {
+		this.customData.animation = x;
 	}
+
+	/**
+	 * The global/world rotation of the chain.
+	 */
 	get rotation(): Optional<Vec3> {
 		return this.customData.worldRotation;
 	}
+	set rotation(x: Optional<Vec3>) {
+		this.customData.worldRotation = x;
+	}
 
+	/**
+	 * The local/object rotation of the chain.
+	 */
+	get localRotation(): Optional<Vec3> {
+		return this.customData.localRotation;
+	}
 	set localRotation(x: Optional<Vec3>) {
 		this.customData.localRotation = x;
 	}
-	get localRotation(): Optional<Vec3> {
-		return this.customData.localRotation;
+
+	/**
+	 * The chroma color of the chain.
+	 */
+	get color(): Optional<Vec3 | Vec4> {
+		return this.customData.color;
 	}
 	set color(x: Optional<Vec3 | Vec4>) {
 		this.customData.color = x;
 	}
-	get color(): Optional<Vec3 | Vec4> {
-		return this.customData.color;
-	}
 
-	set disableNoteGravity(x: Optional<boolean>) {
-		this.customData.disableNoteGravity = x;
-	}
+	/**
+	 * Whether the chain should have the "gravity" effect.
+	 */
 	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
-
-	set track(x: Optional<string | string[]>) {
-		this.customData.track = x;
+	set disableNoteGravity(x: Optional<boolean>) {
+		this.customData.disableNoteGravity = x;
 	}
+
+	/**
+	 * The track/s that the chain belongs to.
+	 */
 	get track(): Optional<string | string[]> {
 		return this.customData.track;
 	}
+	set track(x: Optional<string | string[]>) {
+		this.customData.track = x;
+	}
 
+	/**
+	 * The x position of the head of the chain.
+	 */
 	get x(): number {
 		return this.pos[0];
 	}
@@ -707,6 +797,9 @@ export class Chain {
 		this.pos[0] = x;
 	}
 
+	/**
+	 * The y position of the head of the chain.
+	 */
 	get y(): number {
 		return this.pos[1];
 	}
@@ -714,6 +807,9 @@ export class Chain {
 		this.pos[1] = x;
 	}
 
+	/**
+	 * The x position of the tail of the chain.
+	 */
 	get tx(): number {
 		return this.tailPos[0];
 	}
@@ -721,6 +817,9 @@ export class Chain {
 		this.tailPos[0] = x;
 	}
 
+	/**
+	 * The y position of the tail of the chain.
+	 */
 	get ty(): number {
 		return this.tailPos[1];
 	}
@@ -728,6 +827,9 @@ export class Chain {
 		this.tailPos[1] = x;
 	}
 
+	/**
+	 * Whether the game will register collisions between the sabers and this chain.
+	 */
 	get interactable(): boolean {
 		return !this.customData.uninteractable;
 	}
@@ -744,8 +846,8 @@ export class Chain {
 			b: temp.time,
 			x: temp.x,
 			y: temp.y,
-			c: LM_CONST.ObjectColorsMap.get(temp.type),
-			d: LM_CONST.ObjectDirectionsMap.get(temp.direction),
+			c: ObjectColorsMap.get(temp.type),
+			d: ObjectDirectionsMap.get(temp.direction),
 			tb: temp.tailBeat,
 			tx: temp.tx,
 			ty: temp.ty,
@@ -765,8 +867,8 @@ export class Chain {
 		const n = new Chain(x.b);
 		n.x = x.x ?? 0;
 		n.y = x.y ?? 0;
-		n.type = LM_CONST.ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
-		n.direction = LM_CONST.ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumber);
+		n.type = ObjectColorsMap.revGet((x.c ?? 0) as ObjectColorNumber);
+		n.direction = ObjectDirectionsMap.revGet((x.d ?? 0) as ObjectDirectionNumber);
 		n.tailBeat = x.tb ?? 0;
 		n.tx = x.tx ?? 0;
 		n.ty = x.ty ?? 0;
@@ -792,6 +894,10 @@ export class Chain {
 	}
 }
 
+/**
+ * A map bookmark object.
+ * This is based on bookmarks from ChroMapper.
+ */
 export class Bookmark {
 	/**
 	 * Create a new bookmark that is visible in Chromapper (and other mapping software that supports this format).

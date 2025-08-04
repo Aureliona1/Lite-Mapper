@@ -109,7 +109,14 @@ export function optimizeMaterials() {
 	currentDiff.materials = tempMat;
 }
 
+/**
+ * A stack of tracks that correspond to environment or geometry objects.
+ * This can be used to "request" available tracks and reuse inactive objects.
+ */
 export class GeoTrackStack {
+	/**
+	 * Internal stack of tracks and their usage times.
+	 */
 	readonly internalStack: [number, Vec2[]][] = [];
 	private maxCounter = 0; // For naming new tracks
 

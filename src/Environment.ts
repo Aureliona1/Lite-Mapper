@@ -1,5 +1,4 @@
 import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { LM_CONST } from "./Consts.ts";
 import { AnimateComponent } from "./CustomEvents.ts";
 import { jsonPrune, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
@@ -23,6 +22,7 @@ import type {
 	MaterialShaderName,
 	Optional
 } from "./Types.ts";
+import { LightEventTypesMap } from "./Internal.ts";
 
 export class Environment {
 	/**
@@ -129,7 +129,7 @@ export class Environment {
 			if (x.components.ILightWithId) {
 				e.components.lightIds = { id: x.components.ILightWithId.lightID };
 				if (x.components.ILightWithId.type) {
-					e.components.lightIds.type = LM_CONST.LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypeNumber);
+					e.components.lightIds.type = LightEventTypesMap.revGet(x.components.ILightWithId.type as LightTypeNumber);
 				}
 			}
 			if (x.components.TubeBloomPrePassLight) {
@@ -185,7 +185,7 @@ export class Environment {
 			if (temp.components.lightIds) {
 				out.components.ILightWithId = { lightID: temp.components.lightIds.id };
 				if (temp.components.lightIds.type) {
-					out.components.ILightWithId.type = LM_CONST.LightEventTypesMap.get(temp.components.lightIds.type);
+					out.components.ILightWithId.type = LightEventTypesMap.get(temp.components.lightIds.type);
 				}
 			}
 			if (temp.components.lightBloom) {

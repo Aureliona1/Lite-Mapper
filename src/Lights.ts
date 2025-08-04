@@ -1,8 +1,8 @@
 import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { LM_CONST } from "./Consts.ts";
 import { jsonPrune, repeat } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "./Types.ts";
+import { LightEventTypesMap, LightEventValuesMap } from "./Internal.ts";
 
 export class LightEvent {
 	/**
@@ -98,8 +98,8 @@ export class LightEvent {
 		const temp = dupe ? deepCopy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
-			et: LM_CONST.LightEventTypesMap.get(temp.type),
-			i: LM_CONST.LightEventValuesMap.get(temp.value),
+			et: LightEventTypesMap.get(temp.type),
+			i: LightEventValuesMap.get(temp.value),
 			f: temp.floatValue,
 			customData: temp.customData
 		};
@@ -113,8 +113,8 @@ export class LightEvent {
 	 */
 	static from(x: LightEventJSON): LightEvent {
 		const e = new LightEvent(x.b);
-		e.type = LM_CONST.LightEventTypesMap.revGet(x.et as LightTypeNumber);
-		e.value = LM_CONST.LightEventValuesMap.revGet(x.i as LightValueNumber);
+		e.type = LightEventTypesMap.revGet(x.et as LightTypeNumber);
+		e.value = LightEventValuesMap.revGet(x.i as LightValueNumber);
 		if (x.customData) {
 			e.customData = x.customData;
 		}

@@ -334,14 +334,17 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 }
 
 /**
- * Creates the basic conditions for animating the player and notes over a period of time.
- * @param time The time to start the animation.
- * @param duration The duration of the animation.
- * @param playerTrack The name of the player track.
- * @param noteTrack The name of the track to assign the notes.
- * @returns Track animation for the player.
+ * An extension of a Track Animation targeted to animating the player and notes.
  */
 export class PlayerAnim extends AnimateTrack {
+	/**
+	 * Creates the basic conditions for animating the player and notes over a period of time.
+	 * @param time The time to start the animation.
+	 * @param duration The duration of the animation.
+	 * @param playerTrack The name of the player track.
+	 * @param noteTrack The name of the track to assign the notes.
+	 * @returns Track animation for the player.
+	 */
 	constructor(time = 0, duration = 1, playerTrack = "player", noteTrack = "notes") {
 		new AssignPlayerToTrack(playerTrack, time).push();
 		new AssignTrackParent([noteTrack], playerTrack, time).push();
@@ -460,6 +463,9 @@ export function jsonPrune(obj: Record<string, any>) {
 	});
 }
 
+/**
+ * Wrapper clas for perlin noise.
+ */
 export class Noise {
 	/**
 	 * The seed for the noise generator.

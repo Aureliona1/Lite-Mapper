@@ -370,45 +370,73 @@ export class AnimateComponent {
 	private t: CustomEventName = "AnimateComponent";
 	private d: ComponentAnimProps = {};
 
-	set time(x: number) {
-		this.b = x;
-	}
+	/**
+	 * The start time of this event.
+	 */
 	get time(): number {
 		return this.b;
 	}
+	set time(x: number) {
+		this.b = x;
+	}
+
+	/**
+	 * The type of custom event.
+	 */
 	get type(): CustomEventName {
 		return this.t;
+	}
+
+	/**
+	 * The track to target with this animation.
+	 */
+	get track(): Optional<string> {
+		return this.d.track;
 	}
 	set track(x: Optional<string>) {
 		this.d.track = x;
 	}
-	get track(): Optional<string> {
-		return this.d.track;
+
+	/**
+	 * The duration of the animation.
+	 */
+	get duration(): Optional<number> {
+		return this.d.duration;
 	}
 	set duration(x: Optional<number>) {
 		this.d.duration = x;
 	}
-	get duration(): Optional<number> {
-		return this.d.duration;
+
+	/**
+	 * The easing of the animation.
+	 */
+	get easing(): Optional<Easing> {
+		return this.d.easing;
 	}
 	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
-	get easing(): Optional<Easing> {
-		return this.d.easing;
-	}
+
+	/**
+	 * Animated fog components.
+	 */
 	get fog(): Optional<FogAnimationProps> {
 		return this.d.BloomFogEnvironment;
 	}
 	set fog(x: Optional<FogAnimationProps>) {
 		this.d.BloomFogEnvironment = x;
 	}
+
+	/**
+	 * Animated light bloom components.
+	 */
 	get lightBloom(): Optional<TubeLightAnimationProps> {
 		return this.d.TubeBloomPrePassLight;
 	}
 	set lightBloom(x: Optional<TubeLightAnimationProps>) {
 		this.d.TubeBloomPrePassLight = x;
 	}
+
 	/**
 	 * Return the animation as json.
 	 * @param dupe Whether to copy the object on return.
@@ -423,6 +451,7 @@ export class AnimateComponent {
 		jsonPrune(out);
 		return out;
 	}
+
 	/**
 	 * Create a new instance of a component animation from valid CustomEvent JSON.
 	 * @param x The JSON.
@@ -436,6 +465,7 @@ export class AnimateComponent {
 		}
 		return a;
 	}
+
 	/**
 	 * Push the animation to the current difficulty.
 	 * @param dupe Whether to copy the object on push.

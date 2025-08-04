@@ -3,6 +3,9 @@ import { LMLog } from "./Functions.ts";
 import { currentDiff } from "./Map.ts";
 import type { EnvironmentJSON, LightEventJSON } from "./Types.ts";
 
+/**
+ * The available settings for exporting the map environment.
+ */
 export type USESettings = {
 	name?: string;
 	author?: string;
@@ -16,6 +19,11 @@ export type USESettings = {
 	};
 };
 
+/**
+ * Export the map's environment as a User Shareable Environment.
+ * @param settings The settings of the map.
+ * @param beatSaberInstallLocation The absolute path to your Beat Saber Install.
+ */
 export function exportShareableEnv(settings: USESettings, beatSaberInstallLocation?: string) {
 	// Add light events
 	if (settings.copyLightEvents) {

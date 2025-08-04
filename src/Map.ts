@@ -1,6 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
 import { compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
-import { LM_CONST } from "./Consts.ts";
 import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { copyToDir, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj } from "./Functions.ts";
@@ -29,6 +28,7 @@ import type {
 	VfxEventBoxGroupJSON
 } from "./Types.ts";
 import { LMUpdateCheck } from "./UpdateChecker.ts";
+import { V3_MAP_FALLBACK, V2_INFO_FALLBACK, difficultyRankMap } from "./Internal.ts";
 
 export let currentDiff: BeatMap,
 	lMInitTime = 0;
@@ -319,7 +319,7 @@ export class BeatMap {
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
 	constructor(public readonly inputDiff: DiffName = "ExpertStandard", public readonly outputDiff: DiffName = "ExpertPlusStandard", updateCheckFrequency: "Daily" | "Weekly" | "Never" = "Weekly") {
-		let rawMap: V3MapJSON = deepCopy(LM_CONST.V3_MAP_FALLBACK);
+		let rawMap: V3MapJSON = deepCopy(V3_MAP_FALLBACK);
 		try {
 			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		} catch (e) {
@@ -668,7 +668,7 @@ export class BeatMap {
 	 * @param diff The name of the input difficulty to add elements from.
 	 */
 	addInputDiff(diff: DiffName) {
-		let input: V3MapJSON = deepCopy(LM_CONST.V3_MAP_FALLBACK);
+		let input: V3MapJSON = deepCopy(V3_MAP_FALLBACK);
 		try {
 			input = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
 		} catch (e) {
@@ -759,7 +759,7 @@ export class BeatMap {
 
 class Info {
 	static v4ToV2(v4: V4InfoJSON): V2InfoJSON {
-		const v2: V2InfoJSON = deepCopy(LM_CONST.V2_INFO_FALLBACK);
+		const v2: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 		v2._songName = v4.song.title;
 		v2._songSubName = v4.song.subTitle;
 		v2._songAuthorName = v4.song.author;
@@ -797,7 +797,7 @@ class Info {
 			authors.push(...bm.beatmapAuthors.lighters, ...bm.beatmapAuthors.mappers);
 			const translatedDiff: V2InfoBeatmap = {
 				_difficulty: bm.difficulty,
-				_difficultyRank: LM_CONST.difficultyRankMap.get(bm.difficulty),
+				_difficultyRank: difficultyRankMap.get(bm.difficulty),
 				_beatmapFilename: bm.beatmapDataFilename,
 				_noteJumpMovementSpeed: bm.noteJumpMovementSpeed,
 				_noteJumpStartBeatOffset: bm.noteJumpStartBeatOffset,
@@ -828,8 +828,8 @@ class Info {
 	}
 
 	private infoVersion: number = 0;
-	raw: V2InfoJSON = deepCopy(LM_CONST.V2_INFO_FALLBACK);
-	private initialRaw: V2InfoJSON = deepCopy(LM_CONST.V2_INFO_FALLBACK);
+	raw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
+	private initialRaw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 	/**
 	 * Initialise the info file reader.
 	 */
@@ -842,7 +842,7 @@ class Info {
 			LMLog("Error reading info file: " + e, "Error", "InfoHandler");
 			LMLog("Writing blank info file...", "Log", "InfoHandler");
 
-			inputRaw = deepCopy(LM_CONST.V2_INFO_FALLBACK);
+			inputRaw = deepCopy(V2_INFO_FALLBACK);
 			try {
 				Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
 			} catch (e2) {
