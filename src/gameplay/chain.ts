@@ -85,10 +85,10 @@ export class Chain extends GameplayObject {
 
 	/**
 	 * Return the raw Json of the chain.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	override return(dupe = true): BurstSliderJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	override return(freeze = true): BurstSliderJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: BurstSliderJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -129,10 +129,10 @@ export class Chain extends GameplayObject {
 	/**
 	 * Push the chain to the current diff.
 	 * @param fake Whether to push to the regular or fake array.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+	push(fake?: boolean, freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeChains?.push(temp);
 		} else {

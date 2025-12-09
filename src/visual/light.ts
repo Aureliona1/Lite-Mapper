@@ -1,8 +1,7 @@
 import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { jsonPrune, repeat } from "../utils.ts";
-import { currentDiff } from "../map.ts";
-import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "../types.ts";
-import { LightEventTypesMap, LightEventValuesMap } from "../internal.ts";
+import { type KFColorVec4, type LightEventCustomData, type LightEventJSON, LightEventTypesMap, LightEventValuesMap, type LightTypeName, type LightTypeNumber, type LightValueName, type LightValueNumber, type Optional } from "../core/core.ts";
+import { currentDiff } from "../map/map.ts";
+import { jsonPrune, repeat } from "../utility/helpers.ts";
 
 export class LightEvent {
 	/**
@@ -92,10 +91,10 @@ export class LightEvent {
 	}
 	/**
 	 * Return the raw Json of the event.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): LightEventJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): LightEventJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
 			et: LightEventTypesMap.get(temp.type),
@@ -122,10 +121,10 @@ export class LightEvent {
 	}
 	/**
 	 * Push the event to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+	push(freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		jsonPrune(temp);
 		currentDiff.events.push(temp);
 	}
@@ -273,8 +272,13 @@ export class LightKeyframe {
 		this.keyframes = [...this.keyframes, ...frames];
 		return this;
 	}
-	push(dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+
+	/**
+	 * Push the keyframes to the active difficulty.
+	 * @param freeze Whether to freeze the object properties on push.
+	 */
+	push(freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		temp.keyframes.forEach(kf => {
 			kf[4] /= this.animationLength;
 			const time = this.time + kf[4] * this.duration;

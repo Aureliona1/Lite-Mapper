@@ -50,10 +50,10 @@ export class AssignPathAnimation {
 	}
 	/**
 	 * Return the animation as raw json.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): CustomEventJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): CustomEventJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,
 			t: temp.t,
@@ -77,9 +77,9 @@ export class AssignPathAnimation {
 	}
 	/**
 	 * Push the animation to the current difficulty.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		currentDiff.customEvents.push(dupe ? deepCopy(this) : this);
+	push(freeze = true) {
+		currentDiff.customEvents.push(freeze ? deepCopy(this) : this);
 	}
 }

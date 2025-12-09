@@ -17,10 +17,10 @@ export class Bookmark {
 	constructor(public time = 0, public name = "", public color: Vec4 = [1, 1, 1, 1]) {}
 	/**
 	 * Return the bookmark as valid bookmark JSON.
-	 * @param dupe Whether to duplicate the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): BookmarkJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): BookmarkJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: BookmarkJSON = {
 			b: temp.time,
 			n: temp.name,
@@ -39,9 +39,9 @@ export class Bookmark {
 	}
 	/**
 	 * Push the bookmark to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		currentDiff.bookmarks?.push(dupe ? deepCopy(this) : this);
+	push(freeze = true) {
+		currentDiff.bookmarks?.push(freeze ? deepCopy(this) : this);
 	}
 }

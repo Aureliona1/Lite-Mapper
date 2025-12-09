@@ -1,28 +1,27 @@
 import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { AnimateComponent } from "./CustomEvents.ts";
-import { jsonPrune, repeat } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
-import type {
-	ComponentStaticProps,
-	CustomEventJSON,
-	EnvironmentJSON,
-	GeometryMaterialJSON,
-	GeometryObjectJSON,
-	GeometryObjectPrimitive,
-	KFScalar,
-	KeywordBTSPillar,
-	KeywordBaseWater,
-	KeywordBillieWater,
-	KeywordInterscopeCar,
-	KeywordInterscopeConcrete,
-	KeywordStandard,
-	KeywordWaterfallMirror,
-	LightTypeNumber,
-	LookupMethod,
-	MaterialShaderName,
-	Optional
-} from "./Types.ts";
-import { LightEventTypesMap } from "./Internal.ts";
+import {
+	type ComponentStaticProps,
+	type CustomEventJSON,
+	type EnvironmentJSON,
+	type GeometryMaterialJSON,
+	type GeometryObjectJSON,
+	type GeometryObjectPrimitive,
+	type KeywordBaseWater,
+	type KeywordBillieWater,
+	type KeywordBTSPillar,
+	type KeywordInterscopeCar,
+	type KeywordInterscopeConcrete,
+	type KeywordStandard,
+	type KeywordWaterfallMirror,
+	type KFScalar,
+	LightEventTypesMap,
+	type LightTypeNumber,
+	type LookupMethod,
+	type MaterialShaderName,
+	type Optional
+} from "../core/core.ts";
+import { AnimateComponent, currentDiff } from "../map/map.ts";
+import { jsonPrune, repeat } from "../utility/utility.ts";
 
 export class Environment {
 	/**
@@ -163,10 +162,10 @@ export class Environment {
 
 	/**
 	 * Return your environment object as an object.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): EnvironmentJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): EnvironmentJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: EnvironmentJSON = {
 			active: temp.active,
 			duplicate: temp.duplicate == undefined ? undefined : temp.duplicate ? 1 : 0,
@@ -200,10 +199,10 @@ export class Environment {
 	}
 	/**
 	 * Push the environment to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		currentDiff.environments.push(dupe ? deepCopy(this) : this);
+	push(freeze = true) {
+		currentDiff.environments.push(freeze ? deepCopy(this) : this);
 	}
 }
 
@@ -493,19 +492,19 @@ class AnimatedFog {
 	}
 	/**
 	 * Get the json of the underlying component animation.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): CustomEventJSON {
-		return this.componentAnimation.return(dupe);
+	return(freeze = true): CustomEventJSON {
+		return this.componentAnimation.return(freeze);
 	}
 	/**
 	 * Push the fog animation.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
+	push(freeze = true) {
 		this.componentAnimation.time = this.time;
 		this.componentAnimation.duration = this.duration;
-		this.componentAnimation.push(dupe);
+		this.componentAnimation.push(freeze);
 	}
 }
 

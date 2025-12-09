@@ -90,10 +90,10 @@ export class Arc extends GameplayObject {
 
 	/**
 	 * Return the raw Json of the arc.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	override return(dupe = true): SliderJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	override return(freeze = true): SliderJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: SliderJSON = {
 			b: temp.time,
 			c: ObjectColorsMap.get(temp.type),
@@ -137,9 +137,9 @@ export class Arc extends GameplayObject {
 	}
 	/**
 	 * Push the arc to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		currentDiff.arcs.push(dupe ? deepCopy(this) : this);
+	push(freeze = true) {
+		currentDiff.arcs.push(freeze ? deepCopy(this) : this);
 	}
 }

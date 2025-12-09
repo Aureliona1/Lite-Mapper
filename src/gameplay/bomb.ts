@@ -55,10 +55,10 @@ export class Bomb extends GameplayObject {
 
 	/**
 	 * Return the raw Json of the bomb.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	override return(dupe = true): BombJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	override return(freeze = true): BombJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: BombJSON = {
 			b: temp.time,
 			x: temp.x,
@@ -86,10 +86,10 @@ export class Bomb extends GameplayObject {
 	/**
 	 * Push the bomb to the current diff.
 	 * @param fake Whether to push to the regular or fake array.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(fake?: boolean, dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+	push(fake?: boolean, freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
 			currentDiff.fakeBombs?.push(temp);
 		} else {

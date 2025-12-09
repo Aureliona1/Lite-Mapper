@@ -90,9 +90,9 @@ export class GameplayObject {
 
 	/**
 	 * Return the internal JSON of the gameplay object.
-	 * @param dupe Whether to duplicate the object (hence freezing its values) on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): {} {
+	return(freeze = true): {} {
 		return {};
 	}
 }

@@ -35,7 +35,7 @@
 	"tasks": {
 		"commit": {
 			"description": "Run pre-commit checks.",
-			"command": "deno doc --lint src/mod.ts && deno lint && deno test --allow-all"
+			"command": "deno doc --lint mod.ts && deno lint && deno test --allow-all"
 		}
 	},
 	"test": {
