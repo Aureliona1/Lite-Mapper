@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { ArrOp, clamp, mapRange, rgb, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
-import { ye3 } from "./Consts.ts";
+import { ye3 } from "./consts.ts";
 import { type AnimateComponent, AnimateTrack, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./customEvents.ts";
 import { Environment } from "./environment.ts";
 import type { LightEvent } from "./lights.ts";
