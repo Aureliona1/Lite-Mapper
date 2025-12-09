@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { arrRem, compare, mapRange, type Vec2 } from "@aurellis/helpers";
-import { ye3 } from "./consts.ts";
+import { ye3 } from "./utility/consts.ts";
 import { AnimateTrack } from "./CustomEvents.ts";
 import { Environment } from "./Environment.ts";
 import { filterEnvironments, repeat } from "./Functions.ts";

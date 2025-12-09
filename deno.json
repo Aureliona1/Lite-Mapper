@@ -2,9 +2,10 @@
 	"name": "@aurellis/lite-mapper",
 	"version": "1.4.2",
 	"license": "MIT",
-	"exports": "./src/mod.ts",
+	"exports": "./mod.ts",
 	"publish": {
 		"include": [
+			"./mod.ts",
 			"./src",
 			"./README.md",
 			"./docs.md",
@@ -22,8 +23,8 @@
 	},
 	"lint": {
 		"include": [
-			"src/",
-			"mod.ts"
+			"./src/",
+			"./mod.ts"
 		],
 		"rules": {
 			"tags": [

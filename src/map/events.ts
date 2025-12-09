@@ -1,7 +1,22 @@
 import { type Easing, deepCopy } from "@aurellis/helpers";
-import { jsonPrune } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
-import type { ComponentAnimProps, CustomEvent, CustomEventJSON, CustomEventName, FogAnimationProps, Optional, PathAnimAnimationProps, PathAnimDataProps, PlayerObjectTarget, PlayerToTrackProps, TrackAnimAnimationProps, TrackAnimDataProps, TrackParentProps, TubeLightAnimationProps } from "./Types.ts";
+import { jsonPrune } from "../Functions.ts";
+import { currentDiff } from "../Map.ts";
+import type {
+	ComponentAnimProps,
+	CustomEvent,
+	CustomEventJSON,
+	CustomEventName,
+	FogAnimationProps,
+	Optional,
+	PathAnimAnimationProps,
+	PathAnimDataProps,
+	PlayerObjectTarget,
+	PlayerToTrackProps,
+	TrackAnimAnimationProps,
+	TrackAnimDataProps,
+	TrackParentProps,
+	TubeLightAnimationProps
+} from "../Types.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.

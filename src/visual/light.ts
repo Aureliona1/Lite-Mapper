@@ -1,8 +1,8 @@
 import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { jsonPrune, repeat } from "./utils.ts";
-import { currentDiff } from "./map.ts";
-import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "./types.ts";
-import { LightEventTypesMap, LightEventValuesMap } from "./internal.ts";
+import { jsonPrune, repeat } from "../utils.ts";
+import { currentDiff } from "../map.ts";
+import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "../types.ts";
+import { LightEventTypesMap, LightEventValuesMap } from "../internal.ts";
 
 export class LightEvent {
 	/**
