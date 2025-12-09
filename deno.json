@@ -17,7 +17,7 @@
 		]
 	},
 	"imports": {
-		"@aurellis/helpers": "jsr:@aurellis/helpers@^1.2.4",
+		"@aurellis/helpers": "jsr:@aurellis/helpers@^1.4.5",
 		"fast-simplex-noise": "npm:fast-simplex-noise@^4.0.0"
 	},
 	"lint": {
@@ -36,5 +36,10 @@
 			"description": "Run pre-commit checks.",
 			"command": "deno doc --lint src/mod.ts && deno lint && deno test --allow-all"
 		}
+	},
+	"test": {
+		"include": [
+			"./test/"
+		]
 	}
 }

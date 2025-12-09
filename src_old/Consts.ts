@@ -1,5 +1,5 @@
 import type { Vec3 } from "@aurellis/helpers";
-import type { LookupMethod } from "./types.ts";
+import type { LookupMethod } from "./Types.ts";
 
 /**
  * Constant value to send objects to so that they are out of view of the player.

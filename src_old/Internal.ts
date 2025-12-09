@@ -1,5 +1,5 @@
 import { type RecordKey, TwoWayMap } from "@aurellis/helpers";
-import type { V2InfoJSON, V3MapJSON, V4InfoJSON } from "./types.ts";
+import type { V2InfoJSON, V3MapJSON, V4InfoJSON } from "./Types.ts";
 /**
  * Placeholder for valid V2 info JSON if certain values don't exist.
  */
