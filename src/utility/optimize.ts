@@ -1,12 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
 import { arrRem, compare, mapRange, type Vec2 } from "@aurellis/helpers";
-import { ye3 } from "./utility/consts.ts";
-import { AnimateTrack } from "./CustomEvents.ts";
-import { Environment } from "./Environment.ts";
-import { filterEnvironments, repeat } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
-import type { GeometryMaterialJSON, KFVec3 } from "./Types.ts";
-
+import type { GeometryMaterialJSON, KFVec3 } from "../core/core.ts";
+import { AnimateTrack, currentDiff } from "../map/map.ts";
+import { Environment } from "../visual/visual.ts";
+import { ye3 } from "./consts.ts";
+import { repeat, filterEnvironments } from "./helpers.ts";
 /**
  * Performs several actions on geometry materials across the map.
  * - Merges all duplicate materials.

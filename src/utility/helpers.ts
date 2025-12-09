@@ -2,12 +2,10 @@
 import { ArrOp, clamp, mapRange, rgb, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
 import { ye3 } from "./consts.ts";
-import { type AnimateComponent, AnimateTrack, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./customEvents.ts";
-import { Environment } from "./environment.ts";
-import type { LightEvent } from "./lights.ts";
-import { currentDiff, lMInitTime } from "./map.ts";
-import type { Arc, Bomb, Chain, Note, Wall } from "./objects.ts";
-import type { LookupMethod, RGBAObject } from "./types.ts";
+import type { LookupMethod, RGBAObject } from "../core/core.ts";
+import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
+import { AnimateTrack, type AnimateComponent, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, currentDiff, lMInitTime } from "../map/map.ts";
+import { Environment, type LightEvent } from "../visual/visual.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

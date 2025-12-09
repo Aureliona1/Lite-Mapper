@@ -1,5 +1,6 @@
 import { type RecordKey, TwoWayMap } from "@aurellis/helpers";
 import type { V2InfoJSON, V3MapJSON, V4InfoJSON } from "./types.ts";
+
 /**
  * Placeholder for valid V2 info JSON if certain values don't exist.
  */
@@ -21,6 +22,7 @@ export const V2_INFO_FALLBACK: V2InfoJSON = {
 	_songTimeOffset: 0,
 	_difficultyBeatmapSets: []
 } as const;
+
 /**
  * Placeholder for valid V4 info JSON if values don't exist.
  */
@@ -46,6 +48,7 @@ export const V4_INFO_FALLBACK: V4InfoJSON = {
 	colorSchemes: [],
 	difficultyBeatmaps: []
 } as const;
+
 /**
  * Placeholder for valid V3 beatmap JSON.
  */
@@ -70,6 +73,9 @@ export const V3_MAP_FALLBACK: V3MapJSON = {
 	_fxEventsCollection: { _fl: [], _il: [] }
 } as const;
 
+/**
+ * TwoWayMap generic type.
+ */
 type TWM<T extends Record<RecordKey, RecordKey>> = TwoWayMap<keyof T, T[keyof T]>;
 
 const objectColors = {
@@ -78,7 +84,7 @@ const objectColors = {
 };
 
 /**
- * Internal map for mapping numerical object colors to named colors. DO NOT EDIT!
+ * Internal map for mapping numerical object colors to named colors. Modifying the contents of this may break LiteMapper's functionality.
  */
 export const ObjectColorsMap: TWM<typeof objectColors> = new TwoWayMap(objectColors);
 
@@ -94,7 +100,7 @@ const objectDirections = {
 	Dot: 8
 };
 /**
- * Internal map for mapping object directions to named directions. DO NOT EDIT!
+ * Internal map for mapping object directions to named directions. Modifying the contents of this may break LiteMapper's functionality.
  */
 export const ObjectDirectionsMap: TWM<typeof objectDirections> = new TwoWayMap(objectDirections);
 
@@ -116,8 +122,9 @@ const lightEventValues = {
 	FadeWhite: 11,
 	TransitionWhite: 12
 };
+
 /**
- * Internal map for mapping light event values to named values. DO NOT EDIT!
+ * Internal map for mapping light event values to named values. Modifying the contents of this may break LiteMapper's functionality.
  */
 export const LightEventValuesMap: TWM<typeof lightEventValues> = new TwoWayMap(lightEventValues);
 
@@ -136,10 +143,11 @@ const lightEventTypes = {
 	RightLaserSpeed: 13
 };
 /**
- * Internal map for mapping light event types to named types. DO NOT EDIT!
+ * Internal map for mapping light event types to named types. Modifying the contents of this may break LiteMapper's functionality.
  */
 export const LightEventTypesMap: TWM<typeof lightEventTypes> = new TwoWayMap(lightEventTypes);
+
 /**
- * Internal map for applying difficulty rank numbers to rank names in V2 info files.
+ * Internal map for applying difficulty rank numbers to rank names in V2 info files. Modifying the contents of this may break LiteMapper's functionality.
  */
 export const difficultyRankMap = new TwoWayMap({ Easy: 1, Normal: 3, Hard: 5, Expert: 7, ExpertPlus: 9 });

@@ -1,9 +1,6 @@
-export * from "./src/Consts.tselpers";
-export * ./src/CustomEvents.ts";
-export * from "./src/Environment.ts";
-export * from "./src/EnvironmentExporter.ts* from "./json.ts";./src/Functions.tsm "./light.ts";
-ex./src/Lights.ts "./map.ts";
-expor./src/Map.ts "./optimize.ts";
-./src/Objects.tsm "./types.ts";
-ex./src/Optimizers.tsutils.ts";
-./src/Types.ts
+export * from "./src/core/core.ts";
+export * from "./src/gameplay/gameplay.ts";
+export * from "./src/map/map.ts";
+export * from "./src/utility/utility.ts";
+export * from "./src/visual/visual.ts";
+export * from "@aurellis/helpers";
