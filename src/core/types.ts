@@ -1,15 +1,24 @@
 // deno-lint-ignore-file no-explicit-any
 import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
-import type { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
 import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
-import type { ObjectColorsMap, ObjectDirectionsMap, LightEventTypesMap, LightEventValuesMap } from "./internal.ts";
-import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "../map/map.ts";
+import type { HeckCustomEvent } from "../map/map.ts";
+import type { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
+import type { LightEventTypesMap, LightEventValuesMap, ObjectColorsMap, ObjectDirectionsMap } from "./internal.ts";
 
 // BeatMap types
 
-export type DiffName = `${BeatMapDifficultyName}${BeatMapCharacteristicName}`;
-export type BeatMapCharacteristicName = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
-export type BeatMapDifficultyName = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
+/**
+ * The name of a valid beatmap file.
+ */
+export type DiffName = `${BeatMapDifficultyLabel}${BeatMapCharacteristicLabel}`;
+/**
+ * Characteristic label of a beatmap.
+ */
+export type BeatMapCharacteristicLabel = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
+/**
+ * Difficulty label of a beatmap.
+ */
+export type BeatMapDifficultyLabel = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
 /**
  * JSON RGBA object with named keys.
@@ -37,7 +46,7 @@ export type V2InfoColorScheme = {
  * The layout for beatmaps in V2 info files.
  */
 export type V2InfoBeatmap = {
-	_difficulty: BeatMapDifficultyName;
+	_difficulty: BeatMapDifficultyLabel;
 	_difficultyRank: number;
 	_beatmapFilename: DatFilename;
 	_noteJumpMovementSpeed: number;
@@ -51,7 +60,7 @@ export type V2InfoBeatmap = {
  * JSON for beatmap sets in V2 info files.
  */
 export type V2InfoBeatmapSet = {
-	_beatmapCharacteristicName: BeatMapCharacteristicName;
+	_beatmapCharacteristicName: BeatMapCharacteristicLabel;
 	_difficultyBeatmaps: V2InfoBeatmap[];
 };
 
@@ -121,8 +130,8 @@ export type V4InfoColorScheme = {
  * The beatmap layout for V4 info files.
  */
 export type V4InfoBeatmap = {
-	characteristic: BeatMapCharacteristicName;
-	difficulty: BeatMapDifficultyName;
+	characteristic: BeatMapCharacteristicLabel;
+	difficulty: BeatMapDifficultyLabel;
 	beatmapAuthors: {
 		mappers: string[];
 		lighters: string[];
@@ -353,7 +362,10 @@ export type V3MapJSON = {
 	};
 };
 
-export type CustomData = {
+/**
+ * Map custom data section.
+ */
+export type MapCustomData = {
 	customEvents?: HeckCustomEvent[];
 	environment?: Environment[];
 	materials?: Record<string, GeometryMaterialJSON>;
@@ -391,7 +403,7 @@ export type ClassMap = {
 		_fl: BeatmapFxEvent[];
 		_il: BeatmapFxEvent[];
 	};
-	customData?: CustomData;
+	customData?: MapCustomData;
 };
 
 /**
@@ -488,18 +500,37 @@ export type HeckSettings = {
 	};
 };
 
-export type HeckCustomEvent = AnimateTrack | AnimateComponent | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent;
-
 // Animation types
 
+/**
+ * Vec3 keyframe.
+ */
 export type KFVec3 = [number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
+/**
+ * Scalar (single value) keyframe.
+ */
 export type KFScalar = [number, number, Easing?];
+/**
+ * Vec4 keyframe.
+ */
 export type KFVec4 = [number, number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
 
+/**
+ * Vec3 keyframe with a modifier.
+ */
 export type KFVec3Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, ModifierOp]];
+/**
+ * Vec4 keyframe with a modifier.
+ */
 export type KFVec4Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, number, ModifierOp]];
+/**
+ * Scalar keyframe with a modifier.
+ */
 export type KFScalarModifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, ModifierOp]];
 
+/**
+ * Modifier operators.
+ */
 export type ModifierOp = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
 type VectorBase = "Position" | "LocalPosition" | "Rotation" | "LocalRotation" | "LocalScale";
 type BaseEnvColors = "0" | "1" | "W" | "0Boost" | "1Boost" | "WBoost";
@@ -524,6 +555,9 @@ type ModifierBaseName =
 	| "baseSongTime"
 	| "baseSongLength";
 
+/**
+ * Nothing at the moment
+ */
 export type ModifierBaseTarget = "";
 
 /**
@@ -627,19 +661,34 @@ export type WallCustomProps = GameObjectCustomProps & { size?: Vec3 };
  * The L or R colors of gameplay objects.
  */
 export type ObjectColorName = keyof typeof ObjectColorsMap.map;
+/**
+ * Valid object color numbers.
+ */
 export type ObjectColorNumber = keyof typeof ObjectColorsMap.reverseMap;
 /**
  * Valid cut directions of gameplay objects.
  */
 export type ObjectDirectionName = keyof typeof ObjectDirectionsMap.map;
+/**
+ * Valid object direction numbers.
+ */
 export type ObjectDirectionNumber = keyof typeof ObjectDirectionsMap.reverseMap;
 
+/**
+ * JSON format of a note object.
+ */
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
+
+/**
+ * JSON format of a bomb object.
+ */
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
+
 /**
  * JSON format of a wall object.
  */
 export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+
 /**
  * JSON format of an environment object.
  */
@@ -668,7 +717,19 @@ export type SliderJSON = { b: number; c: number; x: number; y: number; d: number
 /**
  * JSON format of the custom data of a light event object.
  */
-export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+export type LightEventCustomData = {
+	lightID?: number | number[];
+	color?: Vec3 | Vec4;
+	easing?: Easing;
+	lerpType?: "HSV" | "RGB";
+	lockRotation?: boolean;
+	speed?: number;
+	direction?: number;
+	nameFilter?: string;
+	rotation?: number;
+	step?: number;
+	prop?: number;
+};
 /**
  * JSON format of a light event object.
  */

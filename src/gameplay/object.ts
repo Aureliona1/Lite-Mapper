@@ -1,7 +1,16 @@
-import type { Vec3, Vec4 } from "@aurellis/helpers";
+import type { Vec2, Vec3, Vec4 } from "@aurellis/helpers";
 import type { GameObjectCustomProps, ObjectAnimProps, Optional } from "../core/core.ts";
 
+/**
+ * A generic gameplay object.
+ */
 export class GameplayObject {
+	/**
+	 * Create a new generic gameplay object.
+	 * @param pos The position of the object.
+	 */
+	constructor(public pos: Vec2) {}
+
 	/**
 	 * Custom Heck properties on the object.
 	 */
@@ -86,6 +95,26 @@ export class GameplayObject {
 	}
 	set interactable(state: boolean) {
 		this.customData.uninteractable = !state;
+	}
+
+	/**
+	 * The `x` (horizontal) position of the object.
+	 */
+	get x(): number {
+		return this.pos[0];
+	}
+	set x(x: number) {
+		this.pos[0] = x;
+	}
+
+	/**
+	 * The `y` (vertical) position of the object.
+	 */
+	get y(): number {
+		return this.pos[1];
+	}
+	set y(x: number) {
+		this.pos[1] = x;
 	}
 
 	/**

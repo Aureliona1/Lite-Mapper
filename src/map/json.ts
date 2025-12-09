@@ -5,6 +5,9 @@ import { jsonPrune } from "../utility/utility.ts";
 import { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
 import { JSONToCE, CEToJSON } from "./map.ts";
 
+/**
+ * BeatMap JSON handler, this is an internal collection used by Lite-Mapper.
+ */
 export class BMJSON {
 	/**
 	 * Convert raw V3JSON to a classmap.

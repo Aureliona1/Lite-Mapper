@@ -5,13 +5,12 @@ import {
 	type ClassMap,
 	type ColorBoostEventJSON,
 	type ColorEventBoxGroupJSON,
-	type CustomData,
 	difficultyRankMap,
 	type DiffName,
 	type GeometryMaterialJSON,
-	type HeckCustomEvent,
 	type HeckSettings,
 	LMUpdateCheck,
+	type MapCustomData,
 	type RotationEventBoxGroupJSON,
 	type RotationEventJSON,
 	type TranslationEventBoxGroupJSON,
@@ -27,6 +26,7 @@ import {
 import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
 import { copyToDir, hex2Rgba, jsonPrune, LMCache, LMLog, optimizeMaterials, rgba2Obj } from "../utility/utility.ts";
 import type { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
+import type { HeckCustomEvent } from "./events/events.ts";
 import { BMJSON } from "./json.ts";
 
 // deno-lint-ignore-file no-explicit-any
@@ -292,10 +292,10 @@ export class BeatMap {
 		return this.internalMap._fxEventsCollection._il;
 	}
 
-	set customData(x: CustomData) {
+	set customData(x: MapCustomData) {
 		this.internalMap.customData = x;
 	}
-	get customData(): CustomData {
+	get customData(): MapCustomData {
 		this.internalMap.customData ??= {};
 		return this.internalMap.customData;
 	}
@@ -388,6 +388,9 @@ export class BeatMap {
 		precision: 5
 	};
 
+	/**
+	 * The custom settings overrides of this difficulty.
+	 */
 	get settings(): HeckSettings {
 		for (let i = 0; i < this.info.raw._difficultyBeatmapSets.length; i++) {
 			const bms = this.info.raw._difficultyBeatmapSets[i];

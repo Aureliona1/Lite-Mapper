@@ -26,44 +26,42 @@ export class Note extends GameplayObject {
 	 * @param direction (string) The cut direction of the note (Default - "Dot").
 	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public direction: ObjectDirectionName = "Dot", public angleOffset = 0) {
-		super();
+	constructor(public time = 0, pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public direction: ObjectDirectionName = "Dot", public angleOffset = 0) {
+		super(pos);
 	}
+	/**
+	 * The note custom properties.
+	 */
 	override customData: NoteCustomProps = {};
 
-	set disableNoteGravity(x: Optional<boolean>) {
-		this.customData.disableNoteGravity = x;
-	}
+	/**
+	 * Whether to disable the note "gravity" effect on spawn.
+	 */
 	get disableNoteGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
-
-	set disableNoteLook(x: Optional<boolean>) {
-		this.customData.disableNoteLook = x;
+	set disableNoteGravity(x: Optional<boolean>) {
+		this.customData.disableNoteGravity = x;
 	}
+
+	/**
+	 * Whether to disable the note "looking" effect.
+	 */
 	get disableNoteLook(): Optional<boolean> {
 		return this.customData.disableNoteLook;
 	}
-
-	set spawnEffect(x: Optional<boolean>) {
-		this.customData.spawnEffect = x;
+	set disableNoteLook(x: Optional<boolean>) {
+		this.customData.disableNoteLook = x;
 	}
+
+	/**
+	 * Whether the note shold have the note "spawn effect".
+	 */
 	get spawnEffect(): Optional<boolean> {
 		return this.customData.spawnEffect;
 	}
-
-	get x(): number {
-		return this.pos[0];
-	}
-	set x(x: number) {
-		this.pos[0] = x;
-	}
-
-	get y(): number {
-		return this.pos[1];
-	}
-	set y(x: number) {
-		this.pos[1] = x;
+	set spawnEffect(x: Optional<boolean>) {
+		this.customData.spawnEffect = x;
 	}
 
 	/**

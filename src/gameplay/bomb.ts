@@ -13,44 +13,42 @@ export class Bomb extends GameplayObject {
 	 * @param time The time of the bomb (Default - 0).
 	 * @param pos The [x, y] of the bomb (Default - [0, 0]).
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0]) {
-		super();
+	constructor(public time = 0, pos: Vec2 = [0, 0]) {
+		super(pos);
 	}
+	/**
+	 * The bomb custom properties.
+	 */
 	override customData: NoteCustomProps = {};
 
-	set disableNoteGravity(x: Optional<boolean>) {
-		this.customData.disableNoteGravity = x;
-	}
-	get disableNoteGravity(): Optional<boolean> {
+	/**
+	 * Whether to disable the bomb "gravity" spawn effect.
+	 */
+	get disableBombGravity(): Optional<boolean> {
 		return this.customData.disableNoteGravity;
 	}
-
-	set disableNoteLook(x: Optional<boolean>) {
-		this.customData.disableNoteLook = x;
+	set disableBombGravity(x: Optional<boolean>) {
+		this.customData.disableNoteGravity = x;
 	}
-	get disableNoteLook(): Optional<boolean> {
+
+	/**
+	 * Whether to disable the bomb "looking" effect.
+	 */
+	get disableBombLook(): Optional<boolean> {
 		return this.customData.disableNoteLook;
 	}
-
-	set spawnEffect(x: Optional<boolean>) {
-		this.customData.spawnEffect = x;
+	set disableBombLook(x: Optional<boolean>) {
+		this.customData.disableNoteLook = x;
 	}
+
+	/**
+	 * Whether to enable the bomb "spawn effect".
+	 */
 	get spawnEffect(): Optional<boolean> {
 		return this.customData.spawnEffect;
 	}
-
-	get x(): number {
-		return this.pos[0];
-	}
-	set x(x: number) {
-		this.pos[0] = x;
-	}
-
-	get y(): number {
-		return this.pos[1];
-	}
-	set y(x: number) {
-		this.pos[1] = x;
+	set spawnEffect(x: Optional<boolean>) {
+		this.customData.spawnEffect = x;
 	}
 
 	/**

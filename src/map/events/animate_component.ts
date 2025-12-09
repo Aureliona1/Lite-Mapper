@@ -2,11 +2,12 @@ import { deepCopy, type Easing } from "@aurellis/helpers";
 import type { ComponentAnimProps, CustomEventJSON, CustomEventName, FogAnimationProps, Optional, TubeLightAnimationProps } from "../../core/core.ts";
 import { jsonPrune } from "../../utility/utility.ts";
 import { currentDiff } from "../beatmap.ts";
+import { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Component animation custom event.
  */
-export class AnimateComponent {
+export class AnimateComponent extends HeckCustomEvent {
 	/**
 	 * Animate a component track.
 	 * @param track The track to target.
@@ -14,30 +15,15 @@ export class AnimateComponent {
 	 * @param duration The duration of the animation.
 	 */
 	constructor(track: string = "", time = 0, duration?: number) {
+		super("AnimateComponent", time);
 		this.track = track;
-		this.time = time;
 		this.duration = duration;
 	}
-	private b = 0;
-	private t: CustomEventName = "AnimateComponent";
-	private d: ComponentAnimProps = {};
 
 	/**
-	 * The start time of this event.
+	 * The data of the event.
 	 */
-	get time(): number {
-		return this.b;
-	}
-	set time(x: number) {
-		this.b = x;
-	}
-
-	/**
-	 * The type of custom event.
-	 */
-	get type(): CustomEventName {
-		return this.t;
-	}
+	protected override d: ComponentAnimProps = {};
 
 	/**
 	 * The track to target with this animation.

@@ -2,11 +2,12 @@ import { deepCopy } from "@aurellis/helpers";
 import type { CustomEventJSON, CustomEventName, Optional, PlayerObjectTarget, PlayerToTrackProps } from "../../core/core.ts";
 import { jsonPrune } from "../../utility/utility.ts";
 import { currentDiff } from "../beatmap.ts";
+import { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Player track assignment custom event.
  */
-export class AssignPlayerToTrack {
+export class AssignPlayerToTrack extends HeckCustomEvent {
 	/**
 	 * Assign the player to a track.
 	 * @param track The target track.
@@ -14,35 +15,36 @@ export class AssignPlayerToTrack {
 	 * @param target The target section of the player to assign.
 	 */
 	constructor(track: string = "", time = 0, target?: PlayerObjectTarget) {
-		this.time = time;
+		super("AssignPlayerToTrack", time);
 		this.track = track;
 		this.target = target;
 	}
-	private b = 0;
-	private t: CustomEventName = "AssignPlayerToTrack";
-	private d: PlayerToTrackProps = {};
 
-	set time(x: number) {
-		this.b = x;
-	}
-	get time(): number {
-		return this.b;
-	}
-	get type(): CustomEventName {
-		return this.t;
+	/**
+	 * The data of the event.
+	 */
+	protected override d: PlayerToTrackProps = {};
+
+	/**
+	 * The track to assign the player to.
+	 */
+	get track(): Optional<string> {
+		return this.d.track;
 	}
 	set track(x: Optional<string>) {
 		this.d.track = x;
 	}
-	get track(): Optional<string> {
-		return this.d.track;
+
+	/**
+	 * The part of the player object to target for track assignment.
+	 */
+	get target(): Optional<PlayerObjectTarget> {
+		return this.d.target;
 	}
 	set target(x: Optional<PlayerObjectTarget>) {
 		this.d.target = x;
 	}
-	get target(): Optional<PlayerObjectTarget> {
-		return this.d.target;
-	}
+
 	/**
 	 * Return track assignment as json.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
@@ -57,6 +59,7 @@ export class AssignPlayerToTrack {
 		jsonPrune(out);
 		return out;
 	}
+
 	/**
 	 * Create a new instance of a player track from valid HeckCustomEvent JSON.
 	 * @param x The JSON.
@@ -70,6 +73,7 @@ export class AssignPlayerToTrack {
 		}
 		return a;
 	}
+
 	/**
 	 * Push track assignment to current difficulty.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.

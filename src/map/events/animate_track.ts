@@ -2,11 +2,12 @@ import { deepCopy, type Easing } from "@aurellis/helpers";
 import type { CustomEventJSON, CustomEventName, Optional, TrackAnimAnimationProps, TrackAnimDataProps } from "../../core/core.ts";
 import { jsonPrune } from "../../utility/utility.ts";
 import { currentDiff } from "../beatmap.ts";
+import { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Track animation custom event.
  */
-export class AnimateTrack {
+export class AnimateTrack extends HeckCustomEvent {
 	/**
 	 * Create a new track animation.
 	 * @param track The track to target.
@@ -14,35 +15,39 @@ export class AnimateTrack {
 	 * @param duration The duration of the animation.
 	 */
 	constructor(track: string | string[] = "", time = 0, duration?: number) {
+		super("AnimateTrack", time);
 		this.track = track;
-		this.time = time;
 		this.duration = duration;
 	}
-	private b = 0;
-	private t: CustomEventName = "AnimateTrack";
-	private d: TrackAnimDataProps = {};
 
-	set time(x: number) {
-		this.b = x;
-	}
-	get time(): number {
-		return this.b;
-	}
-	get type(): CustomEventName {
-		return this.t;
+	/**
+	 * The data of the event.
+	 */
+	protected override d: TrackAnimDataProps = {};
+
+	/**
+	 * The track/s to target with the animation.
+	 */
+	get track(): Optional<string | string[]> {
+		return this.d.track;
 	}
 	set track(x: Optional<string | string[]>) {
 		this.d.track = x;
 	}
-	get track(): Optional<string | string[]> {
-		return this.d.track;
+
+	/**
+	 * The duration of the animation.
+	 */
+	get duration(): Optional<number> {
+		return this.d.duration;
 	}
 	set duration(x: Optional<number>) {
 		this.d.duration = x;
 	}
-	get duration(): Optional<number> {
-		return this.d.duration;
-	}
+
+	/**
+	 * The properties of the event that can be animated.
+	 */
 	get animate(): TrackAnimAnimationProps {
 		return this.d as TrackAnimAnimationProps;
 	}
@@ -50,12 +55,20 @@ export class AnimateTrack {
 		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
+
+	/**
+	 * An easing to apply to the entire animation.
+	 */
 	get easing(): Optional<Easing> {
 		return this.d.easing;
 	}
 	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
+
+	/**
+	 * The number of times to repeat the animation.
+	 */
 	get repeat(): Optional<number> {
 		return this.d.repeat;
 	}

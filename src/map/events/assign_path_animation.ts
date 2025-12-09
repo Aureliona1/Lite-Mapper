@@ -2,45 +2,50 @@ import { type Easing, deepCopy } from "@aurellis/lite-mapper";
 import type { CustomEventName, PathAnimDataProps, Optional, PathAnimAnimationProps, CustomEventJSON } from "../../core/core.ts";
 import { jsonPrune } from "../../utility/utility.ts";
 import { currentDiff } from "../beatmap.ts";
+import { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Path animation custom event.
  */
-export class AssignPathAnimation {
+export class AssignPathAnimation extends HeckCustomEvent {
 	/**
 	 * Create a new path animation.
 	 * @param track The track to target.
 	 * @param time The time of the animation (leave blank for 0).
 	 */
 	constructor(track: string | string[] = "", time = 0) {
-		this.time = time;
+		super("AssignPathAnimation", time);
 		this.track = track;
 	}
-	private b = 0;
-	private t: CustomEventName = "AssignPathAnimation";
-	private d: PathAnimDataProps = {};
 
-	set time(x: number) {
-		this.b = x;
-	}
-	get time(): number {
-		return this.b;
+	/**
+	 * The data of the event.
+	 */
+	protected override d: PathAnimDataProps = {};
+
+	/**
+	 * The track/s to target for animation.
+	 */
+	get track(): Optional<string | string[]> {
+		return this.d.track;
 	}
 	set track(x: Optional<string | string[]>) {
 		this.d.track = x;
 	}
-	get track(): Optional<string | string[]> {
-		return this.d.track;
-	}
-	get type(): CustomEventName {
-		return this.t;
+
+	/**
+	 * An easing to apply over the entire animation.
+	 */
+	get easing(): Optional<Easing> {
+		return this.d.easing;
 	}
 	set easing(x: Optional<Easing>) {
 		this.d.easing = x;
 	}
-	get easing(): Optional<Easing> {
-		return this.d.easing;
-	}
+
+	/**
+	 * The properties that can be animated.
+	 */
 	get animate(): PathAnimAnimationProps {
 		return this.d as PathAnimAnimationProps;
 	}
@@ -48,6 +53,7 @@ export class AssignPathAnimation {
 		this.d = { ...this.d, ...x };
 		jsonPrune(this.d);
 	}
+
 	/**
 	 * Return the animation as raw json.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.

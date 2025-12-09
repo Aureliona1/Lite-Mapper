@@ -2,11 +2,12 @@ import { deepCopy } from "@aurellis/helpers";
 import type { CustomEventJSON, CustomEventName, Optional, TrackParentProps } from "../../core/core.ts";
 import { jsonPrune } from "../../utility/utility.ts";
 import { currentDiff } from "../beatmap.ts";
+import { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Track parent assignment custom event.
  */
-export class AssignTrackParent {
+export class AssignTrackParent extends HeckCustomEvent {
 	/**
 	 * Create a new track parent assignment.
 	 * @param childTracks The child tracks to be affected.
@@ -14,38 +15,42 @@ export class AssignTrackParent {
 	 * @param time The time of the assignment (leave blank for 0).
 	 */
 	constructor(childTracks: string[] = [], parentTrack: string = "", time = 0, worldPositionStays?: boolean) {
+		super("AssignTrackParent", time);
 		this.childTracks = childTracks;
 		this.parentTrack = parentTrack;
-		this.time = time;
 		if (worldPositionStays) {
 			this.worldPositionStays = worldPositionStays;
 		}
 	}
-	private b = 0;
-	private t: CustomEventName = "AssignTrackParent";
-	private d: TrackParentProps = { childrenTracks: [], parentTrack: "" };
 
-	set time(x: number) {
-		this.b = x;
-	}
-	get time(): number {
-		return this.b;
-	}
-	get type(): CustomEventName {
-		return this.t;
+	/**
+	 * The data of the event.
+	 */
+	protected override d: TrackParentProps = { childrenTracks: [], parentTrack: "" };
+
+	/**
+	 * The tracks being assigned as children.
+	 */
+	get childTracks(): string[] {
+		return this.d.childrenTracks;
 	}
 	set childTracks(x: string[]) {
 		this.d.childrenTracks = x;
 	}
-	get childTracks(): string[] {
-		return this.d.childrenTracks;
+
+	/**
+	 * The track being assigned as the parent.
+	 */
+	get parentTrack(): string {
+		return this.d.parentTrack;
 	}
 	set parentTrack(x: string) {
 		this.d.parentTrack = x;
 	}
-	get parentTrack(): string {
-		return this.d.parentTrack;
-	}
+
+	/**
+	 * The unity parent property `worldPositionStays`.
+	 */
 	get worldPositionStays(): Optional<boolean> {
 		return this.d.worldPositionStays;
 	}

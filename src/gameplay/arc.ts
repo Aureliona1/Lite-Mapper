@@ -18,8 +18,8 @@ export class Arc extends GameplayObject {
 	 * @param tailPos The final position of the arc (Default - [0, 0]).
 	 * @param tailDirection The direction of the end of the arc (Default - "Down").
 	 */
-	constructor(public time = 0, public pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public headDirection: ObjectDirectionName = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirectionName = "Down") {
-		super();
+	constructor(public time = 0, pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public headDirection: ObjectDirectionName = "Up", public tailBeat = 1, public tailPos: Vec2 = [0, 0], public tailDirection: ObjectDirectionName = "Down") {
+		super(pos);
 	}
 	/**
 	 * The arc head multiplier (see beatmap v3 spec).
@@ -46,26 +46,6 @@ export class Arc extends GameplayObject {
 	}
 	set disableNoteGravity(x: Optional<boolean>) {
 		this.customData.disableNoteGravity = x;
-	}
-
-	/**
-	 * The x position of the head of the arc.
-	 */
-	get x(): number {
-		return this.pos[0];
-	}
-	set x(x: number) {
-		this.pos[0] = x;
-	}
-
-	/**
-	 * The y position of the head of the arc.
-	 */
-	get y(): number {
-		return this.pos[1];
-	}
-	set y(x: number) {
-		this.pos[1] = x;
 	}
 
 	/**

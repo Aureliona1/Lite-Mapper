@@ -1,9 +1,10 @@
-import type { CustomEventJSON, HeckCustomEvent } from "../../core/core.ts";
+import type { CustomEventJSON } from "../../core/core.ts";
 import { AnimateComponent } from "./animate_component.ts";
 import { AnimateTrack } from "./animate_track.ts";
 import { AssignPathAnimation } from "./assign_path_animation.ts";
 import { AssignPlayerToTrack } from "./assign_player_track.ts";
 import { AssignTrackParent } from "./assign_track_parent.ts";
+import type { HeckCustomEvent } from "./custom_event.ts";
 
 /**
  * Internal function for Lite-Mapper that converts CE JSON to an instance of a CE class.
@@ -36,3 +37,4 @@ export * from "./animate_track.ts";
 export * from "./assign_path_animation.ts";
 export * from "./assign_player_track.ts";
 export * from "./assign_track_parent.ts";
+export * from "./custom_event.ts";
