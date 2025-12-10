@@ -33,6 +33,9 @@ export class HeckCustomEvent {
 		return this.t;
 	}
 
+	/**
+	 * Return the raw JSON of te event.
+	 */
 	return(): CustomEventJSON {
 		return { d: this.d, t: this.t, b: this.b };
 	}

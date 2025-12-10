@@ -30,9 +30,18 @@ import type { HeckCustomEvent } from "./events/events.ts";
 import { BMJSON } from "./json.ts";
 
 // deno-lint-ignore-file no-explicit-any
+/**
+ * The currently active difficulty.
+ */
 export let _currentDiff: BeatMap | null,
+	/**
+	 * The time (ms since epoch) of the start of this lm instance.
+	 */
 	lMInitTime = 0;
 
+/**
+ * Safely get the current diff.
+ */
 export function currentDiff(): BeatMap {
 	if (!_currentDiff) throw new Error("You haven't opened any map file!\nPlease create a new BeatMap before trying to push objects!");
 	return _currentDiff;
