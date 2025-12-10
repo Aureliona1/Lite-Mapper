@@ -89,9 +89,9 @@ export class Bomb extends GameplayObject {
 	push(fake?: boolean, freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
-			currentDiff.fakeBombs?.push(temp);
+			currentDiff().fakeBombs?.push(temp);
 		} else {
-			currentDiff.bombs.push(temp);
+			currentDiff().bombs.push(temp);
 		}
 	}
 }

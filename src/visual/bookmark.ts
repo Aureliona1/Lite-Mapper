@@ -42,6 +42,6 @@ export class Bookmark {
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	push(freeze = true) {
-		currentDiff.bookmarks?.push(freeze ? deepCopy(this) : this);
+		currentDiff().bookmarks?.push(freeze ? deepCopy(this) : this);
 	}
 }

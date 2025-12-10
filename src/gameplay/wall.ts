@@ -79,9 +79,9 @@ export class Wall extends GameplayObject {
 	push(fake?: boolean, freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
-			currentDiff.fakeWalls?.push(temp);
+			currentDiff().fakeWalls?.push(temp);
 		} else {
-			currentDiff.walls.push(temp);
+			currentDiff().walls.push(temp);
 		}
 	}
 }

@@ -114,9 +114,9 @@ export class Chain extends GameplayObject {
 	push(fake?: boolean, freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
-			currentDiff.fakeChains?.push(temp);
+			currentDiff().fakeChains?.push(temp);
 		} else {
-			currentDiff.chains.push(temp);
+			currentDiff().chains.push(temp);
 		}
 	}
 }

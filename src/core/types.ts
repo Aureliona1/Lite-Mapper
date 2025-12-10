@@ -341,7 +341,7 @@ export type V3MapJSON = {
 	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
 	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
 	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
-	basicEventTypesWithKeywords: Record<string, unknown>;
+	basicEventTypesWithKeywords: Record<string, unknown> | unknown;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {
@@ -396,7 +396,7 @@ export type ClassMap = {
 	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
 	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
 	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
-	basicEventTypesWithKeywords: Record<string, unknown>;
+	basicEventTypesWithKeywords: Record<string, unknown> | unknown;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {

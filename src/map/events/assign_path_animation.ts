@@ -86,6 +86,6 @@ export class AssignPathAnimation extends HeckCustomEvent {
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	push(freeze = true) {
-		currentDiff.customEvents.push(freeze ? deepCopy(this) : this);
+		currentDiff().customEvents.push(freeze ? deepCopy(this) : this);
 	}
 }

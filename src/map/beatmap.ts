@@ -30,9 +30,17 @@ import type { HeckCustomEvent } from "./events/events.ts";
 import { BMJSON } from "./json.ts";
 
 // deno-lint-ignore-file no-explicit-any
-export let currentDiff: BeatMap,
+export let _currentDiff: BeatMap | null,
 	lMInitTime = 0;
 
+export function currentDiff(): BeatMap {
+	if (!_currentDiff) throw new Error("You haven't opened any map file!\nPlease create a new BeatMap before trying to push objects!");
+	return _currentDiff;
+}
+
+/**
+ * A map, this should be the first thing you call when starting a Lite-Mapper project.
+ */
 export class BeatMap {
 	private internalMap: ClassMap = {
 		version: "3.3.0",
@@ -58,7 +66,12 @@ export class BeatMap {
 		},
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
 	};
+
+	/**
+	 * A link to the map's info file and related fields.
+	 */
 	info: Info = new Info();
+
 	/**
 	 * Initialise a new map.
 	 * @param inputDiff The input difficulty, this will be unmodified.
@@ -128,7 +141,7 @@ export class BeatMap {
 		LMLog(`${inputDiff} has been imported, map initialized...`);
 
 		// Set current diff
-		currentDiff = this;
+		_currentDiff = this;
 	}
 
 	/**
@@ -176,205 +189,294 @@ export class BeatMap {
 		});
 	}
 
+	/**
+	 * The map version. Lite-Mapper only supports versions `3.x.x`.
+	 */
 	get version(): V3ValidVersion {
 		return this.internalMap.version;
 	}
 
-	set basicEventTypesWithKeywords(x: Record<string, unknown>) {
-		this.internalMap.basicEventTypesWithKeywords = x;
-	}
-	get basicEventTypesWithKeywords(): Record<string, unknown> {
+	/**
+	 * These are copyright protected events that trigger certain actions on specific environments. They are not officially documented anywhere, so use wisely.
+	 */
+	get basicEventTypesWithKeywords(): Record<string, unknown> | unknown {
 		return this.internalMap.basicEventTypesWithKeywords;
 	}
-
-	set bpmEvents(x: BpmEventJSON[]) {
-		this.internalMap.bpmEvents = x;
+	set basicEventTypesWithKeywords(x: Record<string, unknown> | unknown) {
+		this.internalMap.basicEventTypesWithKeywords = x;
 	}
+
+	/**
+	 * All BPM changes.
+	 */
 	get bpmEvents(): BpmEventJSON[] {
 		return this.internalMap.bpmEvents;
 	}
-
-	set rotationEvents(x: RotationEventJSON[]) {
-		this.internalMap.rotationEvents = x;
+	set bpmEvents(x: BpmEventJSON[]) {
+		this.internalMap.bpmEvents = x;
 	}
+
+	/**
+	 * All rotation events. (V3 system)
+	 */
 	get rotationEvents(): RotationEventJSON[] {
 		return this.internalMap.rotationEvents;
 	}
-
-	set notes(x: Note[]) {
-		this.internalMap.colorNotes = x;
+	set rotationEvents(x: RotationEventJSON[]) {
+		this.internalMap.rotationEvents = x;
 	}
+
+	/**
+	 * All map note objects.  (excl. fake notes)
+	 */
 	get notes(): Note[] {
 		return this.internalMap.colorNotes;
 	}
-
-	set bombs(x: Bomb[]) {
-		this.internalMap.bombNotes = x;
+	set notes(x: Note[]) {
+		this.internalMap.colorNotes = x;
 	}
+
+	/**
+	 * All map bomb objects. (excl. fake bombs)
+	 */
 	get bombs(): Bomb[] {
 		return this.internalMap.bombNotes;
 	}
-
-	set walls(x: Wall[]) {
-		this.internalMap.obstacles = x;
+	set bombs(x: Bomb[]) {
+		this.internalMap.bombNotes = x;
 	}
+
+	/**
+	 * All map walls. (excl. fake walls)
+	 */
 	get walls(): Wall[] {
 		return this.internalMap.obstacles;
 	}
-
-	set arcs(x: Arc[]) {
-		this.internalMap.sliders = x;
+	set walls(x: Wall[]) {
+		this.internalMap.obstacles = x;
 	}
+
+	/**
+	 * All map arc objects.
+	 */
 	get arcs(): Arc[] {
 		return this.internalMap.sliders;
 	}
-
-	set chains(x: Chain[]) {
-		this.internalMap.burstSliders = x;
+	set arcs(x: Arc[]) {
+		this.internalMap.sliders = x;
 	}
+
+	/**
+	 * All map chain objects. (excl. fake chains)
+	 */
 	get chains(): Chain[] {
 		return this.internalMap.burstSliders;
 	}
-
-	set events(x: LightEvent[]) {
-		this.internalMap.basicBeatmapEvents = x;
+	set chains(x: Chain[]) {
+		this.internalMap.burstSliders = x;
 	}
+
+	/**
+	 * All classic light events.
+	 */
 	get events(): LightEvent[] {
 		return this.internalMap.basicBeatmapEvents;
 	}
-
-	set colorBoostBeatmapEvents(x: ColorBoostEventJSON[]) {
-		this.internalMap.colorBoostBeatmapEvents = x;
+	set events(x: LightEvent[]) {
+		this.internalMap.basicBeatmapEvents = x;
 	}
+
+	/**
+	 * All light boost events, these will have different effects depending on which environment they arte used on.
+	 */
 	get colorBoostBeatmapEvents(): ColorBoostEventJSON[] {
 		return this.internalMap.colorBoostBeatmapEvents;
 	}
-
-	set lightColorEventBoxGroups(x: ColorEventBoxGroupJSON[]) {
-		this.internalMap.lightColorEventBoxGroups = x;
+	set colorBoostBeatmapEvents(x: ColorBoostEventJSON[]) {
+		this.internalMap.colorBoostBeatmapEvents = x;
 	}
+
+	/**
+	 * All light color events. (V3 system)
+	 */
 	get lightColorEventBoxGroups(): ColorEventBoxGroupJSON[] {
 		return this.internalMap.lightColorEventBoxGroups;
 	}
-
-	set lightRotationEventBoxGroups(x: RotationEventBoxGroupJSON[]) {
-		this.internalMap.lightRotationEventBoxGroups = x;
+	set lightColorEventBoxGroups(x: ColorEventBoxGroupJSON[]) {
+		this.internalMap.lightColorEventBoxGroups = x;
 	}
+
+	/**
+	 * All light rotation events. (V3 system0)
+	 */
 	get lightRotationEventBoxGroups(): RotationEventBoxGroupJSON[] {
 		return this.internalMap.lightRotationEventBoxGroups;
 	}
-
-	set lightTranslationEventBoxGroups(x: TranslationEventBoxGroupJSON[]) {
-		this.internalMap.lightTranslationEventBoxGroups = x;
+	set lightRotationEventBoxGroups(x: RotationEventBoxGroupJSON[]) {
+		this.internalMap.lightRotationEventBoxGroups = x;
 	}
+
+	/**
+	 * All light translation events. (V3 system)
+	 */
 	get lightTranslationEventBoxGroups(): TranslationEventBoxGroupJSON[] {
 		return this.internalMap.lightTranslationEventBoxGroups;
 	}
-
-	set vfxEventBoxGroups(x: VfxEventBoxGroupJSON[]) {
-		this.internalMap.vfxEventBoxGroups = x;
+	set lightTranslationEventBoxGroups(x: TranslationEventBoxGroupJSON[]) {
+		this.internalMap.lightTranslationEventBoxGroups = x;
 	}
+
+	/**
+	 * All vfx events. (V3 system)
+	 */
 	get vfxEventBoxGroups(): VfxEventBoxGroupJSON[] {
 		return this.internalMap.vfxEventBoxGroups;
 	}
-
-	set floatFxEvents(x: BeatmapFxEvent[]) {
-		this.internalMap._fxEventsCollection._fl = x;
+	set vfxEventBoxGroups(x: VfxEventBoxGroupJSON[]) {
+		this.internalMap.vfxEventBoxGroups = x;
 	}
+
+	/**
+	 * FX events that use float numbers. (V3 system)
+	 */
 	get floatFxEvents(): BeatmapFxEvent[] {
 		return this.internalMap._fxEventsCollection._fl;
 	}
-
-	set integerFxEvents(x: BeatmapFxEvent[]) {
-		this.internalMap._fxEventsCollection._il = x;
+	set floatFxEvents(x: BeatmapFxEvent[]) {
+		this.internalMap._fxEventsCollection._fl = x;
 	}
+
+	/**
+	 * FX events that use integers only (no floats). (V3 system)
+	 */
 	get integerFxEvents(): BeatmapFxEvent[] {
 		return this.internalMap._fxEventsCollection._il;
 	}
-
-	set customData(x: MapCustomData) {
-		this.internalMap.customData = x;
+	set integerFxEvents(x: BeatmapFxEvent[]) {
+		this.internalMap._fxEventsCollection._il = x;
 	}
+
+	/**
+	 * Map custom data section. This contains modded map content.
+	 */
 	get customData(): MapCustomData {
 		this.internalMap.customData ??= {};
 		return this.internalMap.customData;
 	}
-
-	set customEvents(x: HeckCustomEvent[]) {
-		this.customData.customEvents = x;
+	set customData(x: MapCustomData) {
+		this.internalMap.customData = x;
 	}
+
+	/**
+	 * All map {@link HeckCustomEvent CustomEvents} in the map.
+	 */
 	get customEvents(): HeckCustomEvent[] {
 		this.customData.customEvents ??= [];
 		return this.customData.customEvents;
 	}
-
-	set environments(x: Environment[]) {
-		this.customData.environment = x;
+	set customEvents(x: HeckCustomEvent[]) {
+		this.customData.customEvents = x;
 	}
+
+	/**
+	 * All environment objects for the map.
+	 */
 	get environments(): Environment[] {
 		this.customData.environment ??= [];
 		return this.customData.environment;
 	}
-
-	set materials(x: Record<string, GeometryMaterialJSON>) {
-		this.customData.materials = x;
+	set environments(x: Environment[]) {
+		this.customData.environment = x;
 	}
+
+	/**
+	 * All registered materials for geometry.
+	 *
+	 * This will not include materials that are defined directly on geometry objects.
+	 */
 	get materials(): Record<string, GeometryMaterialJSON> {
 		this.customData.materials ??= {};
 		return this.customData.materials;
 	}
-
-	set fakeNotes(x: Note[]) {
-		this.customData.fakeColorNotes = x;
+	set materials(x: Record<string, GeometryMaterialJSON>) {
+		this.customData.materials = x;
 	}
+
+	/**
+	 * Map note objects that don't count to score.
+	 */
 	get fakeNotes(): Note[] {
 		this.customData.fakeColorNotes ??= [];
 		return this.customData.fakeColorNotes;
 	}
-
-	set fakeBombs(x: Bomb[]) {
-		this.customData.fakeBombNotes = x;
+	set fakeNotes(x: Note[]) {
+		this.customData.fakeColorNotes = x;
 	}
+
+	/**
+	 * Map bomb objects that don't count to score.
+	 */
 	get fakeBombs(): Bomb[] {
 		this.customData.fakeBombNotes ??= [];
 		return this.customData.fakeBombNotes;
 	}
-
-	set fakeWalls(x: Wall[]) {
-		this.customData.fakeObstacles = x;
+	set fakeBombs(x: Bomb[]) {
+		this.customData.fakeBombNotes = x;
 	}
+
+	/**
+	 * Map wall objects that don't count to score.
+	 */
 	get fakeWalls(): Wall[] {
 		this.customData.fakeObstacles ??= [];
 		return this.customData.fakeObstacles;
 	}
-
-	set fakeChains(x: Chain[]) {
-		this.customData.fakeBurstSliders = x;
+	set fakeWalls(x: Wall[]) {
+		this.customData.fakeObstacles = x;
 	}
+
+	/**
+	 * Map chain objects that don't count to score.
+	 */
 	get fakeChains(): Chain[] {
 		this.customData.fakeBurstSliders ??= [];
 		return this.customData.fakeBurstSliders;
 	}
-
-	set bookmarks(x: Bookmark[]) {
-		this.customData.bookmarks = x;
+	set fakeChains(x: Chain[]) {
+		this.customData.fakeBurstSliders = x;
 	}
+
+	/**
+	 * Collection of bookmarks from chromapper.
+	 */
 	get bookmarks(): Bookmark[] {
 		this.customData.bookmarks ??= [];
 		return this.customData.bookmarks;
 	}
+	set bookmarks(x: Bookmark[]) {
+		this.customData.bookmarks = x;
+	}
 
+	/**
+	 * Custom values used by chromapper for editing the map.
+	 *
+	 * Beat Saber will ignore these values.
+	 */
 	readonly chromapperValues = {
 		mappingTime: 0,
 		bookmarksUseOfficialBPMEvents: true
 	};
 
-	set useNormalEventsAsCompatibleEvents(x: boolean) {
-		this.internalMap.useNormalEventsAsCompatibleEvents = x;
-	}
+	/**
+	 * Whether the lighting of the map is compatible with other environments than the one in the info file.
+	 */
 	get useNormalEventsAsCompatibleEvents(): boolean {
 		return this.internalMap.useNormalEventsAsCompatibleEvents;
 	}
+	set useNormalEventsAsCompatibleEvents(x: boolean) {
+		this.internalMap.useNormalEventsAsCompatibleEvents = x;
+	}
+
 	/**
 	 * Optimizer settings.
 	 *
@@ -511,7 +613,13 @@ export class BeatMap {
 	}
 }
 
-class Info {
+/**
+ * An interface to the map's info file.
+ */
+export class Info {
+	/**
+	 * Convert a raw v4 info file into v2 info JSON.
+	 */
 	static v4ToV2(v4: V4InfoJSON): V2InfoJSON {
 		const v2: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 		v2._songName = v4.song.title;
@@ -582,10 +690,13 @@ class Info {
 	}
 
 	private infoVersion: number = 0;
+	/**
+	 * Raw info JSON contents.
+	 */
 	raw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 	private initialRaw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 	/**
-	 * Initialise the info file reader.
+	 * Initialise the info file reader. This class should not be initialised by itself. Use info {@link BeatMap.info info} property on {@link BeatMap}.
 	 */
 	constructor() {
 		lMInitTime = Date.now();
@@ -642,6 +753,9 @@ class Info {
 			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
 		}
 	}
+	/**
+	 * Get whether the info file was modified. This will determine whether the file will be written to on save.
+	 */
 	get isModified(): boolean {
 		return !compare(this.initialRaw, this.raw);
 	}

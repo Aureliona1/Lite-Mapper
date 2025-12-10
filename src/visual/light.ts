@@ -142,7 +142,7 @@ export class LightEvent {
 	push(freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
 		jsonPrune(temp);
-		currentDiff.events.push(temp);
+		currentDiff().events.push(temp);
 	}
 }
 

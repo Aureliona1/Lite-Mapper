@@ -107,9 +107,9 @@ export class Note extends GameplayObject {
 	push(fake?: boolean, freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
 		if (fake) {
-			currentDiff.fakeNotes?.push(temp);
+			currentDiff().fakeNotes?.push(temp);
 		} else {
-			currentDiff.notes.push(temp);
+			currentDiff().notes.push(temp);
 		}
 	}
 }

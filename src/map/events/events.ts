@@ -1,4 +1,4 @@
-import type { CustomEventJSON } from "../../core/core.ts";
+import type { CustomEventJSON, CustomEventName } from "../../core/core.ts";
 import { AnimateComponent } from "./animate_component.ts";
 import { AnimateTrack } from "./animate_track.ts";
 import { AssignPathAnimation } from "./assign_path_animation.ts";
@@ -28,7 +28,7 @@ export function JSONToCE(x: CustomEventJSON): HeckCustomEvent {
  * Convert custom event class into json.
  * @param x Custom Event class.
  */
-export function CEToJSON(x: AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent): CustomEventJSON {
+export function CEToJSON(x: HeckCustomEvent): CustomEventJSON {
 	return x.return();
 }
 

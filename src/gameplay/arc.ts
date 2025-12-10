@@ -120,6 +120,6 @@ export class Arc extends GameplayObject {
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	push(freeze = true) {
-		currentDiff.arcs.push(freeze ? deepCopy(this) : this);
+		currentDiff().arcs.push(freeze ? deepCopy(this) : this);
 	}
 }

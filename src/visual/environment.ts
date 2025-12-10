@@ -3,7 +3,7 @@ import {
 	type ComponentStaticProps,
 	type CustomEventJSON,
 	type EnvironmentJSON,
-	FogAnimationProps,
+	type FogAnimationProps,
 	type GeometryMaterialJSON,
 	type GeometryObjectJSON,
 	type GeometryObjectPrimitive,
@@ -206,7 +206,7 @@ export class Environment {
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	push(freeze = true) {
-		currentDiff.environments.push(freeze ? deepCopy(this) : this);
+		currentDiff().environments.push(freeze ? deepCopy(this) : this);
 	}
 }
 
@@ -349,7 +349,7 @@ export class Material {
 	 * @param name The name of the material.
 	 */
 	push(name: string) {
-		currentDiff.materials[name] = this.return();
+		currentDiff().materials[name] = this.return();
 	}
 }
 
@@ -423,12 +423,12 @@ export class InternalStaticFog {
 	/**
 	 * Fog component shortcut.
 	 */
-	private get components(): ComponentStaticProps["fog"] {
+	private get components(): Required<ComponentStaticProps>["fog"] {
 		this.fog.components ??= {};
 		this.fog.components.fog ??= {};
 		return this.fog.components.fog;
 	}
-	private set components(x: ComponentStaticProps["fog"]) {
+	private set components(x: Required<ComponentStaticProps>["fog"]) {
 		this.fog.components ??= {};
 		this.fog.components.fog ??= {};
 		this.fog.components.fog = x;
