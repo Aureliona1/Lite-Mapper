@@ -1,8 +1,7 @@
 import { deepCopy, type Vec4 } from "@aurellis/helpers";
-import type { BookmarkJSON } from "../core/core.ts";
-import { currentDiff } from "../map/map.ts";
-import { jsonPrune } from "../utility/utility.ts";
-
+import type { BookmarkJSON } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { jsonPrune } from "../utility/helpers.ts";
 /**
  * A map bookmark object.
  * This is based on bookmarks from ChroMapper.

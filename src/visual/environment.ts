@@ -1,28 +1,29 @@
 import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "@aurellis/helpers";
-import {
-	type ComponentStaticProps,
-	type CustomEventJSON,
-	type EnvironmentJSON,
-	type FogAnimationProps,
-	type GeometryMaterialJSON,
-	type GeometryObjectJSON,
-	type GeometryObjectPrimitive,
-	type KeywordBaseWater,
-	type KeywordBillieWater,
-	type KeywordBTSPillar,
-	type KeywordInterscopeCar,
-	type KeywordInterscopeConcrete,
-	type KeywordStandard,
-	type KeywordWaterfallMirror,
-	type KFScalar,
-	LightEventTypesMap,
-	type LightTypeNumber,
-	type LookupMethod,
-	type MaterialShaderName,
-	type Optional
-} from "../core/core.ts";
-import { AnimateComponent, currentDiff } from "../map/map.ts";
-import { jsonPrune, repeat } from "../utility/utility.ts";
+import { LightEventTypesMap } from "../core/internal.ts";
+import type {
+	ComponentStaticProps,
+	CustomEventJSON,
+	EnvironmentJSON,
+	FogAnimationProps,
+	GeometryMaterialJSON,
+	GeometryObjectJSON,
+	GeometryObjectPrimitive,
+	KFScalar,
+	KeywordBTSPillar,
+	KeywordBaseWater,
+	KeywordBillieWater,
+	KeywordInterscopeCar,
+	KeywordInterscopeConcrete,
+	KeywordStandard,
+	KeywordWaterfallMirror,
+	LightTypeNumber,
+	LookupMethod,
+	MaterialShaderName,
+	Optional
+} from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { AnimateComponent } from "../map/events/animate_component.ts";
+import { jsonPrune, repeat } from "../utility/helpers.ts";
 
 /**
  * An environment (or geometry) object.

@@ -1,32 +1,37 @@
 import { compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
-import {
-	type BeatmapFxEvent,
-	type BpmEventJSON,
-	type ClassMap,
-	type ColorBoostEventJSON,
-	type ColorEventBoxGroupJSON,
-	difficultyRankMap,
-	type DiffName,
-	type GeometryMaterialJSON,
-	type HeckSettings,
-	LMUpdateCheck,
-	type MapCustomData,
-	type RotationEventBoxGroupJSON,
-	type RotationEventJSON,
-	type TranslationEventBoxGroupJSON,
-	V2_INFO_FALLBACK,
-	type V2InfoBeatmap,
-	type V2InfoJSON,
-	V3_MAP_FALLBACK,
-	type V3MapJSON,
-	type V3ValidVersion,
-	type V4InfoJSON,
-	type VfxEventBoxGroupJSON
-} from "../core/core.ts";
-import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
-import { copyToDir, hex2Rgba, jsonPrune, LMCache, LMLog, optimizeMaterials, rgba2Obj } from "../utility/utility.ts";
-import type { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
-import type { HeckCustomEvent } from "./events/events.ts";
+import { V2_INFO_FALLBACK, V3_MAP_FALLBACK, difficultyRankMap } from "../core/internal.ts";
+import type {
+	BeatmapFxEvent,
+	BpmEventJSON,
+	ClassMap,
+	ColorBoostEventJSON,
+	ColorEventBoxGroupJSON,
+	DiffName,
+	GeometryMaterialJSON,
+	HeckSettings,
+	MapCustomData,
+	RotationEventBoxGroupJSON,
+	RotationEventJSON,
+	TranslationEventBoxGroupJSON,
+	V2InfoBeatmap,
+	V2InfoJSON,
+	V3MapJSON,
+	V3ValidVersion,
+	V4InfoJSON,
+	VfxEventBoxGroupJSON
+} from "../core/types.ts";
+import { LMUpdateCheck } from "../core/update.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import { LMCache, LMLog, copyToDir, hex2Rgba, jsonPrune, rgba2Obj } from "../utility/helpers.ts";
+import { optimizeMaterials } from "../utility/optimize.ts";
+import type { Bookmark } from "../visual/bookmark.ts";
+import type { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
+import type { HeckCustomEvent } from "./events/custom_event.ts";
 import { BMJSON } from "./json.ts";
 
 // deno-lint-ignore-file no-explicit-any

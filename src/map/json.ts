@@ -1,9 +1,15 @@
 import { deepCopy } from "@aurellis/helpers";
-import type { V3MapJSON, ClassMap } from "../core/core.ts";
-import { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
-import { jsonPrune } from "../utility/utility.ts";
-import { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
-import { JSONToCE, CEToJSON } from "./map.ts";
+import type { ClassMap, V3MapJSON } from "../core/types.ts";
+import { Arc } from "../gameplay/arc.ts";
+import { Bomb } from "../gameplay/bomb.ts";
+import { Chain } from "../gameplay/chain.ts";
+import { Note } from "../gameplay/note.ts";
+import { Wall } from "../gameplay/wall.ts";
+import { jsonPrune } from "../utility/helpers.ts";
+import { Bookmark } from "../visual/bookmark.ts";
+import { Environment } from "../visual/environment.ts";
+import { LightEvent } from "../visual/light.ts";
+import { CEToJSON, JSONToCE } from "./events/events.ts";
 
 /**
  * BeatMap JSON handler, this is an internal collection used by Lite-Mapper.

@@ -1,8 +1,14 @@
 // deno-lint-ignore-file no-explicit-any
 import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
-import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
-import type { HeckCustomEvent } from "../map/map.ts";
-import type { Bookmark, Environment, LightEvent } from "../visual/visual.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import type { HeckCustomEvent } from "../map/events/custom_event.ts";
+import type { Bookmark } from "../visual/bookmark.ts";
+import type { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
 import type { LightEventTypesMap, LightEventValuesMap, ObjectColorsMap, ObjectDirectionsMap } from "./internal.ts";
 
 // BeatMap types

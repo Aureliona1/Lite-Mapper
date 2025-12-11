@@ -1,11 +1,21 @@
 // deno-lint-ignore-file no-explicit-any
 import { ArrOp, clamp, mapRange, rgb, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
+import type { LookupMethod, RGBAObject } from "../core/types.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import { currentDiff, lMInitTime } from "../map/beatmap.ts";
+import type { AnimateComponent } from "../map/events/animate_component.ts";
+import { AnimateTrack } from "../map/events/animate_track.ts";
+import type { AssignPathAnimation } from "../map/events/assign_path_animation.ts";
+import { AssignPlayerToTrack } from "../map/events/assign_player_track.ts";
+import { AssignTrackParent } from "../map/events/assign_track_parent.ts";
+import { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
 import { ye3 } from "./consts.ts";
-import type { LookupMethod, RGBAObject } from "../core/core.ts";
-import type { Arc, Bomb, Chain, Note, Wall } from "../gameplay/gameplay.ts";
-import { AnimateTrack, type AnimateComponent, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent, currentDiff, lMInitTime } from "../map/map.ts";
-import { Environment, type LightEvent } from "../visual/visual.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.

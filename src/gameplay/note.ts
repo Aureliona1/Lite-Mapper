@@ -1,7 +1,8 @@
 import { deepCopy, type Vec2 } from "@aurellis/helpers";
-import { ObjectColorsMap, ObjectDirectionsMap, type NoteCustomProps, type NoteJSON, type ObjectColorName, type ObjectDirectionName, type Optional } from "../core/core.ts";
-import { currentDiff } from "../map/map.ts";
-import { jsonPrune } from "../utility/utility.ts";
+import { ObjectColorsMap, ObjectDirectionsMap } from "../core/internal.ts";
+import type { NoteCustomProps, NoteJSON, ObjectColorName, ObjectDirectionName, Optional } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { jsonPrune } from "../utility/helpers.ts";
 import { GameplayObject } from "./object.ts";
 
 /**

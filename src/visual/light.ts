@@ -1,7 +1,8 @@
 import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { type KFColorVec4, type LightEventCustomData, type LightEventJSON, LightEventTypesMap, LightEventValuesMap, type LightTypeName, type LightTypeNumber, type LightValueName, type LightValueNumber, type Optional } from "../core/core.ts";
-import { currentDiff } from "../map/map.ts";
 import { jsonPrune, repeat } from "../utility/helpers.ts";
+import { LightEventTypesMap, LightEventValuesMap } from "../core/internal.ts";
+import type { LightTypeName, LightValueName, LightEventCustomData, Optional, LightEventJSON, LightTypeNumber, LightValueNumber, KFColorVec4 } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
 
 /**
  * An event that changes the state of one or more light objects.

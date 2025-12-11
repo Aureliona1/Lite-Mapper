@@ -1,6 +1,6 @@
 import { deepCopy, type Easing } from "@aurellis/helpers";
-import type { ComponentAnimProps, CustomEventJSON, CustomEventName, FogAnimationProps, Optional, TubeLightAnimationProps } from "../../core/core.ts";
-import { jsonPrune } from "../../utility/utility.ts";
+import type { ComponentAnimProps, CustomEventJSON, FogAnimationProps, Optional, TubeLightAnimationProps } from "../../core/types.ts";
+import { jsonPrune } from "../../utility/helpers.ts";
 import { currentDiff } from "../beatmap.ts";
 import { HeckCustomEvent } from "./custom_event.ts";
 
@@ -79,7 +79,7 @@ export class AnimateComponent extends HeckCustomEvent {
 	 * Return the animation as json.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(freeze = true): CustomEventJSON {
+	override return(freeze = true): CustomEventJSON {
 		const temp = freeze ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,

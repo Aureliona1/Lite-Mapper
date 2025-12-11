@@ -1,7 +1,8 @@
 import { type Vec2, deepCopy } from "@aurellis/helpers";
-import { ObjectColorsMap, ObjectDirectionsMap, type BurstSliderJSON, type ObjectColorName, type ObjectColorNumber, type ObjectDirectionName, type ObjectDirectionNumber, type Optional, type SliderCustomProps } from "../core/core.ts";
-import { currentDiff } from "../map/map.ts";
-import { jsonPrune } from "../utility/utility.ts";
+import { ObjectColorsMap, ObjectDirectionsMap } from "../core/internal.ts";
+import type { BurstSliderJSON, ObjectColorName, ObjectColorNumber, ObjectDirectionName, ObjectDirectionNumber, Optional, SliderCustomProps } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { jsonPrune } from "../utility/helpers.ts";
 import { GameplayObject } from "./object.ts";
 
 /**

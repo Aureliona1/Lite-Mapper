@@ -1,6 +1,6 @@
 import { deepCopy } from "@aurellis/helpers";
-import type { CustomEventJSON, CustomEventName, Optional, PlayerObjectTarget, PlayerToTrackProps } from "../../core/core.ts";
-import { jsonPrune } from "../../utility/utility.ts";
+import type { CustomEventJSON, Optional, PlayerObjectTarget, PlayerToTrackProps } from "../../core/types.ts";
+import { jsonPrune } from "../../utility/helpers.ts";
 import { currentDiff } from "../beatmap.ts";
 import { HeckCustomEvent } from "./custom_event.ts";
 
@@ -49,7 +49,7 @@ export class AssignPlayerToTrack extends HeckCustomEvent {
 	 * Return track assignment as json.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(freeze = true): CustomEventJSON {
+	override return(freeze = true): CustomEventJSON {
 		const temp = freeze ? deepCopy(this) : this;
 		const out = {
 			b: temp.b,

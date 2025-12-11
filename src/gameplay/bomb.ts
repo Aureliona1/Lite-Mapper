@@ -1,8 +1,8 @@
 import { deepCopy, type Vec2 } from "@aurellis/helpers";
-import type { BombJSON, NoteCustomProps, Optional } from "../core/core.ts";
+import type { BombJSON, NoteCustomProps, Optional } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { jsonPrune } from "../utility/helpers.ts";
 import { GameplayObject } from "./object.ts";
-import { jsonPrune } from "../utility/utility.ts";
-import { currentDiff } from "../map/map.ts";
 
 /**
  * Bomb gameplay object.

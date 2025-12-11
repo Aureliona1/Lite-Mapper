@@ -1,5 +1,5 @@
 import type { Vec2, Vec3, Vec4 } from "@aurellis/helpers";
-import type { GameObjectCustomProps, ObjectAnimProps, Optional } from "../core/core.ts";
+import type { GameObjectCustomProps, ObjectAnimProps, Optional } from "../core/types.ts";
 
 /**
  * A generic gameplay object.

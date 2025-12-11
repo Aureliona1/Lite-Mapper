@@ -1,4 +1,4 @@
-import type { CustomEventJSON, CustomEventName } from "../../core/core.ts";
+import type { CustomEventName, CustomEventJSON } from "../../core/types.ts";
 
 /**
  * A generic Heck custom event.

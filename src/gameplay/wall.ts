@@ -1,7 +1,7 @@
 import { type Vec2, type Vec3, deepCopy } from "@aurellis/helpers";
-import type { ObstacleJSON, Optional, WallCustomProps } from "../core/core.ts";
-import { currentDiff } from "../map/map.ts";
-import { jsonPrune } from "../utility/utility.ts";
+import type { ObstacleJSON, Optional, WallCustomProps } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { jsonPrune } from "../utility/helpers.ts";
 import { GameplayObject } from "./object.ts";
 
 /**
