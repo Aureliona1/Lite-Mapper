@@ -52,7 +52,7 @@ export class Bomb extends GameplayObject {
 	}
 
 	/**
-	 * Return the raw Json of the bomb.
+	 * Return the raw JSON of the bomb.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	override return(freeze = true): BombJSON {

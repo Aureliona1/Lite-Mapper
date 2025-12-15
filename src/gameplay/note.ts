@@ -66,7 +66,7 @@ export class Note extends GameplayObject {
 	}
 
 	/**
-	 * Return the raw json of the note.
+	 * Return the raw JSON of the note.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	override return(freeze = true): NoteJSON {

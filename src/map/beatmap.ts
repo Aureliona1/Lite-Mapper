@@ -1,4 +1,4 @@
-import { compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
+import { clog, compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
 import { V2_INFO_FALLBACK, V3_MAP_FALLBACK, difficultyRankMap } from "../core/internal.ts";
 import type {
 	BeatmapFxEvent,
@@ -26,7 +26,7 @@ import type { Bomb } from "../gameplay/bomb.ts";
 import type { Chain } from "../gameplay/chain.ts";
 import type { Note } from "../gameplay/note.ts";
 import type { Wall } from "../gameplay/wall.ts";
-import { LMCache, LMLog, copyToDir, hex2Rgba, jsonPrune, rgba2Obj } from "../utility/helpers.ts";
+import { LMCache, copyToDir, hex2Rgba, jsonPrune, rgba2Obj } from "../utility/helpers.ts";
 import { optimizeMaterials } from "../utility/optimize.ts";
 import type { Bookmark } from "../visual/bookmark.ts";
 import type { Environment } from "../visual/environment.ts";
@@ -97,21 +97,21 @@ export class BeatMap {
 		try {
 			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		} catch (e) {
-			LMLog(e, "Error", "MapHandler");
-			LMLog("Ensure that you have selected the correct difficulty as your input difficulty, and make sure that the file exists...", "Warning", "MapHandler");
-			LMLog("Writing empty map as fallback...", "Warning", "MapHandler");
+			clog(e, "Error", "MapHandler");
+			clog("Ensure that you have selected the correct difficulty as your input difficulty, and make sure that the file exists...", "Warning", "MapHandler");
+			clog("Writing empty map as fallback...", "Warning", "MapHandler");
 			try {
 				Deno.writeTextFileSync(inputDiff + ".dat", JSON.stringify(rawMap));
 			} catch (e2) {
-				LMLog(e2, "Error", "MapHandler");
-				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				clog(e2, "Error", "MapHandler");
+				clog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
 				Deno.exit(1);
 			}
 		}
 
 		// Check the version before attempting to classify
 		if (!/3\.\d+\.\d+/.test(rawMap.version)) {
-			LMLog(
+			clog(
 				`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`,
 				"Error",
 				"MapHandler"
@@ -137,10 +137,10 @@ export class BeatMap {
 			});
 		});
 		if (!inExists) {
-			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
+			clog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (!outExists) {
-			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
+			clog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (updateCheckFrequency !== "Never") {
 			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
@@ -152,7 +152,7 @@ export class BeatMap {
 		}
 
 		// Stats
-		LMLog(`${inputDiff} has been imported, map initialized...`);
+		clog(`${inputDiff} has been imported, map initialized...`);
 
 		// Set current diff
 		_currentDiff = this;
@@ -542,8 +542,8 @@ export class BeatMap {
 		try {
 			input = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
 		} catch (e) {
-			LMLog(`Unable to add ${diff} to your map...`, "Error", "addInputDiff");
-			LMLog(e, "Error", "addInputDiff");
+			clog(`Unable to add ${diff} to your map...`, "Error", "addInputDiff");
+			clog(e, "Error", "addInputDiff");
 		}
 
 		const classMap = BMJSON.classify(input);
@@ -615,12 +615,12 @@ export class BeatMap {
 		try {
 			Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		} catch (e) {
-			LMLog(e, "Error");
+			clog(e, "Error");
 		}
 		if (this.info.isModified) {
 			this.info.save();
 		}
-		LMLog("Map saved...");
+		clog("Map saved...");
 		if (copyMapTo) {
 			copyToDir(copyMapTo);
 		}
@@ -718,29 +718,29 @@ export class Info {
 		try {
 			inputRaw = JSON.parse(Deno.readTextFileSync("info.dat"));
 		} catch (e) {
-			LMLog("Error reading info file: " + e, "Error", "InfoHandler");
-			LMLog("Writing blank info file...", "Log", "InfoHandler");
+			clog("Error reading info file: " + e, "Error", "InfoHandler");
+			clog("Writing blank info file...", "Log", "InfoHandler");
 
 			inputRaw = deepCopy(V2_INFO_FALLBACK);
 			try {
 				Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
 			} catch (e2) {
-				LMLog(e2, "Error", "InfoHandler");
-				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				clog(e2, "Error", "InfoHandler");
+				clog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
 				Deno.exit(1);
 			}
 
-			LMLog(`Fallback info.dat written...`, "Log", "InfoHandler");
-			LMLog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
+			clog(`Fallback info.dat written...`, "Log", "InfoHandler");
+			clog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
 			Deno.exit(1);
 		}
 		if (inputRaw.version) {
 			if (/4\.\d\.\d/.test(inputRaw.version)) {
-				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning", "InfoHandler");
+				clog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning", "InfoHandler");
 				this.raw = Info.v4ToV2(inputRaw as V4InfoJSON);
 				this.infoVersion = 4;
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
+				clog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else if (inputRaw._version) {
 			if (/2\.\d\.\d/.test(inputRaw._version)) {
@@ -761,10 +761,10 @@ export class Info {
 				// Enforce newer version
 				this.raw._version = "2.1.0";
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
+				clog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else {
-			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
+			clog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
 		}
 	}
 	/**

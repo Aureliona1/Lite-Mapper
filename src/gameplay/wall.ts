@@ -35,7 +35,7 @@ export class Wall extends GameplayObject {
 	}
 
 	/**
-	 * Return the raw Json of the wall.
+	 * Return the raw JSON of the wall.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	override return(freeze = true): ObstacleJSON {

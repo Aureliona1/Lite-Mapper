@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { ArrOp, clamp, mapRange, rgb, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
+import { ArrOp, clamp, clog, mapRange, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
 import type { LookupMethod, RGBAObject } from "../core/types.ts";
 import type { Arc } from "../gameplay/arc.ts";
@@ -241,8 +241,8 @@ export function copyToDir(toDir: string, extraFiles?: string[]) {
 			try {
 				Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
 			} catch (e) {
-				LMLog(e, "Error");
-				LMLog("Skipping this beatmap...", "Warning", "copyToDir");
+				clog(e, "Error", "Deno");
+				clog("Skipping this beatmap...", "Warning", "copyToDir");
 			}
 		});
 	});
@@ -251,32 +251,32 @@ export function copyToDir(toDir: string, extraFiles?: string[]) {
 	try {
 		Deno.copyFileSync("info.dat", toDir + "/info.dat");
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping info file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping info file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
 	}
 	try {
 		Deno.copyFileSync(songName, toDir + "/" + songName);
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping song file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping song file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
 	}
 	try {
 		Deno.copyFileSync(coverName, toDir + "/" + coverName);
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping cover file...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping cover file...", "Warning", "copyToDir");
 	}
 	if (extraFiles) {
 		extraFiles.forEach(x => {
 			try {
 				Deno.copyFileSync(x, toDir + "/" + x);
 			} catch (e) {
-				LMLog(e, "Error");
-				LMLog(`Skipping ${x}...`, "Warning", "copyToDir");
+				clog(e, "Error", "Deno");
+				clog(`Skipping ${x}...`, "Warning", "copyToDir");
 			}
 		});
 	}
-	LMLog(`Copied map to ${toDir}...`, "Log", "copyToDir");
+	clog(`Copied map to ${toDir}...`, "Log", "copyToDir");
 }
 
 /**
@@ -284,21 +284,6 @@ export function copyToDir(toDir: string, extraFiles?: string[]) {
  */
 export function runTime(): number {
 	return Date.now() - lMInitTime;
-}
-
-/**
- * Console log with prepended LM message.
- * @param message Message to log.
- * @param errorLvl Optional error level.
- */
-export function LMLog(message: any, errorLvl: "Warning" | "Error" | "Log" = "Log", logSource = "Lite-Mapper") {
-	if (errorLvl == "Warning") {
-		console.warn(`${rgb(255, 255, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 255, 0)}WARNING: ${message}\x1b[0m`);
-	} else if (errorLvl == "Error") {
-		console.error(`${rgb(255, 0, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 0, 0)}ERROR: ${message}\x1b[0m`);
-	} else {
-		console.log(`\x1b[34m[*] \x1b[90m[${logSource}: ${runTime()}ms] \x1b[0m${message}\x1b[0m`);
-	}
 }
 
 /**
@@ -337,7 +322,7 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 		try {
 			Deno.removeSync(fileName);
 		} catch (e) {
-			LMLog(e, "Error");
+			clog(e, "Error", "Deno");
 		}
 	} else {
 		try {
@@ -356,8 +341,8 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 			}
 			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
 		} catch (e) {
-			LMLog(e, "Error", "CacheHandler");
-			LMLog("Invalidating cache...", "Log", "CacheHandler");
+			clog(e, "Error", "CacheHandler");
+			clog("Invalidating cache...", "Log", "CacheHandler");
 			LMCache("Clear");
 		}
 	}

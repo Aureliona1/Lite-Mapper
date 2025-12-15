@@ -1,4 +1,4 @@
-import { type Vec2, deepCopy } from "@aurellis/helpers";
+import { type Vec2, clog, deepCopy } from "@aurellis/helpers";
 import { ObjectColorsMap, ObjectDirectionsMap } from "../core/internal.ts";
 import type { BurstSliderJSON, ObjectColorName, ObjectColorNumber, ObjectDirectionName, ObjectDirectionNumber, Optional, SliderCustomProps } from "../core/types.ts";
 import { currentDiff } from "../map/beatmap.ts";
@@ -65,7 +65,7 @@ export class Chain extends GameplayObject {
 	}
 
 	/**
-	 * Return the raw Json of the chain.
+	 * Return the raw JSON of the chain.
 	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
 	override return(freeze = true): BurstSliderJSON {
@@ -105,6 +105,9 @@ export class Chain extends GameplayObject {
 		if (x.customData) {
 			n.customData = x.customData;
 		}
+		if (n.squishFactor === 0) {
+			clog("Imported chain has a squishFactor of 0, this will crash the game when it tries to spawn the chain!", "Warning", "Chain.from");
+		}
 		return n;
 	}
 	/**
@@ -114,6 +117,9 @@ export class Chain extends GameplayObject {
 	 */
 	push(fake?: boolean, freeze = true) {
 		const temp = freeze ? deepCopy(this) : this;
+		if (this.squishFactor === 0) {
+			clog("This chain has a squishFactor of 0, the game will crash when it tries to spawn this chain!", "Warning", "Chain.push");
+		}
 		if (fake) {
 			currentDiff().fakeChains?.push(temp);
 		} else {
