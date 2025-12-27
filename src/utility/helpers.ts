@@ -1,13 +1,21 @@
 // deno-lint-ignore-file no-explicit-any
-import { ArrOp, clamp, mapRange, rgb, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
+import { ArrOp, clamp, clog, mapRange, rotateVector, type Vec2, type Vec3, type Vec4 } from "@aurellis/helpers";
 import { makeNoise2D, makeNoise3D, makeNoise4D } from "npm:fast-simplex-noise@4.0.0";
-import { ye3 } from "./Consts.ts";
-import { type AnimateComponent, AnimateTrack, type AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
-import { Environment } from "./Environment.ts";
-import type { LightEvent } from "./Lights.ts";
-import { currentDiff, lMInitTime } from "./Map.ts";
-import type { Arc, Bomb, Chain, Note, Wall } from "./Objects.ts";
-import type { LookupMethod, RGBAObject } from "./Types.ts";
+import type { LookupMethod, RGBAObject } from "../core/types.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import { currentDiff, lMInitTime } from "../map/beatmap.ts";
+import type { AnimateComponent } from "../map/events/animate_component.ts";
+import { AnimateTrack } from "../map/events/animate_track.ts";
+import type { AssignPathAnimation } from "../map/events/assign_path_animation.ts";
+import { AssignPlayerToTrack } from "../map/events/assign_player_track.ts";
+import { AssignTrackParent } from "../map/events/assign_track_parent.ts";
+import { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
+import { ye3 } from "./consts.ts";
 
 /**
  * Filter through the notes in your map and make changes based on properties.
@@ -17,9 +25,13 @@ import type { LookupMethod, RGBAObject } from "./Types.ts";
  */
 export function filterNotes(fake: boolean, condition: (x: Note) => boolean, action: (x: Note, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeNotes.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.fakeNotes.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.notes.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.notes.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	}
 }
 
@@ -29,7 +41,9 @@ export function filterNotes(fake: boolean, condition: (x: Note) => boolean, acti
  * @param action The action to apply to passing environment.
  */
 export function filterEnvironments(condition: (x: Environment) => boolean, action: (x: Environment, i: number) => void) {
-	currentDiff.environments.filter(x => condition(x)).forEach((x, i) => action(x, i));
+	currentDiff()
+		.environments.filter(x => condition(x))
+		.forEach((x, i) => action(x, i));
 }
 
 /**
@@ -40,9 +54,13 @@ export function filterEnvironments(condition: (x: Environment) => boolean, actio
  */
 export function filterBombs(fake: boolean, condition: (x: Bomb) => boolean, action: (x: Bomb, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeBombs.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.fakeBombs.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.bombs.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.bombs.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	}
 }
 
@@ -52,7 +70,9 @@ export function filterBombs(fake: boolean, condition: (x: Bomb) => boolean, acti
  * @param action The action to apply to passing arcs.
  */
 export function filterArcs(condition: (x: Arc) => boolean, action: (x: Arc, i: number) => void) {
-	currentDiff.arcs.filter(x => condition(x)).forEach((x, i) => action(x, i));
+	currentDiff()
+		.arcs.filter(x => condition(x))
+		.forEach((x, i) => action(x, i));
 }
 
 /**
@@ -63,9 +83,13 @@ export function filterArcs(condition: (x: Arc) => boolean, action: (x: Arc, i: n
  */
 export function filterChains(fake: boolean, condition: (x: Chain) => boolean, action: (x: Chain, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeChains.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.fakeChains.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.chains.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.chains.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	}
 }
 
@@ -77,9 +101,13 @@ export function filterChains(fake: boolean, condition: (x: Chain) => boolean, ac
  */
 export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, action: (x: Wall, i: number) => void) {
 	if (fake) {
-		currentDiff.fakeWalls.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.fakeWalls.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	} else {
-		currentDiff.walls.filter(x => condition(x)).forEach((x, i) => action(x, i));
+		currentDiff()
+			.walls.filter(x => condition(x))
+			.forEach((x, i) => action(x, i));
 	}
 }
 
@@ -89,7 +117,9 @@ export function filterWalls(fake: boolean, condition: (x: Wall) => boolean, acti
  * @param action The action to apply to passing events.
  */
 export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: LightEvent, i: number) => void) {
-	currentDiff.events.filter(x => condition(x)).forEach((x, i) => action(x, i));
+	currentDiff()
+		.events.filter(x => condition(x))
+		.forEach((x, i) => action(x, i));
 }
 
 /**
@@ -98,7 +128,7 @@ export function filterEvents(condition: (x: LightEvent) => boolean, action: (x: 
  * @param action The action to apply to passing animations.
  */
 export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, action: (x: AnimateTrack, i: number) => void) {
-	currentDiff.customEvents?.forEach((e, i) => {
+	currentDiff().customEvents?.forEach((e, i) => {
 		if (e.type == "AnimateTrack") {
 			if (condition(e as AnimateTrack)) {
 				action(e as AnimateTrack, i);
@@ -113,7 +143,7 @@ export function filterTrackAnimations(condition: (x: AnimateTrack) => boolean, a
  * @param action The action to apply to passing animations.
  */
 export function filterComponentAnimations(condition: (x: AnimateComponent) => boolean, action: (x: AnimateComponent, i: number) => void) {
-	currentDiff.customEvents?.forEach((e, i) => {
+	currentDiff().customEvents?.forEach((e, i) => {
 		if (e.type == "AnimateComponent") {
 			if (condition(e as AnimateComponent)) {
 				action(e as AnimateComponent, i);
@@ -128,7 +158,7 @@ export function filterComponentAnimations(condition: (x: AnimateComponent) => bo
  * @param action The action to apply to passing animations.
  */
 export function filterPathAnimations(condition: (x: AssignPathAnimation) => boolean, action: (x: AssignPathAnimation, i: number) => void) {
-	currentDiff.customEvents?.forEach((e, i) => {
+	currentDiff().customEvents?.forEach((e, i) => {
 		if (e.type == "AssignPathAnimation") {
 			if (condition(e as AssignPathAnimation)) {
 				action(e as AssignPathAnimation, i);
@@ -206,47 +236,47 @@ function ensureFile(path: string) {
  */
 export function copyToDir(toDir: string, extraFiles?: string[]) {
 	ensureDir(toDir);
-	currentDiff.info.raw._difficultyBeatmapSets.forEach(x => {
+	currentDiff().info.raw._difficultyBeatmapSets.forEach(x => {
 		x._difficultyBeatmaps.forEach(y => {
 			try {
 				Deno.copyFileSync(y._beatmapFilename, toDir + "/" + y._beatmapFilename);
 			} catch (e) {
-				LMLog(e, "Error");
-				LMLog("Skipping this beatmap...", "Warning", "copyToDir");
+				clog(e, "Error", "Deno");
+				clog("Skipping this beatmap...", "Warning", "copyToDir");
 			}
 		});
 	});
-	const songName = currentDiff.info.raw._songFilename,
-		coverName = currentDiff.info.raw._coverImageFilename;
+	const songName = currentDiff().info.raw._songFilename,
+		coverName = currentDiff().info.raw._coverImageFilename;
 	try {
 		Deno.copyFileSync("info.dat", toDir + "/info.dat");
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping info file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping info file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
 	}
 	try {
 		Deno.copyFileSync(songName, toDir + "/" + songName);
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping song file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping song file, your map will not load in-game from the destination directory...", "Warning", "copyToDir");
 	}
 	try {
 		Deno.copyFileSync(coverName, toDir + "/" + coverName);
 	} catch (e) {
-		LMLog(e, "Error");
-		LMLog("Skipping cover file...", "Warning", "copyToDir");
+		clog(e, "Error", "Deno");
+		clog("Skipping cover file...", "Warning", "copyToDir");
 	}
 	if (extraFiles) {
 		extraFiles.forEach(x => {
 			try {
 				Deno.copyFileSync(x, toDir + "/" + x);
 			} catch (e) {
-				LMLog(e, "Error");
-				LMLog(`Skipping ${x}...`, "Warning", "copyToDir");
+				clog(e, "Error", "Deno");
+				clog(`Skipping ${x}...`, "Warning", "copyToDir");
 			}
 		});
 	}
-	LMLog(`Copied map to ${toDir}...`, "Log", "copyToDir");
+	clog(`Copied map to ${toDir}...`, "Log", "copyToDir");
 }
 
 /**
@@ -254,21 +284,6 @@ export function copyToDir(toDir: string, extraFiles?: string[]) {
  */
 export function runTime(): number {
 	return Date.now() - lMInitTime;
-}
-
-/**
- * Console log with prepended LM message.
- * @param message Message to log.
- * @param errorLvl Optional error level.
- */
-export function LMLog(message: any, errorLvl: "Warning" | "Error" | "Log" = "Log", logSource = "Lite-Mapper") {
-	if (errorLvl == "Warning") {
-		console.warn(`${rgb(255, 255, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 255, 0)}WARNING: ${message}\x1b[0m`);
-	} else if (errorLvl == "Error") {
-		console.error(`${rgb(255, 0, 0)}[!] \x1b[90m[${logSource}: ${runTime()}ms] ${rgb(255, 0, 0)}ERROR: ${message}\x1b[0m`);
-	} else {
-		console.log(`\x1b[34m[*] \x1b[90m[${logSource}: ${runTime()}ms] \x1b[0m${message}\x1b[0m`);
-	}
 }
 
 /**
@@ -307,7 +322,7 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 		try {
 			Deno.removeSync(fileName);
 		} catch (e) {
-			LMLog(e, "Error");
+			clog(e, "Error", "Deno");
 		}
 	} else {
 		try {
@@ -326,8 +341,8 @@ export function LMCache(process: "Read" | "Write" | "Clear" | "Entries", name = 
 			}
 			Deno.writeTextFileSync(fileName, JSON.stringify(cache));
 		} catch (e) {
-			LMLog(e, "Error", "CacheHandler");
-			LMLog("Invalidating cache...", "Log", "CacheHandler");
+			clog(e, "Error", "CacheHandler");
+			clog("Invalidating cache...", "Log", "CacheHandler");
 			LMCache("Clear");
 		}
 	}

@@ -1,9 +1,12 @@
 import { deepCopy, type Easing, lerp, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { jsonPrune, repeat } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
-import type { KFColorVec4, LightEventCustomData, LightEventJSON, LightTypeName, LightTypeNumber, LightValueName, LightValueNumber, Optional } from "./Types.ts";
-import { LightEventTypesMap, LightEventValuesMap } from "./Internal.ts";
+import { jsonPrune, repeat } from "../utility/helpers.ts";
+import { LightEventTypesMap, LightEventValuesMap } from "../core/internal.ts";
+import type { LightTypeName, LightValueName, LightEventCustomData, Optional, LightEventJSON, LightTypeNumber, LightValueNumber, KFColorVec4 } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
 
+/**
+ * An event that changes the state of one or more light objects.
+ */
 export class LightEvent {
 	/**
 	 * Create a new lighting event. Every parameter is optional and can be added later.
@@ -28,33 +31,46 @@ export class LightEvent {
 	 */
 	constructor(public time = 0, public type: LightTypeName = "BackLasers", public value: LightValueName = "On", public customData: LightEventCustomData = {}, public floatValue = 1) {}
 
-	set lightID(x: Optional<number | number[]>) {
-		this.customData.lightID = x;
-	}
+	/**
+	 * The light id/s to target with this event.
+	 */
 	get lightID(): Optional<number | number[]> {
 		return this.customData.lightID;
 	}
-
-	set color(x: Optional<Vec3 | Vec4>) {
-		this.customData.color = x;
+	set lightID(x: Optional<number | number[]>) {
+		this.customData.lightID = x;
 	}
+
+	/**
+	 * The color of the event.
+	 */
 	get color(): Optional<Vec3 | Vec4> {
 		return this.customData.color;
 	}
-
-	set lerpType(x: Optional<"HSV" | "RGB">) {
-		this.customData.lerpType = x;
+	set color(x: Optional<Vec3 | Vec4>) {
+		this.customData.color = x;
 	}
+
+	/**
+	 * The interpolation method for transition events.
+	 */
 	get lerpType(): Optional<"HSV" | "RGB"> {
 		return this.customData.lerpType;
 	}
-
-	set easing(x: Optional<Easing>) {
-		this.customData.easing = x;
+	set lerpType(x: Optional<"HSV" | "RGB">) {
+		this.customData.lerpType = x;
 	}
+
+	/**
+	 * The easing type to use for transition events.
+	 */
 	get easing(): Optional<Easing> {
 		return this.customData.easing;
 	}
+	set easing(x: Optional<Easing>) {
+		this.customData.easing = x;
+	}
+
 	/**
 	 * Set the easing of the event (if "in" type).
 	 */
@@ -92,10 +108,10 @@ export class LightEvent {
 	}
 	/**
 	 * Return the raw Json of the event.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): LightEventJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): LightEventJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: LightEventJSON = {
 			b: temp.time,
 			et: LightEventTypesMap.get(temp.type),
@@ -122,16 +138,19 @@ export class LightEvent {
 	}
 	/**
 	 * Push the event to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+	push(freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		jsonPrune(temp);
-		currentDiff.events.push(temp);
+		currentDiff().events.push(temp);
 	}
 }
 
-export class lightGradient {
+/**
+ * A light transition effect from one color to another.
+ */
+export class LightGradient {
 	/**
 	 * Create simple lighting gradients.
 	 * @param time The time to start the gradient.
@@ -218,7 +237,7 @@ export class lightGradient {
  * @param ids Specific ids to target.
  * @param ease Whether to use an easing on the strobe. Any special easings like bounce, elastic, etc... will yield very weird results.
  */
-export function strobeGenerator(time: number, duration: number, density = 1, type: LightTypeName, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
+export function generateStrobe(time: number, duration: number, density = 1, type: LightTypeName, color: Vec3 | Vec4 = [1, 1, 1, 1], ids?: number | number[], ease?: Easing) {
 	repeat(duration * density, i => {
 		let t = 0;
 		if (ease) {
@@ -248,7 +267,10 @@ export function strobeGenerator(time: number, duration: number, density = 1, typ
 	});
 }
 
-export class LightKeyframe {
+/**
+ * A lighting animation defined by keyframes. This class can replace both the {@link generateStrobe} and {@link LightGradient}.
+ */
+export class LightAnimation {
 	/**
 	 * Create a series of lighting events based on a keyframe system.
 	 * @param time The time to start the animation.
@@ -258,13 +280,24 @@ export class LightKeyframe {
 	 */
 	constructor(public time = 0, public duration = 1, public type: LightTypeName = "BackLasers", public ids?: number | number[]) {}
 	private animation: KFColorVec4[] = [];
+
+	/**
+	 * Get the animation keyframes in sorted order (by time).
+	 */
 	get keyframes(): KFColorVec4[] {
 		return this.animation.sort((a, b) => a[4] - b[4]);
 	}
 	set keyframes(x: KFColorVec4[]) {
 		this.animation = x;
 	}
-	animationLength = 1;
+
+	/**
+	 * `false` - Time values are handled as a factor of duration (0 - 1).
+	 *
+	 * `true` - Time value are handled as beats from the start time (0 - duration).
+	 */
+	useTimeInBeats = false;
+
 	/**
 	 * Add keyframes to your animation.
 	 * @param frames The frames to add.
@@ -273,10 +306,15 @@ export class LightKeyframe {
 		this.keyframes = [...this.keyframes, ...frames];
 		return this;
 	}
-	push(dupe = true) {
-		const temp = dupe ? deepCopy(this) : this;
+
+	/**
+	 * Push the keyframes to the active difficulty.
+	 * @param freeze Whether to freeze the object properties on push.
+	 */
+	push(freeze = true) {
+		const temp = freeze ? deepCopy(this) : this;
 		temp.keyframes.forEach(kf => {
-			kf[4] /= this.animationLength;
+			if (this.useTimeInBeats) kf[4] /= this.duration;
 			const time = this.time + kf[4] * this.duration;
 			if (kf[4] == 0 || kf[5] == "easeStep") {
 				const ev = new LightEvent(time).setType(this.type).setValue("On").setColor([kf[0], kf[1], kf[2], kf[3]]);

@@ -1,22 +1,15 @@
-// deno-lint-ignore-file no-explicit-any
-import { compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
-import { CEToJSON, JSONToCE } from "./CustomEvents.ts";
-import { Environment } from "./Environment.ts";
-import { copyToDir, hex2Rgba, jsonPrune, LMCache, LMLog, rgba2Obj } from "./Functions.ts";
-import { LightEvent } from "./Lights.ts";
-import { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
-import { optimizeMaterials } from "./Optimizers.ts";
+import { clog, compare, decimals, deepCopy, rgb } from "@aurellis/helpers";
+import { V2_INFO_FALLBACK, V3_MAP_FALLBACK, difficultyRankMap } from "../core/internal.ts";
 import type {
-	BeatmapfxEvent as BeatmapFxEvent,
+	BeatmapFxEvent,
 	BpmEventJSON,
 	ClassMap,
 	ColorBoostEventJSON,
 	ColorEventBoxGroupJSON,
-	CustomData,
-	CustomEvent,
 	DiffName,
 	GeometryMaterialJSON,
 	HeckSettings,
+	MapCustomData,
 	RotationEventBoxGroupJSON,
 	RotationEventJSON,
 	TranslationEventBoxGroupJSON,
@@ -26,266 +19,42 @@ import type {
 	V3ValidVersion,
 	V4InfoJSON,
 	VfxEventBoxGroupJSON
-} from "./Types.ts";
-import { LMUpdateCheck } from "./UpdateChecker.ts";
-import { V3_MAP_FALLBACK, V2_INFO_FALLBACK, difficultyRankMap } from "./Internal.ts";
+} from "../core/types.ts";
+import { LMUpdateCheck } from "../core/update.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import { LMCache, copyToDir, hex2Rgba, jsonPrune, rgba2Obj } from "../utility/helpers.ts";
+import { optimizeMaterials } from "../utility/optimize.ts";
+import type { Bookmark } from "../visual/bookmark.ts";
+import type { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
+import type { HeckCustomEvent } from "./events/custom_event.ts";
+import { BMJSON } from "./json.ts";
 
-export let currentDiff: BeatMap,
+// deno-lint-ignore-file no-explicit-any
+/**
+ * The currently active difficulty.
+ */
+export let _currentDiff: BeatMap | null,
+	/**
+	 * The time (ms since epoch) of the start of this lm instance.
+	 */
 	lMInitTime = 0;
 
-export class BMJSON {
-	/**
-	 * Convert raw V3JSON to a classmap.
-	 * @param raw The json to import.
-	 */
-	static classify(raw: V3MapJSON): ClassMap {
-		const classMap: ClassMap = {
-			version: "3.3.0",
-			bpmEvents: [],
-			rotationEvents: [],
-			colorNotes: [],
-			bombNotes: [],
-			obstacles: [],
-			sliders: [],
-			burstSliders: [],
-			waypoints: [],
-			basicBeatmapEvents: [],
-			colorBoostBeatmapEvents: [],
-			lightColorEventBoxGroups: [],
-			lightRotationEventBoxGroups: [],
-			lightTranslationEventBoxGroups: [],
-			basicEventTypesWithKeywords: {},
-			useNormalEventsAsCompatibleEvents: false,
-			vfxEventBoxGroups: [],
-			_fxEventsCollection: {
-				_fl: [],
-				_il: []
-			},
-			customData: {
-				environment: [],
-				customEvents: [],
-				materials: {},
-				fakeBombNotes: [],
-				fakeBurstSliders: [],
-				fakeColorNotes: [],
-				fakeObstacles: [],
-				bookmarks: []
-			}
-		};
-
-		function deepPush<T extends Record<string, any>>(obj: T, arr: T[]) {
-			const temp = deepCopy(obj);
-			jsonPrune(temp);
-			arr.push(temp);
-		}
-
-		// Classify vanilla items
-		raw.basicBeatmapEvents.forEach(e => {
-			deepPush(LightEvent.from(e), classMap.basicBeatmapEvents);
-		});
-		raw.bombNotes.forEach(n => {
-			deepPush(Bomb.from(n), classMap.bombNotes);
-		});
-		raw.burstSliders.forEach(n => {
-			deepPush(Chain.from(n), classMap.burstSliders);
-		});
-		raw.colorNotes.forEach(n => {
-			deepPush(Note.from(n), classMap.colorNotes);
-		});
-		raw.obstacles.forEach(n => {
-			deepPush(Wall.from(n), classMap.obstacles);
-		});
-		raw.sliders.forEach(n => {
-			deepPush(Arc.from(n), classMap.sliders);
-		});
-
-		// Check for custom data
-		if (raw.customData) {
-			if (raw.customData.customEvents) {
-				raw.customData.customEvents.forEach(n => {
-					deepPush(JSONToCE(n), classMap.customData!.customEvents!);
-				});
-			}
-			if (raw.customData.environment) {
-				raw.customData.environment.forEach(e => {
-					deepPush(Environment.from(e), classMap.customData!.environment!);
-				});
-				// classMap.customData!.environment! = raw.customData.environment;
-			}
-			if (raw.customData.fakeBombNotes) {
-				raw.customData.fakeBombNotes.forEach(n => {
-					deepPush(Bomb.from(n), classMap.customData!.fakeBombNotes!);
-				});
-			}
-			if (raw.customData.fakeBurstSliders) {
-				raw.customData.fakeBurstSliders.forEach(n => {
-					deepPush(Chain.from(n), classMap.customData!.fakeBurstSliders!);
-				});
-			}
-			if (raw.customData.fakeColorNotes) {
-				raw.customData.fakeColorNotes.forEach(n => {
-					deepPush(Note.from(n), classMap.customData!.fakeColorNotes!);
-				});
-			}
-			if (raw.customData.fakeObstacles) {
-				raw.customData.fakeObstacles.forEach(n => {
-					deepPush(Wall.from(n), classMap.customData!.fakeObstacles!);
-				});
-			}
-			if (raw.customData.bookmarks) {
-				raw.customData.bookmarks.forEach(b => {
-					deepPush(Bookmark.from(b), classMap.customData!.bookmarks!);
-				});
-			}
-			if (raw.customData.time) {
-				classMap.customData!.time = raw.customData.time;
-			}
-			if (raw.customData.bookmarksUseOfficialBpmEvents) {
-				classMap.customData!.bookmarksUseOfficialBpmEvents = raw.customData.bookmarksUseOfficialBpmEvents;
-			}
-			if (raw.customData.materials) {
-				classMap.customData!.materials = raw.customData.materials;
-			}
-		}
-
-		// Pass over direct values
-		classMap.version = raw.version;
-		classMap.bpmEvents = raw.bpmEvents;
-		classMap.basicEventTypesWithKeywords = raw.basicEventTypesWithKeywords;
-		classMap.colorBoostBeatmapEvents = raw.colorBoostBeatmapEvents;
-		classMap.lightColorEventBoxGroups = raw.lightColorEventBoxGroups;
-		classMap.lightRotationEventBoxGroups = raw.lightRotationEventBoxGroups;
-		classMap.lightTranslationEventBoxGroups = raw.lightTranslationEventBoxGroups;
-		classMap.rotationEvents = raw.rotationEvents;
-		classMap.useNormalEventsAsCompatibleEvents = raw.useNormalEventsAsCompatibleEvents;
-		classMap._fxEventsCollection = raw._fxEventsCollection;
-		classMap.vfxEventBoxGroups = raw.vfxEventBoxGroups;
-		classMap.waypoints = raw.waypoints;
-
-		return classMap;
-	}
-
-	/**
-	 * Convert a classified map into valid BeatMapV3 json.
-	 * @param classMap The map object.
-	 */
-	static JSONify(classMap: ClassMap): V3MapJSON {
-		const rawMap: V3MapJSON = {
-			version: "3.3.0",
-			bpmEvents: [],
-			rotationEvents: [],
-			colorNotes: [],
-			bombNotes: [],
-			obstacles: [],
-			sliders: [],
-			burstSliders: [],
-			waypoints: [],
-			basicBeatmapEvents: [],
-			colorBoostBeatmapEvents: [],
-			lightColorEventBoxGroups: [],
-			lightRotationEventBoxGroups: [],
-			lightTranslationEventBoxGroups: [],
-			basicEventTypesWithKeywords: {},
-			useNormalEventsAsCompatibleEvents: false,
-			vfxEventBoxGroups: [],
-			_fxEventsCollection: {
-				_fl: [],
-				_il: []
-			}
-		};
-
-		classMap.colorNotes.forEach(n => {
-			rawMap.colorNotes.push(n.return());
-		});
-		classMap.bombNotes.forEach(n => {
-			rawMap.bombNotes.push(n.return());
-		});
-		classMap.obstacles.forEach(n => {
-			rawMap.obstacles.push(n.return());
-		});
-		classMap.sliders.forEach(n => {
-			rawMap.sliders.push(n.return());
-		});
-		classMap.burstSliders.forEach(n => {
-			rawMap.burstSliders.push(n.return());
-		});
-		classMap.basicBeatmapEvents.forEach(n => {
-			rawMap.basicBeatmapEvents.push(n.return());
-		});
-
-		if (classMap.customData) {
-			rawMap.customData = {
-				fakeBombNotes: [],
-				fakeBurstSliders: [],
-				fakeColorNotes: [],
-				fakeObstacles: [],
-				bookmarks: [],
-				customEvents: [],
-				environment: [],
-				materials: {}
-			};
-			if (classMap.customData.fakeColorNotes) {
-				classMap.customData.fakeColorNotes.forEach(n => {
-					rawMap.customData!.fakeColorNotes!.push(n.return());
-				});
-			}
-			if (classMap.customData.fakeBombNotes) {
-				classMap.customData.fakeBombNotes.forEach(n => {
-					rawMap.customData!.fakeBombNotes!.push(n.return());
-				});
-			}
-			if (classMap.customData.fakeObstacles) {
-				classMap.customData.fakeObstacles.forEach(n => {
-					rawMap.customData!.fakeObstacles!.push(n.return());
-				});
-			}
-			if (classMap.customData.fakeBurstSliders) {
-				classMap.customData.fakeBurstSliders.forEach(n => {
-					rawMap.customData!.fakeBurstSliders!.push(n.return());
-				});
-			}
-			if (classMap.customData.customEvents) {
-				classMap.customData.customEvents.forEach(n => {
-					rawMap.customData!.customEvents!.push(CEToJSON(n));
-				});
-			}
-			if (classMap.customData.bookmarks) {
-				classMap.customData.bookmarks.forEach(b => {
-					rawMap.customData!.bookmarks!.push(b.return());
-				});
-			}
-			if (classMap.customData.environment) {
-				classMap.customData.environment.forEach(e => {
-					rawMap.customData!.environment!.push(e.return());
-				});
-			}
-			if (classMap.customData.materials) {
-				rawMap.customData.materials = classMap.customData.materials;
-			}
-			if (classMap.customData.bookmarksUseOfficialBpmEvents !== undefined) {
-				rawMap.customData.bookmarksUseOfficialBpmEvents = classMap.customData.bookmarksUseOfficialBpmEvents;
-			}
-			if (classMap.customData.time) {
-				rawMap.customData.time = classMap.customData.time;
-			}
-		}
-
-		rawMap.basicEventTypesWithKeywords = classMap.basicEventTypesWithKeywords;
-		rawMap.bpmEvents = classMap.bpmEvents;
-		rawMap.colorBoostBeatmapEvents = classMap.colorBoostBeatmapEvents;
-		rawMap.lightColorEventBoxGroups = classMap.lightColorEventBoxGroups;
-		rawMap.lightRotationEventBoxGroups = classMap.lightRotationEventBoxGroups;
-		rawMap.lightTranslationEventBoxGroups = classMap.lightTranslationEventBoxGroups;
-		rawMap.rotationEvents = classMap.rotationEvents;
-		rawMap.useNormalEventsAsCompatibleEvents = classMap.useNormalEventsAsCompatibleEvents;
-		rawMap._fxEventsCollection = classMap._fxEventsCollection;
-		rawMap.vfxEventBoxGroups = classMap.vfxEventBoxGroups;
-		jsonPrune(rawMap.customData!);
-
-		return rawMap;
-	}
+/**
+ * Safely get the current diff.
+ */
+export function currentDiff(): BeatMap {
+	if (!_currentDiff) throw new Error("You haven't opened any map file!\nPlease create a new BeatMap before trying to push objects!");
+	return _currentDiff;
 }
 
+/**
+ * A map, this should be the first thing you call when starting a Lite-Mapper project.
+ */
 export class BeatMap {
 	private internalMap: ClassMap = {
 		version: "3.3.0",
@@ -311,7 +80,12 @@ export class BeatMap {
 		},
 		customData: { environment: [], customEvents: [], materials: {}, fakeBombNotes: [], fakeBurstSliders: [], fakeColorNotes: [], fakeObstacles: [], bookmarks: [] }
 	};
+
+	/**
+	 * A link to the map's info file and related fields.
+	 */
 	info: Info = new Info();
+
 	/**
 	 * Initialise a new map.
 	 * @param inputDiff The input difficulty, this will be unmodified.
@@ -323,21 +97,25 @@ export class BeatMap {
 		try {
 			rawMap = JSON.parse(Deno.readTextFileSync(inputDiff + ".dat"));
 		} catch (e) {
-			LMLog(e, "Error", "MapHandler");
-			LMLog("Ensure that you have selected the correct difficulty as your input difficulty, and make sure that the file exists...", "Warning", "MapHandler");
-			LMLog("Writing empty map as fallback...", "Warning", "MapHandler");
+			clog(e, "Error", "MapHandler");
+			clog("Ensure that you have selected the correct difficulty as your input difficulty, and make sure that the file exists...", "Warning", "MapHandler");
+			clog("Writing empty map as fallback...", "Warning", "MapHandler");
 			try {
 				Deno.writeTextFileSync(inputDiff + ".dat", JSON.stringify(rawMap));
 			} catch (e2) {
-				LMLog(e2, "Error", "MapHandler");
-				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				clog(e2, "Error", "MapHandler");
+				clog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
 				Deno.exit(1);
 			}
 		}
 
 		// Check the version before attempting to classify
 		if (!/3\.\d+\.\d+/.test(rawMap.version)) {
-			LMLog(`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`, "Error", "MapHandler");
+			clog(
+				`Map not in V3 format, Lite-Mapper will not work for your map. Read here to learn about updating your map with ChroMapper: https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666/Frequently+Asked+Questions+FAQ#How-do-I-use-new-v3-features%3F`,
+				"Error",
+				"MapHandler"
+			);
 		}
 
 		this.internalMap = BMJSON.classify(rawMap);
@@ -359,10 +137,10 @@ export class BeatMap {
 			});
 		});
 		if (!inExists) {
-			LMLog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
+			clog(`Input difficulty ${inputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (!outExists) {
-			LMLog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
+			clog(`Output difficulty ${outputDiff} does not exist in info.dat, make sure to save your info in Chromapper or MMA2 before continuing...`, "Warning", "MapHandler");
 		}
 		if (updateCheckFrequency !== "Never") {
 			const timeout = LMCache("Read", "updateCheckTimeout") ?? 0;
@@ -374,10 +152,10 @@ export class BeatMap {
 		}
 
 		// Stats
-		LMLog(`${inputDiff} has been imported, map initialized...`);
+		clog(`${inputDiff} has been imported, map initialized...`);
 
 		// Set current diff
-		currentDiff = this;
+		_currentDiff = this;
 	}
 
 	/**
@@ -425,205 +203,294 @@ export class BeatMap {
 		});
 	}
 
+	/**
+	 * The map version. Lite-Mapper only supports versions `3.x.x`.
+	 */
 	get version(): V3ValidVersion {
 		return this.internalMap.version;
 	}
 
-	set basicEventTypesWithKeywords(x: Record<string, unknown>) {
-		this.internalMap.basicEventTypesWithKeywords = x;
-	}
-	get basicEventTypesWithKeywords(): Record<string, unknown> {
+	/**
+	 * These are copyright protected events that trigger certain actions on specific environments. They are not officially documented anywhere, so use wisely.
+	 */
+	get basicEventTypesWithKeywords(): Record<string, unknown> | unknown {
 		return this.internalMap.basicEventTypesWithKeywords;
 	}
-
-	set bpmEvents(x: BpmEventJSON[]) {
-		this.internalMap.bpmEvents = x;
+	set basicEventTypesWithKeywords(x: Record<string, unknown> | unknown) {
+		this.internalMap.basicEventTypesWithKeywords = x;
 	}
+
+	/**
+	 * All BPM changes.
+	 */
 	get bpmEvents(): BpmEventJSON[] {
 		return this.internalMap.bpmEvents;
 	}
-
-	set rotationEvents(x: RotationEventJSON[]) {
-		this.internalMap.rotationEvents = x;
+	set bpmEvents(x: BpmEventJSON[]) {
+		this.internalMap.bpmEvents = x;
 	}
+
+	/**
+	 * All rotation events. (V3 system)
+	 */
 	get rotationEvents(): RotationEventJSON[] {
 		return this.internalMap.rotationEvents;
 	}
-
-	set notes(x: Note[]) {
-		this.internalMap.colorNotes = x;
+	set rotationEvents(x: RotationEventJSON[]) {
+		this.internalMap.rotationEvents = x;
 	}
+
+	/**
+	 * All map note objects.  (excl. fake notes)
+	 */
 	get notes(): Note[] {
 		return this.internalMap.colorNotes;
 	}
-
-	set bombs(x: Bomb[]) {
-		this.internalMap.bombNotes = x;
+	set notes(x: Note[]) {
+		this.internalMap.colorNotes = x;
 	}
+
+	/**
+	 * All map bomb objects. (excl. fake bombs)
+	 */
 	get bombs(): Bomb[] {
 		return this.internalMap.bombNotes;
 	}
-
-	set walls(x: Wall[]) {
-		this.internalMap.obstacles = x;
+	set bombs(x: Bomb[]) {
+		this.internalMap.bombNotes = x;
 	}
+
+	/**
+	 * All map walls. (excl. fake walls)
+	 */
 	get walls(): Wall[] {
 		return this.internalMap.obstacles;
 	}
-
-	set arcs(x: Arc[]) {
-		this.internalMap.sliders = x;
+	set walls(x: Wall[]) {
+		this.internalMap.obstacles = x;
 	}
+
+	/**
+	 * All map arc objects.
+	 */
 	get arcs(): Arc[] {
 		return this.internalMap.sliders;
 	}
-
-	set chains(x: Chain[]) {
-		this.internalMap.burstSliders = x;
+	set arcs(x: Arc[]) {
+		this.internalMap.sliders = x;
 	}
+
+	/**
+	 * All map chain objects. (excl. fake chains)
+	 */
 	get chains(): Chain[] {
 		return this.internalMap.burstSliders;
 	}
-
-	set events(x: LightEvent[]) {
-		this.internalMap.basicBeatmapEvents = x;
+	set chains(x: Chain[]) {
+		this.internalMap.burstSliders = x;
 	}
+
+	/**
+	 * All classic light events.
+	 */
 	get events(): LightEvent[] {
 		return this.internalMap.basicBeatmapEvents;
 	}
-
-	set colorBoostBeatmapEvents(x: ColorBoostEventJSON[]) {
-		this.internalMap.colorBoostBeatmapEvents = x;
+	set events(x: LightEvent[]) {
+		this.internalMap.basicBeatmapEvents = x;
 	}
+
+	/**
+	 * All light boost events, these will have different effects depending on which environment they arte used on.
+	 */
 	get colorBoostBeatmapEvents(): ColorBoostEventJSON[] {
 		return this.internalMap.colorBoostBeatmapEvents;
 	}
-
-	set lightColorEventBoxGroups(x: ColorEventBoxGroupJSON[]) {
-		this.internalMap.lightColorEventBoxGroups = x;
+	set colorBoostBeatmapEvents(x: ColorBoostEventJSON[]) {
+		this.internalMap.colorBoostBeatmapEvents = x;
 	}
+
+	/**
+	 * All light color events. (V3 system)
+	 */
 	get lightColorEventBoxGroups(): ColorEventBoxGroupJSON[] {
 		return this.internalMap.lightColorEventBoxGroups;
 	}
-
-	set lightRotationEventBoxGroups(x: RotationEventBoxGroupJSON[]) {
-		this.internalMap.lightRotationEventBoxGroups = x;
+	set lightColorEventBoxGroups(x: ColorEventBoxGroupJSON[]) {
+		this.internalMap.lightColorEventBoxGroups = x;
 	}
+
+	/**
+	 * All light rotation events. (V3 system0)
+	 */
 	get lightRotationEventBoxGroups(): RotationEventBoxGroupJSON[] {
 		return this.internalMap.lightRotationEventBoxGroups;
 	}
-
-	set lightTranslationEventBoxGroups(x: TranslationEventBoxGroupJSON[]) {
-		this.internalMap.lightTranslationEventBoxGroups = x;
+	set lightRotationEventBoxGroups(x: RotationEventBoxGroupJSON[]) {
+		this.internalMap.lightRotationEventBoxGroups = x;
 	}
+
+	/**
+	 * All light translation events. (V3 system)
+	 */
 	get lightTranslationEventBoxGroups(): TranslationEventBoxGroupJSON[] {
 		return this.internalMap.lightTranslationEventBoxGroups;
 	}
-
-	set vfxEventBoxGroups(x: VfxEventBoxGroupJSON[]) {
-		this.internalMap.vfxEventBoxGroups = x;
+	set lightTranslationEventBoxGroups(x: TranslationEventBoxGroupJSON[]) {
+		this.internalMap.lightTranslationEventBoxGroups = x;
 	}
+
+	/**
+	 * All vfx events. (V3 system)
+	 */
 	get vfxEventBoxGroups(): VfxEventBoxGroupJSON[] {
 		return this.internalMap.vfxEventBoxGroups;
 	}
-
-	set floatFxEvents(x: BeatmapFxEvent[]) {
-		this.internalMap._fxEventsCollection._fl = x;
+	set vfxEventBoxGroups(x: VfxEventBoxGroupJSON[]) {
+		this.internalMap.vfxEventBoxGroups = x;
 	}
+
+	/**
+	 * FX events that use float numbers. (V3 system)
+	 */
 	get floatFxEvents(): BeatmapFxEvent[] {
 		return this.internalMap._fxEventsCollection._fl;
 	}
-
-	set integerFxEvents(x: BeatmapFxEvent[]) {
-		this.internalMap._fxEventsCollection._il = x;
+	set floatFxEvents(x: BeatmapFxEvent[]) {
+		this.internalMap._fxEventsCollection._fl = x;
 	}
+
+	/**
+	 * FX events that use integers only (no floats). (V3 system)
+	 */
 	get integerFxEvents(): BeatmapFxEvent[] {
 		return this.internalMap._fxEventsCollection._il;
 	}
-
-	set customData(x: CustomData) {
-		this.internalMap.customData = x;
+	set integerFxEvents(x: BeatmapFxEvent[]) {
+		this.internalMap._fxEventsCollection._il = x;
 	}
-	get customData(): CustomData {
+
+	/**
+	 * Map custom data section. This contains modded map content.
+	 */
+	get customData(): MapCustomData {
 		this.internalMap.customData ??= {};
 		return this.internalMap.customData;
 	}
-
-	set customEvents(x: CustomEvent[]) {
-		this.customData.customEvents = x;
+	set customData(x: MapCustomData) {
+		this.internalMap.customData = x;
 	}
-	get customEvents(): CustomEvent[] {
+
+	/**
+	 * All map {@link HeckCustomEvent CustomEvents} in the map.
+	 */
+	get customEvents(): HeckCustomEvent[] {
 		this.customData.customEvents ??= [];
 		return this.customData.customEvents;
 	}
-
-	set environments(x: Environment[]) {
-		this.customData.environment = x;
+	set customEvents(x: HeckCustomEvent[]) {
+		this.customData.customEvents = x;
 	}
+
+	/**
+	 * All environment objects for the map.
+	 */
 	get environments(): Environment[] {
 		this.customData.environment ??= [];
 		return this.customData.environment;
 	}
-
-	set materials(x: Record<string, GeometryMaterialJSON>) {
-		this.customData.materials = x;
+	set environments(x: Environment[]) {
+		this.customData.environment = x;
 	}
+
+	/**
+	 * All registered materials for geometry.
+	 *
+	 * This will not include materials that are defined directly on geometry objects.
+	 */
 	get materials(): Record<string, GeometryMaterialJSON> {
 		this.customData.materials ??= {};
 		return this.customData.materials;
 	}
-
-	set fakeNotes(x: Note[]) {
-		this.customData.fakeColorNotes = x;
+	set materials(x: Record<string, GeometryMaterialJSON>) {
+		this.customData.materials = x;
 	}
+
+	/**
+	 * Map note objects that don't count to score.
+	 */
 	get fakeNotes(): Note[] {
 		this.customData.fakeColorNotes ??= [];
 		return this.customData.fakeColorNotes;
 	}
-
-	set fakeBombs(x: Bomb[]) {
-		this.customData.fakeBombNotes = x;
+	set fakeNotes(x: Note[]) {
+		this.customData.fakeColorNotes = x;
 	}
+
+	/**
+	 * Map bomb objects that don't count to score.
+	 */
 	get fakeBombs(): Bomb[] {
 		this.customData.fakeBombNotes ??= [];
 		return this.customData.fakeBombNotes;
 	}
-
-	set fakeWalls(x: Wall[]) {
-		this.customData.fakeObstacles = x;
+	set fakeBombs(x: Bomb[]) {
+		this.customData.fakeBombNotes = x;
 	}
+
+	/**
+	 * Map wall objects that don't count to score.
+	 */
 	get fakeWalls(): Wall[] {
 		this.customData.fakeObstacles ??= [];
 		return this.customData.fakeObstacles;
 	}
-
-	set fakeChains(x: Chain[]) {
-		this.customData.fakeBurstSliders = x;
+	set fakeWalls(x: Wall[]) {
+		this.customData.fakeObstacles = x;
 	}
+
+	/**
+	 * Map chain objects that don't count to score.
+	 */
 	get fakeChains(): Chain[] {
 		this.customData.fakeBurstSliders ??= [];
 		return this.customData.fakeBurstSliders;
 	}
-
-	set bookmarks(x: Bookmark[]) {
-		this.customData.bookmarks = x;
+	set fakeChains(x: Chain[]) {
+		this.customData.fakeBurstSliders = x;
 	}
+
+	/**
+	 * Collection of bookmarks from chromapper.
+	 */
 	get bookmarks(): Bookmark[] {
 		this.customData.bookmarks ??= [];
 		return this.customData.bookmarks;
 	}
+	set bookmarks(x: Bookmark[]) {
+		this.customData.bookmarks = x;
+	}
 
+	/**
+	 * Custom values used by chromapper for editing the map.
+	 *
+	 * Beat Saber will ignore these values.
+	 */
 	readonly chromapperValues = {
 		mappingTime: 0,
 		bookmarksUseOfficialBPMEvents: true
 	};
 
-	set useNormalEventsAsCompatibleEvents(x: boolean) {
-		this.internalMap.useNormalEventsAsCompatibleEvents = x;
-	}
+	/**
+	 * Whether the lighting of the map is compatible with other environments than the one in the info file.
+	 */
 	get useNormalEventsAsCompatibleEvents(): boolean {
 		return this.internalMap.useNormalEventsAsCompatibleEvents;
 	}
+	set useNormalEventsAsCompatibleEvents(x: boolean) {
+		this.internalMap.useNormalEventsAsCompatibleEvents = x;
+	}
+
 	/**
 	 * Optimizer settings.
 	 *
@@ -637,6 +504,9 @@ export class BeatMap {
 		precision: 5
 	};
 
+	/**
+	 * The custom settings overrides of this difficulty.
+	 */
 	get settings(): HeckSettings {
 		for (let i = 0; i < this.info.raw._difficultyBeatmapSets.length; i++) {
 			const bms = this.info.raw._difficultyBeatmapSets[i];
@@ -672,8 +542,8 @@ export class BeatMap {
 		try {
 			input = JSON.parse(Deno.readTextFileSync(diff + ".dat"));
 		} catch (e) {
-			LMLog(`Unable to add ${diff} to your map...`, "Error", "addInputDiff");
-			LMLog(e, "Error", "addInputDiff");
+			clog(`Unable to add ${diff} to your map...`, "Error", "addInputDiff");
+			clog(e, "Error", "addInputDiff");
 		}
 
 		const classMap = BMJSON.classify(input);
@@ -745,19 +615,25 @@ export class BeatMap {
 		try {
 			Deno.writeTextFileSync(this.outputDiff + ".dat", JSON.stringify(decimals(rawMap, this.optimize.precision), null, formatJSON ? 4 : undefined));
 		} catch (e) {
-			LMLog(e, "Error");
+			clog(e, "Error");
 		}
 		if (this.info.isModified) {
 			this.info.save();
 		}
-		LMLog("Map saved...");
+		clog("Map saved...");
 		if (copyMapTo) {
 			copyToDir(copyMapTo);
 		}
 	}
 }
 
-class Info {
+/**
+ * An interface to the map's info file.
+ */
+export class Info {
+	/**
+	 * Convert a raw v4 info file into v2 info JSON.
+	 */
 	static v4ToV2(v4: V4InfoJSON): V2InfoJSON {
 		const v2: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 		v2._songName = v4.song.title;
@@ -828,10 +704,13 @@ class Info {
 	}
 
 	private infoVersion: number = 0;
+	/**
+	 * Raw info JSON contents.
+	 */
 	raw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 	private initialRaw: V2InfoJSON = deepCopy(V2_INFO_FALLBACK);
 	/**
-	 * Initialise the info file reader.
+	 * Initialise the info file reader. This class should not be initialised by itself. Use info {@link BeatMap.info info} property on {@link BeatMap}.
 	 */
 	constructor() {
 		lMInitTime = Date.now();
@@ -839,29 +718,29 @@ class Info {
 		try {
 			inputRaw = JSON.parse(Deno.readTextFileSync("info.dat"));
 		} catch (e) {
-			LMLog("Error reading info file: " + e, "Error", "InfoHandler");
-			LMLog("Writing blank info file...", "Log", "InfoHandler");
+			clog("Error reading info file: " + e, "Error", "InfoHandler");
+			clog("Writing blank info file...", "Log", "InfoHandler");
 
 			inputRaw = deepCopy(V2_INFO_FALLBACK);
 			try {
 				Deno.writeTextFileSync("info.dat", JSON.stringify(inputRaw));
 			} catch (e2) {
-				LMLog(e2, "Error", "InfoHandler");
-				LMLog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
+				clog(e2, "Error", "InfoHandler");
+				clog("Check the read and write permissions of your map folder and ensure that Lite-Mapper is being run with --allow-all.", "Error");
 				Deno.exit(1);
 			}
 
-			LMLog(`Fallback info.dat written...`, "Log", "InfoHandler");
-			LMLog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
+			clog(`Fallback info.dat written...`, "Log", "InfoHandler");
+			clog(`${rgb(0, 0, 255)}IMPORTANT: Save you map in a map editor and fill out required fields!\nLite-Mapper won't work properly and your map will not load in-game until you do this.`, "Log", "InfoHandler");
 			Deno.exit(1);
 		}
 		if (inputRaw.version) {
 			if (/4\.\d\.\d/.test(inputRaw.version)) {
-				LMLog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning", "InfoHandler");
+				clog("Your info file is in version 4, Lite-Mapper only has very basic support for V4 info files, you will be able to read some properties from the info file however any changes will not be saved!", "Warning", "InfoHandler");
 				this.raw = Info.v4ToV2(inputRaw as V4InfoJSON);
 				this.infoVersion = 4;
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
+				clog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else if (inputRaw._version) {
 			if (/2\.\d\.\d/.test(inputRaw._version)) {
@@ -882,12 +761,15 @@ class Info {
 				// Enforce newer version
 				this.raw._version = "2.1.0";
 			} else {
-				LMLog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
+				clog("ERROR: Info file contains an unsupported version, please adjust your info file to version 2.1.0 for full support.\nAny info processes will not work!", "Error", "InfoHandler");
 			}
 		} else {
-			LMLog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
+			clog("ERROR: Unable to read info file version!\nCheck that the file is not corrupted. Info processes will not work as intended.", "Error", "InfoHandler");
 		}
 	}
+	/**
+	 * Get whether the info file was modified. This will determine whether the file will be written to on save.
+	 */
 	get isModified(): boolean {
 		return !compare(this.initialRaw, this.raw);
 	}

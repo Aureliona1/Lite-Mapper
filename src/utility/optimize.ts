@@ -1,12 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
 import { arrRem, compare, mapRange, type Vec2 } from "@aurellis/helpers";
-import { ye3 } from "./Consts.ts";
-import { AnimateTrack } from "./CustomEvents.ts";
-import { Environment } from "./Environment.ts";
-import { filterEnvironments, repeat } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
-import type { GeometryMaterialJSON, KFVec3 } from "./Types.ts";
-
+import type { GeometryMaterialJSON, KFVec3 } from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { AnimateTrack } from "../map/events/animate_track.ts";
+import { Environment } from "../visual/environment.ts";
+import { ye3 } from "./consts.ts";
+import { filterEnvironments, repeat } from "./helpers.ts";
 /**
  * Performs several actions on geometry materials across the map.
  * - Merges all duplicate materials.
@@ -16,10 +15,10 @@ import type { GeometryMaterialJSON, KFVec3 } from "./Types.ts";
 export function optimizeMaterials() {
 	// Convert all existing mat names into numbers
 	let tempMat: Record<any, GeometryMaterialJSON> = {},
-		matArr = Object.entries(currentDiff.materials);
+		matArr = Object.entries(currentDiff().materials);
 	repeat(matArr.length, i => {
 		tempMat[i] = matArr[i][1];
-		currentDiff.environments.forEach(x => {
+		currentDiff().environments.forEach(x => {
 			if (x.geometry) {
 				if (x.geometry.material == matArr[i][0]) {
 					x.geometry.material = i.toString();
@@ -27,21 +26,21 @@ export function optimizeMaterials() {
 			}
 		});
 	});
-	currentDiff.materials = tempMat;
+	currentDiff().materials = tempMat;
 
 	// Convert all duplicate JSON materials into strings
 	let i = matArr.length,
 		j = 0,
 		k = 0;
-	currentDiff.environments.forEach(x => {
+	currentDiff().environments.forEach(x => {
 		if (x.geometry) {
 			let duped = false;
 			if (typeof x.geometry.material !== "string") {
-				currentDiff.environments.forEach(y => {
+				currentDiff().environments.forEach(y => {
 					if (y.geometry) {
 						if (typeof y.geometry.material !== "string" && compare(x.geometry?.material, y.geometry.material) && j !== k) {
 							duped = true;
-							currentDiff.materials[i] = x.geometry?.material as GeometryMaterialJSON;
+							currentDiff().materials[i] = x.geometry?.material as GeometryMaterialJSON;
 							y.geometry.material = i.toString();
 						}
 						k++;
@@ -57,7 +56,7 @@ export function optimizeMaterials() {
 	});
 
 	// Merge all duplicate materials
-	matArr = Object.entries(currentDiff.materials);
+	matArr = Object.entries(currentDiff().materials);
 	const dupes: number[][] = [];
 	repeat(matArr.length, i => {
 		const mat = matArr[i][1];
@@ -91,14 +90,14 @@ export function optimizeMaterials() {
 				}
 			}
 		);
-		delete currentDiff.materials[matArr[d[1]][0]];
+		delete currentDiff().materials[matArr[d[1]][0]];
 	});
 	// Renumber the materials
 	tempMat = {};
-	matArr = Object.entries(currentDiff.materials);
+	matArr = Object.entries(currentDiff().materials);
 	repeat(matArr.length, i => {
 		tempMat[i] = matArr[i][1];
-		currentDiff.environments.forEach(x => {
+		currentDiff().environments.forEach(x => {
 			if (x.geometry) {
 				if (x.geometry.material == matArr[i][0]) {
 					x.geometry.material = i.toString();
@@ -106,7 +105,7 @@ export function optimizeMaterials() {
 			}
 		});
 	});
-	currentDiff.materials = tempMat;
+	currentDiff().materials = tempMat;
 }
 
 /**
@@ -227,10 +226,8 @@ export class GeoTrackStack {
 					scaleAnims: KFVec3[] = [];
 
 				// Check for animate tracks that use this object
-				currentDiff.customEvents.forEach((anim, i) => {
-					if (anim.type == "AnimateTrack") {
-						anim = anim as AnimateTrack;
-
+				currentDiff().customEvents.forEach((anim, i) => {
+					if (anim instanceof AnimateTrack) {
 						if (anim.track == track) {
 							removeIndices.push(i);
 							const animDuration = anim.duration ?? 0;
@@ -325,7 +322,7 @@ export class GeoTrackStack {
 
 				// This means there were animations
 				if (removeIndices.length) {
-					arrRem(currentDiff.customEvents, removeIndices);
+					arrRem(currentDiff().customEvents, removeIndices);
 
 					newAnim.animate.position = posAnims;
 					newAnim.animate.rotation = rotAnims;

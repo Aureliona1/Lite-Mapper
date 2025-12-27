@@ -1,11 +1,10 @@
 import { ArrOp, deepCopy, rotateVector, type Vec3, type Vec4 } from "@aurellis/helpers";
-import { AnimateComponent } from "./CustomEvents.ts";
-import { jsonPrune, repeat } from "./Functions.ts";
-import { currentDiff } from "./Map.ts";
+import { LightEventTypesMap } from "../core/internal.ts";
 import type {
 	ComponentStaticProps,
 	CustomEventJSON,
 	EnvironmentJSON,
+	FogAnimationProps,
 	GeometryMaterialJSON,
 	GeometryObjectJSON,
 	GeometryObjectPrimitive,
@@ -21,9 +20,14 @@ import type {
 	LookupMethod,
 	MaterialShaderName,
 	Optional
-} from "./Types.ts";
-import { LightEventTypesMap } from "./Internal.ts";
+} from "../core/types.ts";
+import { currentDiff } from "../map/beatmap.ts";
+import { AnimateComponent } from "../map/events/animate_component.ts";
+import { jsonPrune, repeat } from "../utility/helpers.ts";
 
+/**
+ * An environment (or geometry) object.
+ */
 export class Environment {
 	/**
 	 * Create a new environment or geometry object.
@@ -163,10 +167,10 @@ export class Environment {
 
 	/**
 	 * Return your environment object as an object.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): EnvironmentJSON {
-		const temp = dupe ? deepCopy(this) : this;
+	return(freeze = true): EnvironmentJSON {
+		const temp = freeze ? deepCopy(this) : this;
 		const out: EnvironmentJSON = {
 			active: temp.active,
 			duplicate: temp.duplicate == undefined ? undefined : temp.duplicate ? 1 : 0,
@@ -200,13 +204,16 @@ export class Environment {
 	}
 	/**
 	 * Push the environment to the current diff.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
-		currentDiff.environments.push(dupe ? deepCopy(this) : this);
+	push(freeze = true) {
+		currentDiff().environments.push(freeze ? deepCopy(this) : this);
 	}
 }
 
+/**
+ * A material object.
+ */
 export class Material {
 	/**
 	 * The color of the material. Some shaders may not properly display this.
@@ -315,7 +322,10 @@ export class Material {
 		return this;
 	}
 
-	static this(raw: GeometryMaterialJSON): Material {
+	/**
+	 * Initialise a material object from material JSON.
+	 */
+	static from(raw: GeometryMaterialJSON): Material {
 		const out = new Material();
 		Object.assign(out, raw);
 		return out;
@@ -340,10 +350,13 @@ export class Material {
 	 * @param name The name of the material.
 	 */
 	push(name: string) {
-		currentDiff.materials[name] = this.return();
+		currentDiff().materials[name] = this.return();
 	}
 }
 
+/**
+ * 2d shape made of environment or geometry objects.
+ */
 export class Polygon {
 	/**
 	 * Creates a 2d shape defaulting along the xy plane.
@@ -402,14 +415,21 @@ export class Polygon {
 	}
 }
 
-class StaticFog {
+/**
+ * Static fog adjustor.
+ */
+export class InternalStaticFog {
 	private fog = new Environment().env("[0]Environment", "EndsWith");
-	private get components() {
+
+	/**
+	 * Fog component shortcut.
+	 */
+	private get components(): Required<ComponentStaticProps>["fog"] {
 		this.fog.components ??= {};
 		this.fog.components.fog ??= {};
 		return this.fog.components.fog;
 	}
-	private set components(x) {
+	private set components(x: Required<ComponentStaticProps>["fog"]) {
 		this.fog.components ??= {};
 		this.fog.components.fog ??= {};
 		this.fog.components.fog = x;
@@ -454,37 +474,63 @@ class StaticFog {
 	}
 }
 
-class AnimatedFog {
+/**
+ * Dynamic fog animator.
+ */
+export class InternalAnimatedFog {
+	/**
+	 * Create a new dynamic fog animator. This class should not be used by itself, use {@link Fog}.
+	 */
 	constructor(public readonly track: string, public time: number, public duration: number) {
 		this.componentAnimation = new AnimateComponent(track, time, duration);
 	}
 	private componentAnimation: AnimateComponent;
-	private get fog() {
+
+	/**
+	 * Shortcut to fog component.
+	 */
+	private get fog(): FogAnimationProps {
 		this.componentAnimation.fog ??= {};
 		return this.componentAnimation.fog;
 	}
-	private set fog(x) {
+	private set fog(x: FogAnimationProps) {
 		this.componentAnimation.fog ??= {};
 		this.componentAnimation.fog = x;
 	}
+
+	/**
+	 * Controls the "thickness" of the distance fog.
+	 */
 	get attenuation(): Optional<[number] | KFScalar[]> {
 		return this.fog.attenuation;
 	}
 	set attenuation(x: Optional<[number] | KFScalar[]>) {
 		this.fog.attenuation = x;
 	}
+
+	/**
+	 * Controls the size of the height fog. This value is the distance from startY that objects will go from fully transparent to fully solid.
+	 */
 	get height(): Optional<[number] | KFScalar[]> {
 		return this.fog.height;
 	}
 	set height(x: Optional<[number] | KFScalar[]>) {
 		this.fog.height = x;
 	}
+
+	/**
+	 * Controls the y position at which the height fog begins.
+	 */
 	get startY(): Optional<[number] | KFScalar[]> {
 		return this.fog.startY;
 	}
 	set startY(x: Optional<[number] | KFScalar[]>) {
 		this.fog.startY = x;
 	}
+
+	/**
+	 * The hard cutoff of distance fog. This value controls the distance at which the fog completely stops fading objects.
+	 */
 	get offset(): Optional<[number] | KFScalar[]> {
 		return this.fog.offset;
 	}
@@ -493,29 +539,35 @@ class AnimatedFog {
 	}
 	/**
 	 * Get the json of the underlying component animation.
-	 * @param dupe Whether to copy the object on return.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	return(dupe = true): CustomEventJSON {
-		return this.componentAnimation.return(dupe);
+	return(freeze = true): CustomEventJSON {
+		return this.componentAnimation.return(freeze);
 	}
 	/**
 	 * Push the fog animation.
-	 * @param dupe Whether to copy the object on push.
+	 * @param freeze Whether to freeze the properties of the object. This prevents further property modifications from affecting extracted values here.
 	 */
-	push(dupe = true) {
+	push(freeze = true) {
 		this.componentAnimation.time = this.time;
 		this.componentAnimation.duration = this.duration;
-		this.componentAnimation.push(dupe);
+		this.componentAnimation.push(freeze);
 	}
 }
 
+/**
+ * An object that controls the ambient fog of the environment.
+ */
 export class Fog {
 	/**
 	 * Set up fog to be set statically.
 	 */
-	static(): StaticFog {
-		return new StaticFog();
+	static(): InternalStaticFog {
+		return new InternalStaticFog();
 	}
+	/**
+	 * Assign the track that controls the fog component.
+	 */
 	private assignFogTrack(track: string) {
 		const fog = new Environment().env("[0]Environment", "EndsWith");
 		fog.track = track;
@@ -527,8 +579,8 @@ export class Fog {
 	 * @param time The time of the animation.
 	 * @param duration The duration of the animation.
 	 */
-	animated(track = "fog", time = 0, duration = 1): AnimatedFog {
+	animated(track = "fog", time = 0, duration = 1): InternalAnimatedFog {
 		this.assignFogTrack(track);
-		return new AnimatedFog(track, time, duration);
+		return new InternalAnimatedFog(track, time, duration);
 	}
 }

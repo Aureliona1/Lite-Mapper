@@ -1,6 +1,6 @@
 // This is the LM installation/setup script.
 // You do not need this in order to run Lite-Mapper.
-import { rgb, type DiffName } from "jsr:@aurellis/lite-mapper";
+import { rgb, type DiffName } from "./mod.ts";
 import pack from "./deno.json" with {type: "json"}
 
 const diffNames: DiffName[] = [

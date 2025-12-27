@@ -1,19 +1,33 @@
 // deno-lint-ignore-file no-explicit-any
 import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
-import type { AnimateComponent, AnimateTrack, AssignPathAnimation, AssignPlayerToTrack, AssignTrackParent } from "./CustomEvents.ts";
-import type { Environment } from "./Environment.ts";
-import type { LightEvent } from "./Lights.ts";
-import type { Arc, Bomb, Bookmark, Chain, Note, Wall } from "./Objects.ts";
-import type { ObjectColorsMap, ObjectDirectionsMap, LightEventTypesMap, LightEventValuesMap } from "./Internal.ts";
+import type { Arc } from "../gameplay/arc.ts";
+import type { Bomb } from "../gameplay/bomb.ts";
+import type { Chain } from "../gameplay/chain.ts";
+import type { Note } from "../gameplay/note.ts";
+import type { Wall } from "../gameplay/wall.ts";
+import type { HeckCustomEvent } from "../map/events/custom_event.ts";
+import type { Bookmark } from "../visual/bookmark.ts";
+import type { Environment } from "../visual/environment.ts";
+import type { LightEvent } from "../visual/light.ts";
+import type { LightEventTypesMap, LightEventValuesMap, ObjectColorsMap, ObjectDirectionsMap } from "./internal.ts";
 
 // BeatMap types
 
-export type DiffName = `${BeatMapDifficultyName}${BeatMapCharacteristicName}`;
-export type BeatMapCharacteristicName = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
-export type BeatMapDifficultyName = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
+/**
+ * The name of a valid beatmap file.
+ */
+export type DiffName = `${BeatMapDifficultyLabel}${BeatMapCharacteristicLabel}`;
+/**
+ * Characteristic label of a beatmap.
+ */
+export type BeatMapCharacteristicLabel = "Standard" | "Lightshow" | "Lawless" | "360Degree" | "90Degree" | "NoArrows" | "OneSaber";
+/**
+ * Difficulty label of a beatmap.
+ */
+export type BeatMapDifficultyLabel = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
 
 /**
- * JSON RGBA objeect with named keys.
+ * JSON RGBA object with named keys.
  */
 export type RGBAObject = { r: number; b: number; g: number; a: number };
 
@@ -38,7 +52,7 @@ export type V2InfoColorScheme = {
  * The layout for beatmaps in V2 info files.
  */
 export type V2InfoBeatmap = {
-	_difficulty: BeatMapDifficultyName;
+	_difficulty: BeatMapDifficultyLabel;
 	_difficultyRank: number;
 	_beatmapFilename: DatFilename;
 	_noteJumpMovementSpeed: number;
@@ -52,7 +66,7 @@ export type V2InfoBeatmap = {
  * JSON for beatmap sets in V2 info files.
  */
 export type V2InfoBeatmapSet = {
-	_beatmapCharacteristicName: BeatMapCharacteristicName;
+	_beatmapCharacteristicName: BeatMapCharacteristicLabel;
 	_difficultyBeatmaps: V2InfoBeatmap[];
 };
 
@@ -122,8 +136,8 @@ export type V4InfoColorScheme = {
  * The beatmap layout for V4 info files.
  */
 export type V4InfoBeatmap = {
-	characteristic: BeatMapCharacteristicName;
-	difficulty: BeatMapDifficultyName;
+	characteristic: BeatMapCharacteristicLabel;
+	difficulty: BeatMapDifficultyLabel;
 	beatmapAuthors: {
 		mappers: string[];
 		lighters: string[];
@@ -313,7 +327,7 @@ export type VfxEventBoxGroupJSON = {
 /**
  * JSON Fx event for V3 beatmaps.
  */
-export type BeatmapfxEvent = { b: number; p: number; i: number; v: number };
+export type BeatmapFxEvent = { b: number; p: number; i: number; v: number };
 
 /**
  * The JSON layout of a V3 map.
@@ -333,12 +347,12 @@ export type V3MapJSON = {
 	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
 	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
 	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
-	basicEventTypesWithKeywords: Record<string, unknown>;
+	basicEventTypesWithKeywords: Record<string, unknown> | unknown;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {
-		_fl: BeatmapfxEvent[];
-		_il: BeatmapfxEvent[];
+		_fl: BeatmapFxEvent[];
+		_il: BeatmapFxEvent[];
 	};
 	customData?: {
 		customEvents?: CustomEventJSON[];
@@ -354,10 +368,11 @@ export type V3MapJSON = {
 	};
 };
 
-export type CustomEvent = AnimateComponent | AnimateTrack | AssignPathAnimation | AssignPlayerToTrack | AssignTrackParent;
-
-export type CustomData = {
-	customEvents?: CustomEvent[];
+/**
+ * Map custom data section.
+ */
+export type MapCustomData = {
+	customEvents?: HeckCustomEvent[];
 	environment?: Environment[];
 	materials?: Record<string, GeometryMaterialJSON>;
 	fakeColorNotes?: Note[];
@@ -387,14 +402,14 @@ export type ClassMap = {
 	lightColorEventBoxGroups: ColorEventBoxGroupJSON[];
 	lightRotationEventBoxGroups: RotationEventBoxGroupJSON[];
 	lightTranslationEventBoxGroups: TranslationEventBoxGroupJSON[];
-	basicEventTypesWithKeywords: Record<string, unknown>;
+	basicEventTypesWithKeywords: Record<string, unknown> | unknown;
 	useNormalEventsAsCompatibleEvents: boolean;
 	vfxEventBoxGroups: VfxEventBoxGroupJSON[];
 	_fxEventsCollection: {
-		_fl: BeatmapfxEvent[];
-		_il: BeatmapfxEvent[];
+		_fl: BeatmapFxEvent[];
+		_il: BeatmapFxEvent[];
 	};
-	customData?: CustomData;
+	customData?: MapCustomData;
 };
 
 /**
@@ -493,14 +508,35 @@ export type HeckSettings = {
 
 // Animation types
 
+/**
+ * Vec3 keyframe.
+ */
 export type KFVec3 = [number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
+/**
+ * Scalar (single value) keyframe.
+ */
 export type KFScalar = [number, number, Easing?];
+/**
+ * Vec4 keyframe.
+ */
 export type KFVec4 = [number, number, number, number, number, (Easing | "splineCatmullRom")?, "splineCatmullRom"?];
 
+/**
+ * Vec3 keyframe with a modifier.
+ */
 export type KFVec3Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, ModifierOp]];
+/**
+ * Vec4 keyframe with a modifier.
+ */
 export type KFVec4Modifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, number, number, number, ModifierOp]];
+/**
+ * Scalar keyframe with a modifier.
+ */
 export type KFScalarModifier = [ModifierBaseTarget] | [ModifierBaseTarget, [number, ModifierOp]];
 
+/**
+ * Modifier operators.
+ */
 export type ModifierOp = "opNone" | "opAdd" | "opSub" | "opMul" | "opDiv";
 type VectorBase = "Position" | "LocalPosition" | "Rotation" | "LocalRotation" | "LocalScale";
 type BaseEnvColors = "0" | "1" | "W" | "0Boost" | "1Boost" | "WBoost";
@@ -525,6 +561,9 @@ type ModifierBaseName =
 	| "baseSongTime"
 	| "baseSongLength";
 
+/**
+ * Nothing at the moment
+ */
 export type ModifierBaseTarget = "";
 
 /**
@@ -584,15 +623,24 @@ export type ComponentStaticJSONProps = {
 };
 
 /**
- * A collection of the custom properties that can be added onto note objects.
+ * Shared collection of custom properties for all gameplay objects.
  */
-export type NoteCustomProps = {
+export type GameObjectCustomProps = {
 	coordinates?: Vec2;
 	worldRotation?: Vec3;
 	localRotation?: Vec3;
 	noteJumpMovementSpeed?: number;
 	noteJumpStartBeatOffset?: number;
 	uninteractable?: boolean;
+	color?: Vec3 | Vec4;
+	track?: string | string[];
+	animation?: ObjectAnimProps;
+};
+
+/**
+ * A collection of the custom properties that can be added onto note objects.
+ */
+export type NoteCustomProps = GameObjectCustomProps & {
 	flip?: Vec2;
 	disableNoteGravity?: boolean;
 	disableNoteLook?: boolean;
@@ -600,50 +648,53 @@ export type NoteCustomProps = {
 	disableBadCutSpeed?: boolean;
 	disableBadCutSaberType?: boolean;
 	link?: string;
-	color?: Vec3 | Vec4;
 	spawnEffect?: boolean;
-	track?: string | string[];
-	animation?: ObjectAnimProps;
 };
 /**
  * A collection of the custom properties that can be added to slider objects.
  */
-export type SliderCustomProps = {
-	coordinates?: Vec2;
-	worldRotation?: Vec3;
-	localRotation?: Vec3;
-	noteJumpMovementSpeed?: number;
-	noteJumpStartBeatOffset?: number;
-	uninteractable?: boolean;
+export type SliderCustomProps = GameObjectCustomProps & {
 	disableNoteGravity?: boolean;
 	tailCoordinates?: Vec2;
-	color?: Vec3 | Vec4;
-	animation?: ObjectAnimProps;
-	track?: string | string[];
 };
 
 /**
  * A collection of the custom properties that can be added to walls.
  */
-export type WallCustomProps = { size?: Vec3; animation?: ObjectAnimProps; coordinates?: Vec2; worldRotation?: Vec3; localRotation?: Vec3; noteJumpMovementSpeed?: number; noteJumpStartBeatOffset?: number; uninteractable?: boolean; color?: Vec3 | Vec4; track?: string | string[] };
+export type WallCustomProps = GameObjectCustomProps & { size?: Vec3 };
 
 /**
  * The L or R colors of gameplay objects.
  */
 export type ObjectColorName = keyof typeof ObjectColorsMap.map;
+/**
+ * Valid object color numbers.
+ */
 export type ObjectColorNumber = keyof typeof ObjectColorsMap.reverseMap;
 /**
  * Valid cut directions of gameplay objects.
  */
 export type ObjectDirectionName = keyof typeof ObjectDirectionsMap.map;
+/**
+ * Valid object direction numbers.
+ */
 export type ObjectDirectionNumber = keyof typeof ObjectDirectionsMap.reverseMap;
 
+/**
+ * JSON format of a note object.
+ */
 export type NoteJSON = { b: number; x: number; y: number; c: number; d: number; a: number; customData?: NoteCustomProps };
+
+/**
+ * JSON format of a bomb object.
+ */
 export type BombJSON = { b: number; x: number; y: number; customData?: NoteCustomProps };
+
 /**
  * JSON format of a wall object.
  */
 export type ObstacleJSON = { b: number; x: number; y: number; d: number; w: number; h: number; customData?: WallCustomProps };
+
 /**
  * JSON format of an environment object.
  */
@@ -672,7 +723,19 @@ export type SliderJSON = { b: number; c: number; x: number; y: number; d: number
 /**
  * JSON format of the custom data of a light event object.
  */
-export type LightEventCustomData = { lightID?: number | number[]; color?: Vec3 | Vec4; easing?: Easing; lerpType?: "HSV" | "RGB"; lockRotation?: boolean; speed?: number; direction?: number; nameFilter?: string; rotation?: number; step?: number; prop?: number };
+export type LightEventCustomData = {
+	lightID?: number | number[];
+	color?: Vec3 | Vec4;
+	easing?: Easing;
+	lerpType?: "HSV" | "RGB";
+	lockRotation?: boolean;
+	speed?: number;
+	direction?: number;
+	nameFilter?: string;
+	rotation?: number;
+	step?: number;
+	prop?: number;
+};
 /**
  * JSON format of a light event object.
  */
@@ -707,15 +770,6 @@ export type LightValueNumber = keyof typeof LightEventValuesMap.reverseMap;
 export type CustomEventName = "AnimateTrack" | "AssignPathAnimation" | "AssignTrackParent" | "AssignPlayerToTrack" | "AnimateComponent";
 
 /**
- * The JSON format of a generic custom event.
- */
-export type CustomEventJSON = { b: number; t: CustomEventName; d: TrackAnimAnimationProps | PathAnimAnimationProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
-
-/**
- * A collection of the properties that can be added to a path animation.
- */
-export type PathAnimDataProps = PathAnimAnimationProps & { track?: string | string[]; duration?: number; easing?: Easing };
-/**
  * A collection of the animatable properties that can be added to a path animation.
  */
 export type PathAnimAnimationProps = {
@@ -731,14 +785,10 @@ export type PathAnimAnimationProps = {
 };
 
 /**
- * A collection of the properties that can be added to a track animation.
+ * A collection of the properties that can be added to a path animation.
  */
-export type TrackAnimDataProps = TrackAnimAnimationProps & {
-	track?: string | string[];
-	duration?: number;
-	easing?: Easing;
-	repeat?: number;
-};
+export type PathAnimDataProps = PathAnimAnimationProps & { track?: string | string[]; duration?: number; easing?: Easing };
+
 /**
  * A collection of all the animatable properties that can be added to a track animation.
  */
@@ -758,6 +808,16 @@ export type TrackAnimAnimationProps = {
 };
 
 /**
+ * A collection of the properties that can be added to a track animation.
+ */
+export type TrackAnimDataProps = TrackAnimAnimationProps & {
+	track?: string | string[];
+	duration?: number;
+	easing?: Easing;
+	repeat?: number;
+};
+
+/**
  * A collection of the properties that can be added to a track parent assignment.
  */
 export type TrackParentProps = { childrenTracks: string[]; parentTrack: string; worldPositionStays?: boolean };
@@ -766,6 +826,7 @@ export type TrackParentProps = { childrenTracks: string[]; parentTrack: string; 
  * A valid target on the player object that can be assigned to a track.
  */
 export type PlayerObjectTarget = "Root" | "Head" | "LeftHand" | "RightHand";
+
 /**
  * A collection of the properties that can be added to a player track assignment.
  */
@@ -799,6 +860,11 @@ export type ComponentAnimProps = {
 	BloomFogEnvironment?: FogAnimationProps;
 	TubeBloomPrePassLight?: TubeLightAnimationProps;
 };
+
+/**
+ * The JSON format of a generic custom event.
+ */
+export type CustomEventJSON = { b: number; t: CustomEventName; d: TrackAnimAnimationProps | PathAnimAnimationProps | TrackParentProps | PlayerToTrackProps | ComponentAnimProps };
 
 // Environment and Geometry
 
