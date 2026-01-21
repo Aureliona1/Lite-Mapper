@@ -15,6 +15,7 @@ export * from "./src/map/events/assign_player_track.ts";
 export * from "./src/map/events/assign_track_parent.ts";
 export * from "./src/map/events/custom_event.ts";
 export * from "./src/map/events/events.ts";
+export * from "./src/map/info.ts";
 export * from "./src/map/json.ts";
 export * from "./src/utility/consts.ts";
 export * from "./src/utility/helpers.ts";
