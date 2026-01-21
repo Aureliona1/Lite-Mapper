@@ -18,7 +18,7 @@
 		]
 	},
 	"imports": {
-		"@aurellis/helpers": "jsr:@aurellis/helpers@^1.4.5",
+		"@aurellis/helpers": "jsr:@aurellis/helpers@^1.4.6",
 		"fast-simplex-noise": "npm:fast-simplex-noise@^4.0.0"
 	},
 	"lint": {
