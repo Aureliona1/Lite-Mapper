@@ -161,20 +161,16 @@ export class BeatMap {
 	 * @param mod The mod to suggest.
 	 */
 	suggest(mod: "Chroma" | "Cinema") {
-		this.info.raw._difficultyBeatmapSets.forEach(x => {
-			x._difficultyBeatmaps.forEach(y => {
-				if (y._beatmapFilename == this.outputDiff + ".dat") {
-					if (y._customData) {
-						y._customData._suggestions.push(mod);
-					} else {
-						y._customData = {
-							_suggestions: []
-						};
-						y._customData._suggestions.push(mod);
-					}
+		for (const set of this.info.raw._difficultyBeatmapSets) {
+			for (const map of set._difficultyBeatmaps) {
+				if (map._beatmapFilename === this.outputDiff + ".dat") {
+					map._customData ??= {};
+					map._customData._suggestions ??= [];
+					map._customData._suggestions.push(mod);
+					break;
 				}
-			});
-		});
+			}
+		}
 	}
 
 	/**
@@ -182,23 +178,16 @@ export class BeatMap {
 	 * @param mod The mod requirement to add.
 	 */
 	require(mod: "Chroma" | "Noodle Extensions") {
-		this.info.raw._difficultyBeatmapSets.forEach(x => {
-			x._difficultyBeatmaps.forEach(y => {
-				if (y._beatmapFilename == this.outputDiff + ".dat") {
-					if (y._customData) {
-						if (!y._customData._requirements) {
-							y._customData["_requirements"] = [];
-						}
-						y._customData._requirements.push(mod);
-					} else {
-						y._customData = {
-							_requirements: []
-						};
-						y._customData._requirements.push(mod);
-					}
+		for (const set of this.info.raw._difficultyBeatmapSets) {
+			for (const map of set._difficultyBeatmaps) {
+				if (map._beatmapFilename === this.outputDiff + ".dat") {
+					map._customData ??= {};
+					map._customData._requirements ??= [];
+					map._customData._requirements.push(mod);
+					break;
 				}
-			});
-		});
+			}
+		}
 	}
 
 	/**
