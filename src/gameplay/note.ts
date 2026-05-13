@@ -27,7 +27,13 @@ export class Note extends GameplayObject {
 	 * @param direction (string) The cut direction of the note (Default - "Dot").
 	 * @param angleOffset The additional angle offset of the note (counter-clockwise).
 	 */
-	constructor(public time = 0, pos: Vec2 = [0, 0], public type: ObjectColorName = "Left", public direction: ObjectDirectionName = "Dot", public angleOffset = 0) {
+	constructor(
+		public time = 0,
+		pos: Vec2 = [0, 0],
+		public type: ObjectColorName = "Left",
+		public direction: ObjectDirectionName = "Dot",
+		public angleOffset = 0
+	) {
 		super(pos);
 	}
 	/**
