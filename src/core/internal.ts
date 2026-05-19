@@ -1,5 +1,5 @@
-import { type RecordKey, TwoWayMap } from "@aurellis/helpers";
-import type { V2InfoJSON, V3MapJSON, V4InfoJSON } from "./types.ts";
+import { TwoWayMap } from "@aurellis/helpers";
+import type { TWM, V2InfoJSON, V3MapJSON, V4InfoJSON } from "./types.ts";
 
 /**
  * Placeholder for valid V2 info JSON if certain values don't exist.
@@ -72,11 +72,6 @@ export const V3_MAP_FALLBACK: V3MapJSON = {
 	useNormalEventsAsCompatibleEvents: true,
 	_fxEventsCollection: { _fl: [], _il: [] }
 } as const;
-
-/**
- * TwoWayMap generic type.
- */
-export type TWM<T extends Record<RecordKey, RecordKey>> = TwoWayMap<keyof T, T[keyof T]>;
 
 /**
  * Internal map for mapping numerical object colors to named colors. Modifying the contents of this may break LiteMapper's functionality.

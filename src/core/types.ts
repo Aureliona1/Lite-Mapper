@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import type { Easing, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
+import type { Easing, RecordKey, TwoWayMap, Vec2, Vec3, Vec4 } from "@aurellis/helpers";
 import type { Arc } from "../gameplay/arc.ts";
 import type { Bomb } from "../gameplay/bomb.ts";
 import type { Chain } from "../gameplay/chain.ts";
@@ -1006,3 +1006,8 @@ export type DatFilename = `${string}.dat`;
  * Type may be undefined.
  */
 export type Optional<T> = T | undefined;
+
+/**
+ * TwoWayMap generic type.
+ */
+export type TWM<T extends Record<RecordKey, RecordKey>> = TwoWayMap<keyof T, T[keyof T]>;
