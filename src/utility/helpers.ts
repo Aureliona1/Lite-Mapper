@@ -403,7 +403,7 @@ const HEX_MAP = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C"
  * @returns Hex string.
  */
 export function rgba2Hex(color: Vec4): string {
-	color = color.map(x => Math.round(clamp(x, [0, 1]) * 255)) as Vec4;
+	color = color.map(x => Math.round(clamp(x, 0, 1) * 255)) as Vec4;
 	const digits: string[] = [];
 	color.forEach(x => {
 		digits.push(x.toString(16));
