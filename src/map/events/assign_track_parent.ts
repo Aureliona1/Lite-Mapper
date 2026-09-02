@@ -74,7 +74,7 @@ export class AssignTrackParent extends HeckCustomEvent {
 	/**
 	 * Create a new instance of a track parent from valid HeckCustomEvent JSON.
 	 * @param x The JSON.
-	 * @returns A trrack parent, or a blank track parent if the JSON is invalid.
+	 * @returns A track parent, or a blank track parent if the JSON is invalid.
 	 */
 	static from(x: CustomEventJSON): AssignTrackParent {
 		const a = new AssignTrackParent();

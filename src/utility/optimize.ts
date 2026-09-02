@@ -6,6 +6,7 @@ import { AnimateTrack } from "../map/events/animate_track.ts";
 import { Environment } from "../visual/environment.ts";
 import { ye3 } from "./consts.ts";
 import { filterEnvironments, repeat } from "./helpers.ts";
+
 /**
  * Performs several actions on geometry materials across the map.
  * - Merges all duplicate materials.
@@ -144,7 +145,10 @@ export class GeoTrackStack {
 	 * @param object The generic object to use on the stack.
 	 * @param track Track must be defined here, not on the object.
 	 */
-	constructor(public object: Environment = new Environment().geo("Cube", { shader: "BTSPillar" }), public readonly track: string = Math.random().toString()) {}
+	constructor(
+		public object: Environment = new Environment().geo("Cube", { shader: "BTSPillar" }),
+		public readonly track: string = Math.random().toString()
+	) {}
 
 	/**
 	 * Request an array of available tracks within a time period. If not enough track are available (or none are), new tracks will be created.

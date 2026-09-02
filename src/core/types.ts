@@ -445,7 +445,7 @@ export type EnvironmentName =
 	| "EDMEnvironment";
 
 /**
- * The collection of valid setings that Heck can override.
+ * The collection of valid settings that Heck can override.
  */
 export type HeckSettings = {
 	_playerOptions?: {

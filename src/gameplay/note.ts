@@ -10,7 +10,7 @@ import { GameplayObject } from "./object.ts";
  */
 export class Note extends GameplayObject {
 	/**
-	 * Create a new note. All paramaters here are optional and can be edited later.
+	 * Create a new note. All parameters here are optional and can be edited later.
 	 *
 	 * For example:
 	 * ```ts
@@ -62,7 +62,7 @@ export class Note extends GameplayObject {
 	}
 
 	/**
-	 * Whether the note shold have the note "spawn effect".
+	 * Whether the note should have the note "spawn effect".
 	 */
 	get spawnEffect(): Optional<boolean> {
 		return this.customData.spawnEffect;

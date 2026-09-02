@@ -83,7 +83,7 @@ export class BeatMap {
 	/**
 	 * Initialise a new map.
 	 * @param inputDiff The input difficulty, this will be unmodified.
-	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whateever you add in your script.
+	 * @param outputDiff The output difficulty, this file will be overwritten by the input diff and whatever you add in your script.
 	 * @param checkForUpdate Whether to run Lite-Mapper's update checker.
 	 */
 	constructor(
@@ -288,7 +288,7 @@ export class BeatMap {
 	}
 
 	/**
-	 * All light boost events, these will have different effects depending on which environment they arte used on.
+	 * All light boost events, these will have different effects depending on which environment they are used on.
 	 */
 	get colorBoostBeatmapEvents(): ColorBoostEventJSON[] {
 		return this.internalMap.colorBoostBeatmapEvents;
@@ -483,7 +483,7 @@ export class BeatMap {
 	 *
 	 * Currently supports:
 	 *
-	 * * `precision` -  Decimal rounding (Defualt - 5).
+	 * * `precision` -  Decimal rounding (default - 5).
 	 * * `materials` - Material optimization (Default - true)
 	 */
 	optimize = {

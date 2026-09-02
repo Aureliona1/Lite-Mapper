@@ -116,7 +116,7 @@ export class Environment {
 	 */
 	track?: string | string[];
 	/**
-	 * Modify geometry properies on the object. This will override `id` and `lookupMethod`.
+	 * Modify geometry properties on the object. This will override `id` and `lookupMethod`.
 	 */
 	geometry?: GeometryObjectJSON;
 
@@ -451,7 +451,7 @@ export class InternalStaticFog {
 		return this;
 	}
 	/**
-	 * The y value of the height fog. This controles the vertical position at which objects completely fade out.
+	 * The y value of the height fog. This controls the vertical position at which objects completely fade out.
 	 * @param x The Y value.
 	 */
 	startY(x: number): this {
@@ -481,7 +481,11 @@ export class InternalAnimatedFog {
 	/**
 	 * Create a new dynamic fog animator. This class should not be used by itself, use {@link Fog}.
 	 */
-	constructor(public readonly track: string, public time: number, public duration: number) {
+	constructor(
+		public readonly track: string,
+		public time: number,
+		public duration: number
+	) {
 		this.componentAnimation = new AnimateComponent(track, time, duration);
 	}
 	private componentAnimation: AnimateComponent;

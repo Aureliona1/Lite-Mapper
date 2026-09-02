@@ -480,7 +480,7 @@ export function jsonPrune(obj: Record<string, any>) {
 }
 
 /**
- * Wrapper clas for perlin noise.
+ * Wrapper class for perlin noise.
  */
 export class Noise {
 	/**
